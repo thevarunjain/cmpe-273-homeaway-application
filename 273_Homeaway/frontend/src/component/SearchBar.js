@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import SearchResult from './SearchResult';
+import SearchResult from './SearchProperty';
+import cookie from 'react-cookies';
+
+import {Redirect} from 'react-router';
+import SearchProperty from './SearchProperty';
 
 
 class SearchBar extends Component {
@@ -10,6 +14,8 @@ class SearchBar extends Component {
     super(props);
 
     this.state = {
+      result : "",
+      Flag :"",
       place : "",
       dateTo : "",
       dateFrom : "",
@@ -32,16 +38,12 @@ class SearchBar extends Component {
       .then(response => {
           console.log("Status Code of Search Post: ",response.status);
           console.log(response.data);
+          
           if(response.status === 200){
               this.setState({
-                  Flag : true
+                  Flag : true,
+                  result : response.data
               });
-              this.setState({
-                passon : response.data
-            });
-            let pass = null;
-            pass = this.state.passon;
-            console.log(this.state.passon);
           }else{
               this.setState({
                   Flag : false
@@ -52,28 +54,42 @@ class SearchBar extends Component {
     }
   
   render() {
-
+    let redirectVar = null;
+    if(!cookie.load('cookie')){
+    redirectVar = <Redirect to= "/TravellerLogin"/>
+    }
+    if (this.state.Flag){
+      return (<Redirect to={{
+        pathname: '/SearchProperty',
+        state: { result: this.state.result }
+    }} />)
+    }
 
     return (
-    
-     
 <div className ="container-fluid">
-<div>
 
-  <div>
+<div className="homesearch">
+
       
-  <form className="form-inline">
- 
-  <input type="text" className="form-control" id="place" placeholder="Las Vegas, CA, USA" onChange ={(e) => { this.setState({place : e.target.value})  }}/>
-  <input type="text" className="form-control" id="dateTo" placeholder="Date To" onChange ={(e) => { this.setState({dateTo : e.target.value})  }}/>
-  <input type="text" className="form-control" id="dateFrom" placeholder="Date From" onChange ={(e) => { this.setState({dateFrom : e.target.value})  }}/>
-  <input type="text" className="form-control" id="guest" placeholder="Guest" onChange ={(e) => { this.setState({guest : e.target.value})  }}/>
-  <button type="submit"  onClick = {this.search} className="btn btn-primary mb-2">Search</button>
-  </form>
-
-  </div>
-
-  </div>
+      <form className="form-inline">
+     <div className="searchbox">
+     <input type="text" className="form-control" id="place" placeholder="Las Vegas, CA, USA" onChange ={(e) => { this.setState({place : e.target.value})  }}/>
+     </div>
+     <div className="searchbox">
+      <input type="date" className="form-control" id="dateFrom" placeholder="Departure" onChange ={(e) => { this.setState({dateFrom : e.target.value})  }}/>
+      </div>
+     <div className="searchbox">
+      <input type="date" className="form-control" id="dateTo" placeholder="Arrive" onChange ={(e) => { this.setState({dateTo : e.target.value})  }}/>
+      </div>
+      <div className="searchbox"> 
+      <input type="text" className="form-control" id="guest" placeholder="Guest" onChange ={(e) => { this.setState({guest : e.target.value})  }}/>
+      </div>
+      <div className="searchbox">
+      <button type="submit"  onClick = {this.search} className="btn btn-primary mb-2">Search</button>
+      </div>
+      </form>
+    
+      </div>
 </div>
      
       )
