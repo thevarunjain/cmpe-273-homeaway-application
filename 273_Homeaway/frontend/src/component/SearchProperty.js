@@ -77,18 +77,18 @@ class SearchProperty extends Component {
           <div col-md-8>
           <h3>{property.headline}</h3>
           </div>
-           <div col-md-8 style={{color : "blue"}}>
+           <div >
            <h4>{property.description}</h4>          
           </div>
 
-          <div col-md-8 style={{color : "blue"}}>
-          BA : {property.bathroom}
-          BR : {property.bedroom}   
+          <div   >
+          BA : {property.bathroom} . 
+          BR : {property.bedroom}  
           </div>
           <br></br>
 
-          <div col-md-8 style={{color : "blue"}}>
-          Cost : {property.rate}
+          <div>
+          Cost : {property.rate} .  
           Guest : {property.accomodation}    
           </div>
      

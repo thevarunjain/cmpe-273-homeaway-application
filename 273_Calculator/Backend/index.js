@@ -41,11 +41,31 @@ app.get('/', function(req,res){
 
 app.post('/', function(req,res){
     console.log(req.body.exp);
-    var result = eval(req.body.exp);
-    console.log(result);
+  
+        var result = eval(req.body.exp);
+        // if(result==null){
+        //     console.log("Invalid Expression");
+        //             res.writeHead(201,{
+        //                 'Content-Type' : 'text/plain'
+        //             })
+                    
+        //             res.end("Could Not Evaluate");   
+        //         }else{
+                                       
+                  res.send(JSON.stringify(result));
+                    console.log("Answer : " + result ); 
+                    
+                  console.log(result);
 
-    res.send(JSON.stringify(result));
-    console.log("Answer : " + result );
+                    // res.writeHead(200,{
+                    //     'Content-Type' : 'application/json'
+                    // })
+                    
+    
+                // }
+    
+ 
+
 });
 
 

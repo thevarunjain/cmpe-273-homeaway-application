@@ -111,6 +111,9 @@ margin-top: 0.5rem; }
   border-radius: 0px;
   width: 320px;
 }
+.price{
+  font-size: 29px;
+}
 .googlebutton{
   background-color: #f3f3f3;
   color: #787878;

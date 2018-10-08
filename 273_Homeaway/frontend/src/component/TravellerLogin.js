@@ -44,8 +44,6 @@ class TravellerLogin extends Component{
                 else if(response.status === 201){
                     this.setState({
                        authFlag : false,
-                       email : "",
-                       password : ""
                     })
                    
                 
@@ -109,10 +107,10 @@ class TravellerLogin extends Component{
                 </div><br></br>
                 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ email : event.target.value })}} type="email" className="form-control"  placeholder="Email ID"/>
+                    <input required onChange = {(event) => {this.setState({ email : event.target.value })}} type="email" className="form-control"  placeholder="Email ID"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ password : event.target.value })}} type="password" className="form-control"  placeholder="Password"/>
+                    <input required onChange = {(event) => {this.setState({ password : event.target.value })}} type="password" className="form-control"  placeholder="Password"/>
                 </div>
                 <span ><a>Forget Password </a></span>
                 <div ><br></br>

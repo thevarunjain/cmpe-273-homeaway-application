@@ -153,13 +153,13 @@ class TravellerAccount extends Component{
                 </div><br></br>
                 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ oldpass : event.target.value })}} type="text" className="form-control"  placeholder="Current Password"/>
+                    <input onChange = {(event) => {this.setState({ oldpass : event.target.value })}} type="password" className="form-control"  placeholder="Current Password"/>
                 </div> 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ newpass1 : event.target.value })}} type="text" className="form-control"  placeholder="New Password"/>
+                    <input onChange = {(event) => {this.setState({ newpass1 : event.target.value })}} type="password" className="form-control"  placeholder="New Password"/>
                 </div> 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ newpass2 : event.target.value })}} type="text" className="form-control"  placeholder="Confirm Password"/>
+                    <input onChange = {(event) => {this.setState({ newpass2 : event.target.value })}} type="password    " className="form-control"  placeholder="Confirm Password"/>
                 </div>
               
                 <div >

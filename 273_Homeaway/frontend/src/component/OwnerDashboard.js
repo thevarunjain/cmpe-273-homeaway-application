@@ -15,6 +15,7 @@ class OwnerDashboard extends Component {
 
            this.state = {
             prop : [],
+            ip : [],
             address : '',
             headline :'',
             description: '',
@@ -70,6 +71,27 @@ booked : ''
                 });
                 console.log("In Home");
             });
+            let imagePreview = '';
+            console.log("imagesssssssssssssssss");
+            console.log(this.state.prop);
+
+            axios.post('http://localhost:3001/getpropertypicsingle/'+`Courtyard`)
+            .then(response => {
+    
+                console.log("Imgae Res : ",response);
+                imagePreview = 'data:image/jpg;base64, ' + response.data;
+                this.setState(  
+                  { ip : this.state.ip.concat(imagePreview)}              
+                )
+               console.log(this.state.ip)
+        
+            });
+
+
+
+        
+
+
             axios.get('http://localhost:3001/OwnerDashboardBookedBy',{
               params: {
                 id : email
@@ -97,12 +119,13 @@ booked : ''
         redirectVar = <Redirect to= "/OwnerLogin"/>
         }  
 
+      
    var property = this.state.prop.map((property)=>{
           return (
             <li className="list-group-item" key={Math.random()}>
             <div className="ima">
             <div className="media-left">
-            <img className="media-object" src={require('../image/property.jpg')} />
+            <img className="media-object" src={this.state.ip}/>
             </div>
             <div className="media-body">
             <div className="media-heading">
@@ -127,9 +150,10 @@ booked : ''
         <Navbar />
         <div className ="container-fluid" style={{ backgroundColor : "#f4f4f4",height : "650px"}}>
         <div style={{margin : "3%", padding: "15px"}}>
-    
                 <div className="col-md-1">
                 </div>
+    <h2> Owner DashBoard </h2>
+
                 <div className="col-md-7">
                 <div className="container">  
       <ul className="col-md-8 list-group">

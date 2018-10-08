@@ -11,7 +11,8 @@ class TravellerTrip extends Component{
         super(props);
 
         this.state={
-            prop : []
+            prop : [],
+            ip :[]
         }
         }
     
@@ -32,8 +33,28 @@ class TravellerTrip extends Component{
                 this.setState({
                     prop : this.state.prop.concat(response.data) 
                 });
+
+               
+
             });
-    }
+            let imagePreview = '';
+            console.log("imagesssssssssssssssss");
+            console.log(this.state.prop);
+
+            axios.post('http://localhost:3001/getpropertypicsingle/'+`Courtyard`)
+            .then(response => {
+    
+                console.log("Imgae Res : ",response);
+                imagePreview = 'data:image/jpg;base64, ' + response.data;
+                this.setState(  
+                  { ip : this.state.ip.concat(imagePreview)}              
+                )
+               console.log(this.state.ip)
+        
+            });
+
+     }
+    
 
     render(){
         //redirect based on successful login
@@ -42,7 +63,31 @@ class TravellerTrip extends Component{
         redirectVar = <Redirect to= "/TravellerLogin"/>
         }
 
+        var i;
+var imagePreview = '';
+i=-1;
         let property = this.state.prop.map(prop => {
+           i+1;
+
+           
+        var dt = new Date(prop.bookfrom);
+        console.log(dt);
+       var d1 = dt.getDate();
+       console.log(d1);
+       var d2 = dt.getMonth(); 
+       console.log(d2);
+       var d3 = dt.getFullYear();
+       console.log(d3);
+    
+      var dt1 = new Date(prop.bookto);
+      console.log(dt);
+      var d4 = dt1.getDate();
+      console.log(d1);
+      var d5 = dt1.getMonth(); 
+      console.log(d2);
+      var d6 = dt1.getFullYear();
+      console.log(d3);
+
             console.log("in prop")
             console.log(prop);
             return(
@@ -51,24 +96,25 @@ class TravellerTrip extends Component{
           <div className="ima">
           <div className="media-left">
           
-          <img className="media-object"  style={{width : "200px", height:"200px"}} />
+          <img className="media-object" src={this.state.ip} style={{width : "200px", height:"200px"}} />
           </div>
           <div className="media-body">
           <div className="media-heading">
           <div col-md-8>
-          <h3>{prop.address}</h3>
+          <h3>{prop.headline}</h3>
           </div>
-           <div col-md-8 style={{color : "blue"}}>
+           <div col-md-8 >
            <h4>{prop.description}</h4>          
           </div>
 
-          <div col-md-8 style={{color : "blue"}}>
-          BA : {prop.bookto}
-          BR : {prop.bookfrom}   
+          <div col-md-8 >
+          Booked from  : {d2}/{d1}/{d3} . 
+          Booked to : {d5}/{d4}/{d6}
+
           </div>
           <br></br>
 
-          <div col-md-8 style={{color : "blue"}}>
+          <div col-md-8 >
           Cost : {prop.rate}
  
           </div>

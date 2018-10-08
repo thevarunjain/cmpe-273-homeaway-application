@@ -19,7 +19,8 @@ class BookProperty extends Component {
             guest : "",
             total  : "",
             image : [] ,
-            booked : ''
+            booked : '',
+            final : ''
 
            }
                    }  
@@ -41,8 +42,8 @@ class BookProperty extends Component {
       this.setState(  
         { ip : this.state.ip.concat(response.data)}              
       )
-     console.log(this.state.ip)      
-     console.log("sssssssssssssssssssssssssssssssssssssssssssssssssss")      
+     //console.log(this.state.ip)      
+    // console.log("sssssssssssssssssssssssssssssssssssssssssssssssssss")      
 
   })
   ;
@@ -92,11 +93,25 @@ class BookProperty extends Component {
       redirectbook = <Redirect to= "/TravellerTrip"/>
       }
 
-      var properties = this.props.location.state.result;
-
+    var properties = this.props.location.state.result;
     
-
+    var dt = new Date(properties.availfrom);
+        console.log(dt);
+       var d1 = dt.getDate();
+       console.log(d1);
+       var d2 = dt.getMonth(); 
+       console.log(d2);
+       var d3 = dt.getFullYear();
+       console.log(d3);
     
+      var dt1 = new Date(properties.availto);
+      console.log(dt);
+      var d4 = dt1.getDate();
+      console.log(d1);
+      var d5 = dt1.getMonth(); 
+      console.log(d2);
+      var d6 = dt1.getFullYear();
+      console.log(d3);
 
   
         
@@ -127,32 +142,32 @@ class BookProperty extends Component {
       <div class="item active">
         <img style={{height:"450px", width:"750px"}}  src={'data:image/jpg;base64, ' + this.state.ip[0]} alt="Chania" width="460" height="345" />
         <div class="carousel-caption">
-          <h3 style = {{color : "black"}}>{properties.headline}</h3>
-          <p style = {{color : "black"}}>{properties.description}</p>
+          <h3 style = {{color : "white"}}>{properties.headline}</h3>
+          <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
 
       <div class="item">
         <img style={{height:"450px", width:"750px"}} src = {'data:image/jpg;base64, ' + this.state.ip[1] } alt="Chania" width="460" height="345"/>
         <div class="carousel-caption">
-        <h3 style = {{color : "black"}}>{properties.headline}</h3>
-          <p style = {{color : "black"}}>{properties.description}</p>
+        <h3 style = {{color : "white"}}>{properties.headline}</h3>
+          <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
     
       <div class="item">
         <img style={{height:"450px", width:"750px"}} src={'data:image/jpg;base64, ' + this.state.ip[2]} alt="Flower" width="460" height="345"/>
         <div class="carousel-caption">
-        <h3 style = {{color : "black"}}>{properties.headline}</h3>
-          <p style = {{color : "black"}}>{properties.description}</p>
+        <h3 style = {{color : "white"}}>{properties.headline}</h3>
+          <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
 
       <div class="item">
         <img style={{height:"450px", width:"750px"}} src={'data:image/jpg;base64, ' + this.state.ip[3]} alt="Flower" width="460" height="345"/>
         <div class="carousel-caption">
-        <h3 style = {{color : "black"}}>{properties.headline}</h3>
-          <p style = {{color : "black"}}>{properties.description}</p>
+        <h3 style = {{color : "white"}}>{properties.headline}</h3>
+          <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
   
@@ -173,43 +188,50 @@ class BookProperty extends Component {
      <div >
            
            <div className="row" style={{border: "1px solid gainsboro"}} >
-           <div className="col-md-3" style={{border: "1px solid gainsboro"}}>
-            {properties.rate}
+           <div className="col-md-8" >
+           <div className ="price">
+
+           Cost per Night
+           $ {properties.rate}
+           </div>
             </div>
            </div> 
 
           <br></br>
 
             <div className="row">
-            <h5> Your date are <b> Available!</b> </h5>     
+            <div className ="col-md-9">
+            <h4> Your date are <b> Available!</b> </h4>     
+           
+            </div>
             </div>
             <br></br>
             <div className="row">
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            {properties.availfrom}
+            <h5> Booking from : {d2}/{d1}/{d3}</h5>
             </div>
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            {properties.availto}
+           <h5> Booking to : {d5}/{d4}/{d6}</h5>
             </div>
             </div>
 
 
             <div className="row">
             <div className="col-md-12" style={{border: "1px solid gainsboro"}}>
-            {properties.accomodation}
+            Guest  : {properties.accomodation}
             </div>
             </div>
             <div className="row">
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            Total
+            Total Amount
             </div>
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
             {properties.rate}
             </div>
             </div>
             <div className="row" style={{border: "1px solid gainsboro", alignContent:"center"}}>
-            <div className="searchbox">
-            <button onClick= {(e)=>this.book(properties)} className="btn btn-primary mb-2">BOOK NOW</button>
+            <div className="searchbox"> 
+            <button onClick= {(e)=>this.book(properties)} style ={{width : "137px",  height : "44px"}}className="btn btn-primary">BOOK NOW</button>
             </div>
             </div>
 

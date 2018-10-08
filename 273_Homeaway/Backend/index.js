@@ -343,10 +343,7 @@ app.post('/TravellerSignUp',function(req,res){
     var lastname = req.body.lastname;
     var email = req.body.email;
     var password = req.body.password;
-    var sql1 = "INSERT INTO traveller VALUES ( " + 
-            mysql.escape(email) + " , " + mysql.escape(password) 
-            + " , " +mysql.escape(firstname)+ " , " +mysql.escape(lastname) + ")";
-
+   
     var sql = "insert into traveller ( email, password, firstname, lastname) values ("
             + "  " +mysql.escape(email) + " , " 
             + "  " +mysql.escape(password)+ " , "
@@ -676,10 +673,9 @@ app.get('/TravellerTrip', function(req,res){
     var email = req.query.id;
     console.log(email);
 
-   // var sql = "SELECT * FROM property where email = " + mysql.escape(email);
 
- var sql =   "SELECT booking.id, booking.*, property.address, property.headline, property.description, property.rate " +
-"FROM booking LEFT JOIN property ON booking.id = property.id and booking.email = " + mysql.escape(email); 
+ var sql =   "SELECT booking.*, property.address, property.headline, property.description, property.rate " +
+"FROM booking JOIN property ON booking.id = property.id and booking.email = " + mysql.escape(email); 
 
     console.log(sql + " FIRED >>>>>>\n")
     pool.getConnection(function(err,con){

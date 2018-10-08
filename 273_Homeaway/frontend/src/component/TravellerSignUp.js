@@ -56,9 +56,9 @@ class TravellerSignUp extends Component{
     render(){
         //redirect based on successful login
         let redirectVar = null;
-      //  if(cookie.load('cookie')){
-     //   redirectVar = <Redirect to= "/home"/>
-      //  }
+        if(this.state.authflag){
+        redirectVar = <Redirect to= "/"/>
+      }
         return(
         
          <div id="login-container" className="row">
