@@ -42,7 +42,7 @@ app.get('/', function(req,res){
 app.post('/', function(req,res){
     console.log(req.body.exp);
     var result = eval(req.body.exp);
-    //console.log(JSON.stringify(result));
+    console.log(result);
 
     res.send(JSON.stringify(result));
     console.log("Answer : " + result );

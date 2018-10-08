@@ -77,8 +77,9 @@ app.use(function(req, res, next) {
 
 app.get('/', function(req,res){
     console.log("Inside Root Folder");
-    res.end("Connection Established");  
-    })
+    res.end("Connected")
+});
+
 
 app.post('/ProfilePicture', uploadpic.single('selectedFile'), (req, res) => {
         //console.log("Req : ",req);
@@ -640,7 +641,7 @@ app.get('/OwnerDashboardBookedBy', function(req,res){
             res.writeHead(400,{
                 'Content-Type' : 'text/plain'
             })
-            console.log("1");
+            // console.log("1");
 
             res.end("Could Not Get Connection Object");
         }else{
