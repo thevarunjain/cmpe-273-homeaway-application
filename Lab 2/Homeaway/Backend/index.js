@@ -19,6 +19,7 @@ var { owner } = require("./models/owner");
 var crypt = require("./crypt");
 var morgan = require('morgan');
 var jwt = require('jsonwebtoken');
+const uuidv4 = require('uuid/v4');
 
 //Passport
 var passport = require('passport');
@@ -172,21 +173,25 @@ app.post('/TravellerLogin', function(req,res){
         traveller.find({
             email : email
         }).then((docs) => {
+            console.log(".................",docs)
+
             if(docs.length!=0){
-            console.log(docs)
             var user = {                    // for creating JWT token
                 id: docs.id,
                 email: docs.email,
             };
             
             crypt.compareHash(req.body.password, docs[0].passwordHash, function (err, isMatch) {
+                console.log(isMatch,err)
+                console.log(req.body.password, docs[0].passwordHash)
+
                 if (isMatch && !err) {
                     //Create token if the password matched and no error was thrown
                     var token = jwt.sign(user, "Lamborghini", {
                         expiresIn: 10080 // in seconds
                     });
                     res.value = docs;
-                    var x = res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+                    res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
                    res.status(200).json({success: true, token: 'JWT' + token });
                 } else {
                     res.status(401).json({
@@ -196,23 +201,12 @@ app.post('/TravellerLogin', function(req,res){
                     console.log('Password did not match');
                     console.log(err);
                 }
-            }, function (err) {
-                console.log(err);
-                res.status(401).json({success: false, message: 'Authentication failed. User not found.'});
             });
         }else{
             console.log("Authentication failed. User not found.");
-            res.status(401).json({success: false, message: 'Authentication failed. User not found.'});
-
+            res.status(401).json({success: false, message: 'Authentication failed....User doesnot exist'});
         }
-    }
-        )
-    
-
-
-    
-
-    
+    })
 });
 
 app.get('/TravellerProfile',function(req,res){
@@ -276,12 +270,11 @@ app.post('/TravellerProfile', function(req,res){
 
 app.post('/ListProperty',upload.array('proppics',5), function(req,res){
     console.log("Inside list property\n");
-    console.log("request data ",req.body.propdata);
     var reqdata = JSON.parse(req.body.propdata);
     
     var email = reqdata.email;
     var property = new Array;
-    var details = {
+    var details = [{
      address : reqdata.address,
      headline : reqdata.headline,
      description : reqdata.description,
@@ -292,21 +285,23 @@ app.post('/ListProperty',upload.array('proppics',5), function(req,res){
      availfrom : reqdata.availfrom,
      availto : reqdata.availto,
      rate : reqdata.rate,
-     minstay : reqdata.minstay
-    };
-    console.log(details );
-    property.push(details);
-    console.log(property);
-    console.log(email);
+     minstay : reqdata.minstay,
+     propid : uuidv4(),
+     ownerid : email
+    }];
+    console.log("Pushing Property >>> ",details);
+    console.log("Owner email ",email);
 
-    traveller.updateOne({"email": email},{ "$push" : {"properties" : property}},function(err,log){
-            if(err) {
-                console.log("Error in listing property :( ",err);
-            }else{
-                console.log("Property Listed !!",log)
-            }
-        });
-   
+    owner.findOneAndUpdate({email: email},{ $push : {properties : details}}).then((result)=>{
+        if(result!= undefined){
+            console.log("Property Listed !!")
+            console.log("........................",result);
+            res.sendStatus(200).json({ success : true, body : "Property listed Successfully"});
+        }else{
+            console.log("Error in listing property :( ");
+        }
+    })
+
 
 
 
@@ -344,93 +339,63 @@ app.post('/TravellerSignUp',function(req,res){
 });
 
 app.post('/TravellerAccountEmail',function(req,res){
-    console.log("Inside Traveller Account Request Request\n");
+    console.log("Inside Traveller Email Change Request\n");
     var oldemail = req.body.oldemail;
     var newemail = req.body.newemail;
 
     traveller.updateOne({email: oldemail},{email : newemail},{multi:true},function(err,log){
         if(err) {
-            console.log("Error in changing email :( ");
+            console.log("Error in changing email :( ",err);
+            res.status(201).json({success: false, message : ' Password Change failed..' });
+            res.end("Old Password Incorrect ");
         }else{
             res.cookie('cookie',newemail,{maxAge: 900000, httpOnly: false, path : '/'});
-                res.writeHead(200,{
-                    'Content-Type' : 'text/plain'
-                })
+            res.status(200).json({success: true, message : 'Changed Successfully' });
                 res.end("Changed Successfully");
-            console.log("Changed Successfully !!")
+            console.log("Changed Successfully !!",log)
         }
     });
 
 
-    // var sql = "update traveller set email = " +mysql.escape(newemail) + "where email = "+mysql.escape(oldemail);
-
-    // console.log(sql + " FIRED >>>>>>\n")
-
-    // pool.getConnection(function(err,con){
-    //     if(err){
-    //         console.log(err);
-    //         res.writeHead(400,{
-    //             'Content-Type' : 'text/plain'
-    //         })
-    //         res.end("Could Not Get Connection Object");
-    //     }else{
-    // con.query(sql,function(err,result){
-
-    //     if(err){
-    //     console.log(err);
-    //     res.end("Sign Up failed")
-    //     }   
-    //     else{
-    //         console.log(result)
-    //         res.cookie('cookie',newemail,{maxAge: 900000, httpOnly: false, path : '/'});
-    //         req.session.user = result;
-    //             res.writeHead(200,{
-    //                 'Content-Type' : 'text/plain'
-    //             })
-    //             res.end("Successful Sign Up");
-    //             console.log("\nSign Up  has been doneSuccessfully\n");
-    //     }
-    // }
-    // ); }})
 });
 
 
 app.post('/TravellerAccountPassword',function(req,res){
-    console.log("Inside Traveller Account Request Request\n");
+    console.log("Inside Traveller Password Change Request\n");
     var oldpass = req.body.oldpass;
     var email = req.body.email;
     var newpass = req.body.newpass;
+                
 
-    var sql = "update traveller set password = " +mysql.escape(newpass) + "where email = "+mysql.escape(email) +" and password = " + 
-    mysql.escape(oldpass);
+    crypt.createHash(newpass, function (hash) {
+        passwordHash = hash;
+        console.log("hash",hash);
+        console.log("newpass",newpass);
 
-    console.log(sql + " FIRED >>>>>>\n")
-    pool.getConnection(function(err,con){
-        if(err){
-            console.log(err);
-            res.writeHead(400,{
-                'Content-Type' : 'text/plain'
-            })
-            res.end("Could Not Get Connection Object");
-        }else{
-    con.query(sql,function(err,result){
-
-        if(err){
-        console.log(err);
-        res.end("Sign Up failed")
-        }   
-        else{
-            console.log(result)
-            res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
-            req.session.user = result;
-                res.writeHead(200,{
-                    'Content-Type' : 'text/plain'
-                })
+        traveller.updateOne({email: email, password : oldpass},{$set : {password : newpass, passwordHash : hash}},{multi:true},function(err,log){
+            if(log.nModified == 0) {
+                console.log("Error in changing password :( ",log);
+                res.status(201).json({success: false, message : ' Password Change failed..' });
+                res.end("Old Password Incorrect ");
+    
+            }else{
+    
+                res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+                res.status(200).json({success: true, message : ' Password Changed Successfully' });
                 res.end("Password Changed Successfully");
-                console.log("\n Password changed Successfully\n");
-        }
-    }
-    );}})
+                console.log("\n Password changed Successfully\n",log);
+            }
+        });
+    
+    
+    })
+   // console.log("passhash",passwordHash);
+
+
+
+   
+   
+    
 });
 
 app.post('/BookProperty',function(req,res){
@@ -502,72 +467,55 @@ app.post('/OwnerLogin',function(req,res){
     //check first same id exists, if yes, then 
     console.log(email);
 
-    owner.find({
-        email : email
-    }).then((data) => {
-        if(data.length = 0){
-            console.log(data);
-            console.log("Owner found with email : ", email);
-            res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.sendStatus(200).end();
+    owner.findOne({email : email}).then((result)=>{
+        if(result==null){               //no user with email found 
+            new owner({                // ES6 syntax
+                email,
+                password
+           }).save().then((docs)=>{
+               console.log("Owner created : ",docs);
+               res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
+               res.sendStatus(200).end();
+           },(err)=>{
+               console.log("Error in signing up");
+               res.sendStatus(400).end();
+           })
+        }else{                          //user found, then update password
+            owner.findOneAndUpdate({email : email},{$set : {password : password}}).then((data) => {
+                 // console.log(data);
+                  console.log("Owner found with email : ", email);
+                  res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
+                  res.sendStatus(200).end();
+            
+              })
         }
-        else{
-            console.log(data);
-            console.log("No such owner with email : ", email, "so creating a new one")
-        new owner({                // ES6 syntax
-            email,
-            password
-       }).save().then((docs)=>{
-           console.log("Owner created : ",docs);
-           res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
-           res.sendStatus(200).end();
-       },(err)=>{
-           console.log("Error in signing up");
-           res.sendStatus(400).end();
-       })
-        }
-    }
-    )
+ 
+    });
 });
 
 app.get('/OwnerDashboard', function(req,res){
     console.log("IN dashBoard " + req.body);
     var email = req.query.id;
     console.log(email);
-    res.writeHead(200,{
+
+    owner.find({email :email}).then((result)=>{
+        if(result == null){
+        console.log(result);
+      //  console.log(JSON.stringify(result[0].properties));
+        console.log(result[0].properties);
+        console.log("Property Found");
+            res.writeHead(200,{
                 'Content-Type' : 'application/json'
             })
-    // var sql = "SELECT property.*, booking.email FROM property JOIN booking ON booking.id = property.id and property.email = " 
-    // + mysql.escape(email); 
-
-    // console.log(sql + " FIRED >>>>>>\n")
-    // pool.getConnection(function(err,con){
-    //     if(err){
-    //         console.log(err);
-    //         res.writeHead(400,{
-    //             'Content-Type' : 'text/plain'
-    //         })
-    //         res.end("Could Not Get Connection Object");
-    //     }else{
-    // con.query(sql,function(err,result){
-    //     if(err) throw err;
-    //     if(result!=null){
-
-    //     console.log("Property Found");
-    //     res.writeHead(200,{
-    //         'Content-Type' : 'application/json'
-    //     })
-    //     res.end(JSON.stringify(result));
-    //     console.log(JSON.stringify(result));
-    //     console.log(result);
-    // }
-    // else{
-    //     console.log("No property found");
-    //     console.log(JSON.stringify(result));
-    //     console.log(result);
-    // } 
-    // })
-    //     }})
+            res.json({"sucess": true , message : "property found" }).end(result[0].properties);
+        }else{
+            console.log("No property found");
+            res.writeHead(400,{
+                'Content-Type' : 'application/json'
+            })
+            res.json({"sucess": false , message : "property not found" }).end("property not found" );
+        }
+    })
 
 })
 
@@ -576,41 +524,7 @@ app.get('/OwnerDashboardBookedBy', function(req,res){
     console.log("IN dashBoard bokerrrrrrrrrrrrrrr " + req.body);
     var email = req.query.id;
     console.log(email);
-    // var sql = "SELECT email from booking where id = ( select id from property where email = " + mysql.escape(email) + ");";  
-
-    // console.log(sql + " FIRED >>>>>>\n")
-    // pool.getConnection(function(err,con){
-    //     if(err){
-    //         console.log(err);
-    //         res.writeHead(400,{
-    //             'Content-Type' : 'text/plain'
-    //         })
-    //         // console.log("1");
-
-    //         res.end("Could Not Get Connection Object");
-    //     }else{
-    // con.query(sql,function(err,result){
-    //     if(err) throw err;
-    //     if(result!=null){
-    //         console.log("2");
-
-    //     console.log("Property Found");
-    //     res.writeHead(200,{
-    //         'Content-Type' : 'application/json'
-    //     })
-
-    //     res.end(JSON.stringify(result));
-    //     console.log(JSON.stringify(result));
-    //     console.log(result);
-    // }
-    // else{
-                
-    //     console.log("No property found");
-    //     console.log(JSON.stringify(result));
-    //     console.log(result);
-    // }
-    // })
-    //     }})
+  
 
 })
 
@@ -666,44 +580,52 @@ app.post('/search', function(req,res){
     var dateFrom = req.body.dateFrom;
     var guest = req.body.guest;
 
-
- 
-   var sql =  "select * from property where address like '%"+place+"%' and date(availfrom) <= "
-   + mysql.escape(dateFrom)+ " and date(availto) >= " + mysql.escape(dateTo) + " and accomodation >= "+ guest;
-
- 
-
-    console.log(sql + " FIRED >>>>>>\n")
-
-    pool.getConnection(function(err,con){
-        if(err){
-            console.log(err);
-            res.writeHead(400,{
-                'Content-Type' : 'text/plain'
-            })
-            res.end("Could Not Get Connection Object");
-        }else{
-
-    con.query(sql,function(err,result){
-        if(err) throw err;
-        if(result!=null){
-
-        console.log("Property Found");
-        res.writeHead(200,{
-            'Content-Type' : 'application/json'
-        })
-        res.end(JSON.stringify(result));
-        console.log(JSON.stringify(result));
-        console.log(result);
-    }
-    else{
-        console.log("No property found");
-        console.log(JSON.stringify(result));
-        console.log(result);
-    }
+    owner.find().then((result)=>{
+        var x = (JSON.stringify(result));
+        console.log("RESULT.......", JSON.parse(result));
+        console.log("RESULT.......", x.properties)
     })
 
-        }})
+  
+    // owner.find({properties:1}).then((result)=>{
+    //     console.log("RESULT.......", result);
+    // })
+ 
+//    var sql =  "select * from property where address like '%"+place+"%' and date(availfrom) <= "
+//    + mysql.escape(dateFrom)+ " and date(availto) >= " + mysql.escape(dateTo) + " and accomodation >= "+ guest;
+   
+
+//     console.log(sql + " FIRED >>>>>>\n")
+
+//     pool.getConnection(function(err,con){
+//         if(err){
+//             console.log(err);
+//             res.writeHead(400,{
+//                 'Content-Type' : 'text/plain'
+//             })
+//             res.end("Could Not Get Connection Object");
+//         }else{
+
+//     con.query(sql,function(err,result){
+//         if(err) throw err;
+//         if(result!=null){
+
+//         console.log("Property Found");
+//         res.writeHead(200,{
+//             'Content-Type' : 'application/json'
+//         })
+//         res.end(JSON.stringify(result));
+//         console.log(JSON.stringify(result));
+//         console.log(result);
+//     }
+//     else{
+//         console.log("No property found");
+//         console.log(JSON.stringify(result));
+//         console.log(result);
+//     }
+//     })
+
+//         }})
 })
 app.listen(3001);
 console.log("Server Listening on port 3001");
