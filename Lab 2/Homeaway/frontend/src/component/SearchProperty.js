@@ -31,6 +31,9 @@ class SearchProperty extends Component {
         componentDidMount(){
           let imagePreview = '';
           var properties = this.props.location.state.result;
+          var x = this.props.location.state;  // bookiing dates to and date from 
+          console.log(x);
+          console.log(properties);
           var property1 = properties.map((property)=>{
             console.log(property.headline);
               
@@ -56,7 +59,7 @@ class SearchProperty extends Component {
       if (this.state.flag){
         return (<Redirect to={{
           pathname: '/BookProperty',
-          state: { result: this.state.p }
+          state: { result: this.state.p , dateTo : this.props.location.state.dateTo , dateFrom : this.props.location.state.dateFrom }
       }} />)
       }
 

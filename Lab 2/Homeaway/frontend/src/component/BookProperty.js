@@ -28,6 +28,8 @@ class BookProperty extends Component {
 
 
           var properties = this.props.location.state.result;
+          var x = this.props.location.state;
+          console.log(x);
           console.log(properties);
           let imagePreview = [];
           var properties = this.props.location.state.result;

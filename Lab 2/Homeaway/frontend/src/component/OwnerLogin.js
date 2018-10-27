@@ -138,19 +138,6 @@ class OwnerLogin extends Component{
 
       <button type="submit" className="loginbutton">Submit</button>
     </form>
-                {/* <div className="form-group">
-                    <input onChange = {(event) => {this.setState({  email : event.target.value })}} type="email" className="form-control" name=" email" placeholder=" Email"/>
-                </div>
-                <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ password : event.target.value })}} type="password" className="form-control" name="password" placeholder="Password"/>
-                </div>
-
-
-                <span ><a>Forget Password </a></span>
-                <div ><br></br>
-                <button className="loginbutton" onClick = {this.submitLogin} >Log In</button>  
-                </div>  */}
-
 
                 <div className="heading1">
                 <div class="checkbox mb-3">

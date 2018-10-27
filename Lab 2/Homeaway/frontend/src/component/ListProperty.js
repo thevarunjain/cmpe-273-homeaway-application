@@ -6,9 +6,13 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import AddPhotos from './AddPhotos';
+import { connect } from "react-redux";
+import { submitproperty } from "../actions";
+
+import { Field, reduxForm } from "redux-form";
 
 
-class TravellerLogin extends Component{
+class ListProperty extends Component{
        //call the constructor method
        constructor(props){
         //Call the constrictor of Super class i.e The Component
@@ -30,82 +34,52 @@ class TravellerLogin extends Component{
           imageView : '',
           files : []
         };
-       // this.cal = this.cal.bind(this);
     }
  
-    //submit Login handler to send a request to the node backend
-    postproperty = (e) => {
-      var headers = new Headers();
-      const data = {
-        address : this.state.address,
-        headline : this.state.headline,
-        description: this.state.description,
-        propertytype : this.state.propertytype,
-        bedroom: this.state.bedroom,
-        accomodation:this.state.accomodation,
-        bathroom:this.state.bathroom,
-        availfrom : this.state.availfrom,
-        availto : this.state.availto,
-        rate : this.state.rate,
-        minstay : this.state.minstay, 
-        email : cookie.load('cookieOwner')  
-      }
-      const  d  = Object.assign({},this.state);
+   
 
-      //const { files } = this.state;
-      let formData = new FormData();
+  renderField(field) {
+    const { meta: { touched, error } } = field;
+    const className = `form-group ${touched && error ? "has-danger" : ""}`;
 
-      console.log(d.files[0]);
-
-      formData.append('headline', this.state.headline);
-      formData.append('propdata', JSON.stringify(data));
-      console.log(d.files);
-      for(var key in d.files)
-      {
-          formData.append('proppics', d.files[key]);
-      }
-
-
-      console.log(formData.proppics);
-
-
-      console.log(data);
-      //set the with credentials to true
-      axios.defaults.withCredentials = true;
-      //make a post request with the user data
-      axios.post('http://localhost:3001/ListProperty',formData)
-          .then(response => {
-              console.log("Status Code  is : ",response.status);
-              console.log(response.data);
-              if(response.status === 200){
-                  console.log("in 200 ");
-                  this.setState({
-                      authFlag : true
-                  })
-              }
-              else if(response.status === 201){
-                  this.setState({
-                     authFlag : false,
-                  })
-              }
-          });
+    return (
+      <div className={className}>
+        <label>{field.label}</label>
+        <input className="form-control" type={field.type} {...field.input} />
+        <div className="text-help" stlye={{color: "red", textalign : "center"}}>
+          {touched ? error : ""}
+        </div>
+      </div>
+    );
   }
 
+
+
+    onsubmitproperty(values) {
+        values.files = this.state.files;
+        values.email = cookie.load("cookieOwner")
+        //this.props.ownersignup.details will give you owner email
+        console.log(values)
+        this.props.submitproperty(values);
+      }
+
+
     render(){
+        let redirectVar = null;
+        if(this.props.property.status == 200){
+            return(
+                <Redirect to="/OwnerDashboard" />
+              )
+        }
+
         let redirect = null;
         if(!cookie.load('cookieOwner')){
         redirect = <Redirect to= "/OwnerLogin"/>
         }
-
-        let redirectVar = null;
-        if(this.state.authFlag==true){
-          return(
-            <Redirect to="/OwnerDashboard" />
-          )
-        }
        
       const { description, selectedFile } = this.state;
 
+      const { handleSubmit } = this.props;
                           
           return(
         <div id="login-container" className="row" >
@@ -142,23 +116,70 @@ class TravellerLogin extends Component{
                                                         data-target="#submit">Final Step</a></li>
                         </ul>
                     </div>
+    <form onSubmit={handleSubmit(this.onsubmitproperty.bind(this))}>
+
+                    
                     <div className="col-md-6">
                         <div className="tab-content">
                             <div className="tab-pane fade show active" id="location" role="tabpanel">
 
-                            <div class="progress">
-  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+
+                            <div className="progress">
+  <div className="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
   </div>
-                            <div className="form-group">
+                            {/* <div className="form-group">
   <input onChange = {(event) => {this.setState({ address : event.target.value })}} value={this.state.adress} type="text" className="form-control" placeholder="Address" ></input>
-  </div>
+  </div> */}
+
+   <Field
+        label="Address"
+        name="address"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      />
                             </div>
 
                             <div className="tab-pane fade" id="details" role="tabpanel">
-                            <div class="progress">
-  <div class="progress-bar" role="progressbar" style={{width: "25%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div className="progress">
+  <div className="progress-bar" role="progressbar" style={{width: "25%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
-                              <div className="form-group">
+
+      <Field
+        label="Headline"
+        name="headline"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      />
+      <Field
+        label="Description"
+        name="description"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      /><Field
+        label="Property Type"
+        name="propertytype"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      /><Field
+        label="Bedroom"
+        name="bedroom"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      /><Field
+        label="Accomodation"
+        name="accomodation"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      /><Field
+        label="Bathroom"
+        name="bathroom"
+        type="text"
+        component={this.renderField}            // this funtion will return jsx for the field. 
+      />
+
+
+                              {/* <div className="form-group">
   <input onChange = {(event) => {this.setState({ headline : event.target.value })}} value={this.state.headline} type="text" className="form-control"   placeholder="Headline"/>
   </div>
   <br></br>
@@ -176,35 +197,47 @@ class TravellerLogin extends Component{
   </div>
   <div className="form-group">
   <input onChange = {(event) => {this.setState({ bathroom : event.target.value })}} value={this.state.bathroom} type="text" className="form-control"  placeholder="Bathroom"/>
-  </div>
+  </div> */}
                             </div>
 
 
 
                             <div className="tab-pane fade" id="photos" role="tabpanel">
-                            <div class="progress">
-  <div class="progress-bar" role="progressbar" style={{width: "50%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div className="progress">
+  <div className="progress-bar" role="progressbar" style={{width: "50%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>             
-<AddPhotos  setPhotos={files => this.setState({files})}/>
-  
+<AddPhotos  setPhotos={files => this.setState({files})}/> 
                             </div>
 
 
                             <div className="tab-pane fade" id="pricing" role="tabpanel">
-                            <div class="progress">
-  <div class="progress-bar" role="progressbar" style={{width: "75%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div className="progress">
+  <div className="progress-bar" role="progressbar" style={{width: "75%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
  <ul className="nav flex-column">
  <li className="nav-item"><a href="" className="nav-link" data-toggle="pill" data-target="#availability">Available</a></li>
  <div className="row">
 
  <div className="tab-pane fade" id="availability" role="tabpanel">
-  <div className="searchbox">
+
+
+<Field
+label="Avail From "
+name="availfrom"
+type="date"
+component={this.renderField} // this funtion will return jsx for the field.
+/><Field
+label="Avail to"
+name="availto"
+type="date"
+component={this.renderField} // this funtion will return jsx for the field.
+/>
+  {/* <div className="searchbox">
       <input type="date" className="form-control" id="dateTo" placeholder="Available from" onChange ={(e) => { this.setState({availfrom : e.target.value})  }}/>
       </div>
       <div className="searchbox">
       <input type="date" className="form-control" id="dateFrom" placeholder="Available to" onChange ={(e) => { this.setState({availto : e.target.value})  }}/>
-      </div>
+      </div> */}
  </div>
  </div>
 
@@ -212,12 +245,24 @@ class TravellerLogin extends Component{
  <div className="row">
 
  <div className="tab-pane fade" id="rates" role="tabpanel">
-<div className="searchbox"> 
+
+<Field
+label="Rate"
+name="rate"
+type="text"
+component={this.renderField} // this funtion will return jsx for the field.
+/><Field
+label="Min Stay"
+name="minstay"
+type="text"
+component={this.renderField} // this funtion will return jsx for the field.
+/>
+{/* <div className="searchbox"> 
       <input type="text" className="form-control" id="guest" placeholder="Rate" onChange ={(e) => { this.setState({rate : e.target.value})  }}/>
       </div>
       <div className="searchbox"> 
       <input type="text" className="form-control" id="guest" placeholder="Minimum Stay" onChange ={(e) => { this.setState({minstay : e.target.value})  }}/>
-      </div>
+      </div> */}
 </div>
 </div>
 
@@ -228,19 +273,21 @@ class TravellerLogin extends Component{
 
                           </div>
                            <div className="tab-pane fade" id="submit" role="tabpanel">
-                           <div class="progress">
-  <div class="progress-bar" role="progressbar" style={{width: "100%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                           <div className="progress">
+  <div className="progress-bar" role="progressbar" style={{width: "100%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 
 
 
 
                            <div className="searchbox">
-      <button type="submit"  onClick = {this.postproperty} className="btn btn-primary" style={{width: "148px"}}>Post Property</button>
+      <button type="submit"  className="btn btn-primary" style={{width: "148px"}}>Post Property</button>
       </div>
                             </div>
                         </div>
+
                     </div>
+                    </form>
                 </div>
             </div>  
         </div>
@@ -249,5 +296,17 @@ class TravellerLogin extends Component{
           );
     }
 }
- export default TravellerLogin;
+
+function mapStateToProps(state){
+    return{
+        property : state.submitproperty,
+        owner : state.ownersignup
+    };
+  }
+
+export default reduxForm({
+   // validate,
+    form: "NewLoginForm" 
+  })(connect(mapStateToProps, {submitproperty })(ListProperty));
+  
  

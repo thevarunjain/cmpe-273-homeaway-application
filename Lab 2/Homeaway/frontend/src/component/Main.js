@@ -3,7 +3,6 @@ import {Route} from 'react-router-dom';
 import Home from './Home';
 import TravellerLogin from './TravellerLogin';
 import SearchProperty from './SearchProperty';
-import ViewProperty from './ViewProperty';
 import ListProperty from './ListProperty';
 import OwnerLogin from './OwnerLogin';
 import TravellerProfile from './TravellerProfile';
@@ -25,7 +24,6 @@ class Main extends Component {
                 <Route path="/TravellerLogin" component={TravellerLogin} exact/>
                 <Route path="/OwnerLogin" component ={OwnerLogin} exact/>
                 <Route path="/SearchProperty" component ={SearchProperty} exact/>
-                <Route path="/ViewProperty" component ={ViewProperty} exact/>
                 <Route path="/ListProperty" component ={ListProperty} exact/>
                 <Route path="/TravellerTrip" component ={TravellerTrip} exact/>  
                 <Route path="/TravellerProfile" component ={TravellerProfile} exact/>  

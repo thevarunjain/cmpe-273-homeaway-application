@@ -296,9 +296,9 @@ app.post('/ListProperty',upload.array('proppics',5), function(req,res){
         if(result!= undefined){
             console.log("Property Listed !!")
             console.log("........................",result);
-            res.sendStatus(200).json({ success : true, body : "Property listed Successfully"});
+            res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
         }else{
-            console.log("Error in listing property :( ");
+            console.log("Error in listing property :( ",result);
         }
     })
 
@@ -386,32 +386,22 @@ app.post('/TravellerAccountPassword',function(req,res){
                 console.log("\n Password changed Successfully\n",log);
             }
         });
-    
-    
     })
-   // console.log("passhash",passwordHash);
-
-
-
-   
-   
-    
 });
 
 app.post('/BookProperty',function(req,res){
-    console.log("Insidebook properyt Request\n");
+    console.log("Inside book property Request\n");
     var availfrom = req.body.availfrom;
     var availto = req.body.availto;
-    var id = req.body.id;
+    var id = req.body.id; //uuvid
     var email = req.body.email;
     console.log(req.body);
-    console.log(availfrom)
+    console.log(availfrom);
     
    var sql =  "select * from property where id =  " + mysql.escape(id) + " and date(availfrom) <= "
    + availfrom+ " and date(availto) >= " + availto;
 
-//    var sql = "update traveller set password = " +mysql.escape(newpass) + "where email = "+mysql.escape(email) +" and password = " + 
-  //   mysql.escape(oldpass);
+   //get property id 
 
     console.log(sql + " FIRED >>>>>>\n")
     pool.getConnection(function(err,con){
@@ -457,7 +447,6 @@ app.post('/BookProperty',function(req,res){
     });
 }})
 });
-
 
 app.post('/OwnerLogin',function(req,res){
     console.log("Inside Owner Login Post Request\n");
@@ -510,24 +499,17 @@ app.get('/OwnerDashboard', function(req,res){
             res.json({"sucess": true , message : "property found" }).end(result[0].properties);
         }else{
             console.log("No property found");
-            res.writeHead(400,{
-                'Content-Type' : 'application/json'
-            })
-            res.json({"sucess": false , message : "property not found" }).end("property not found" );
+            res.status(400).json({"sucess": false , message : "property not found" }).end("property not found" );
         }
     })
 
 })
 
-
 app.get('/OwnerDashboardBookedBy', function(req,res){
     console.log("IN dashBoard bokerrrrrrrrrrrrrrr " + req.body);
     var email = req.query.id;
     console.log(email);
-  
-
 })
-
 
 app.get('/TravellerTrip', function(req,res){
     console.log("IN trav trip " + req.body);
@@ -566,66 +548,43 @@ app.get('/TravellerTrip', function(req,res){
     }
     })
 }})
-
-
 })
 
-
-
 app.post('/search', function(req,res){
-    console.log("Searching in Database" + req.body);
+    console.log("Searching in Database"); 
 
     var place = req.body.place;
     var dateTo = req.body.dateTo;
     var dateFrom = req.body.dateFrom;
     var guest = req.body.guest;
+    
+    var arr = [ ];
+   console.log(place,dateFrom,dateTo,guest)
+    var q = "properties.accomodation";
+   owner.find({ })
+    .then((result,err)=>{
+        if(result.length != 0 ){
+            console.log("........result",result)
 
-    owner.find().then((result)=>{
-        var x = (JSON.stringify(result));
-        console.log("RESULT.......", JSON.parse(result));
-        console.log("RESULT.......", x.properties)
+        result.map((data)=>{
+            data.properties.map((prop)=>{
+                if(prop.accomodation >= guest && prop.address.includes(place) && prop.availto >= dateTo && prop.availfrom <= dateFrom)
+              arr.push(prop)
+            });
+        })
+             console.log("dddddddddddddddd",arr);
+             console.log("Property Found");
+            res.writeHead(200,{
+                'Content-Type' : 'application/json'
+            })
+            res.end(JSON.stringify(arr));
+        //    console.log(JSON.stringify(arr));
+      }else{
+        console.log(result)
+        console.log("No property found");
+      }
     })
-
-  
-    // owner.find({properties:1}).then((result)=>{
-    //     console.log("RESULT.......", result);
-    // })
- 
-//    var sql =  "select * from property where address like '%"+place+"%' and date(availfrom) <= "
-//    + mysql.escape(dateFrom)+ " and date(availto) >= " + mysql.escape(dateTo) + " and accomodation >= "+ guest;
-   
-
-//     console.log(sql + " FIRED >>>>>>\n")
-
-//     pool.getConnection(function(err,con){
-//         if(err){
-//             console.log(err);
-//             res.writeHead(400,{
-//                 'Content-Type' : 'text/plain'
-//             })
-//             res.end("Could Not Get Connection Object");
-//         }else{
-
-//     con.query(sql,function(err,result){
-//         if(err) throw err;
-//         if(result!=null){
-
-//         console.log("Property Found");
-//         res.writeHead(200,{
-//             'Content-Type' : 'application/json'
-//         })
-//         res.end(JSON.stringify(result));
-//         console.log(JSON.stringify(result));
-//         console.log(result);
-//     }
-//     else{
-//         console.log("No property found");
-//         console.log(JSON.stringify(result));
-//         console.log(result);
-//     }
-//     })
-
-//         }})
 })
+
 app.listen(3001);
 console.log("Server Listening on port 3001");
