@@ -139,7 +139,7 @@ class ListProperty extends Component{
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
                             </div>
-
+ 
                             <div className="tab-pane fade" id="details" role="tabpanel">
                             <div className="progress">
   <div className="progress-bar" role="progressbar" style={{width: "25%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>

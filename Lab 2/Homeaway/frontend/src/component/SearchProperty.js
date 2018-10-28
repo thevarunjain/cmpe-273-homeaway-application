@@ -7,6 +7,10 @@ import {Redirect} from 'react-router';
 import Navbar from './NavBar';
 import SearchBar from './SearchBar';
 
+import { connect } from "react-redux";
+import { submitbookproperty } from "../actions";
+//import { Field, reduxForm } from "redux-form";
+
 class SearchProperty extends Component {
        constructor(props){
            super(props);
@@ -15,61 +19,56 @@ class SearchProperty extends Component {
               flag : '',
               p : ''
            }
+      this.book =  this.book.bind(this);
       }
 
-      book(pro){
+      book(values){
         console.log("in book")
-        console.log(pro);
+        console.log(values);
+        this.props.submitbookproperty(values);
           this.setState({
-            p :pro,
+            p : values,
             flag : true,
-            
           })
-      
         }
 
         componentDidMount(){
           let imagePreview = '';
-          var properties = this.props.location.state.result;
-          var x = this.props.location.state;  // bookiing dates to and date from 
-          console.log(x);
-          console.log(properties);
-          var property1 = properties.map((property)=>{
-            console.log(property.headline);
+          var property1 = this.props.pro.map((property)=>{
+          //  console.log(property.headline);
               
             axios.post('http://localhost:3001/getpropertypicsingle/'+`${property.headline}`)
             .then(response => {
     
-                console.log("Imgae Res : ",response);
+              //  console.log("Imgae Res : ",response);
                 imagePreview = 'data:image/jpg;base64, ' + response.data;
                 this.setState(  
                   { ip : this.state.ip.concat(imagePreview)}              
                 )
-               console.log(this.state.ip)
-        
+            //   console.log(this.state.ip)
             });
-            
           });
         }
-      
- 
+
 
     render(){  
-      
+      console.log(this.state.flag);
+      var red;
       if (this.state.flag){
-        return (<Redirect to={{
-          pathname: '/BookProperty',
-          state: { result: this.state.p , dateTo : this.props.location.state.dateTo , dateFrom : this.props.location.state.dateFrom }
-      }} />)
+
+        red = <Redirect to="/BookProperty" />
       }
 
-      var properties = this.props.location.state.result;
+     // var properties = this.props.pro;
       let i=-1;
-      var property1 = properties.map((property)=>{
+      var property1 = this.props.pro.map((property)=>{
         i = i+1;
-       
+       //console.log("propertt to book", property);
         return (
+          
           <li className="list-group-item" key={Math.random()} onClick= {(e)=>this.book(property)} >
+
+          {red}
           <div className="ima">
           <div className="media-left">
           
@@ -126,5 +125,20 @@ class SearchProperty extends Component {
   }
 }
 
+function mapStateToProps(state){
+  return{
+    searchprop : state.searchproperty,
+    pro : state.searchproperty.pro,
+    //bookproperty : state.bookproperty
+    
+  };
+}
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators({submitlogin},dispatch);
+// }
 
-export default SearchProperty;
+export default connect (mapStateToProps, {submitbookproperty})(SearchProperty);
+//  export default reduxForm({
+//    // validate,
+//     form: "NewLoginForm" 
+//   })(connect(mapStateToProps, {})(SearchProperty));

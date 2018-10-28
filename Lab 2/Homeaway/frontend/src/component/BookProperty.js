@@ -6,6 +6,8 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Navbar from './NavBar';
 import SearchBar from './SearchBar';
+import { connect } from "react-redux";
+
 
 class BookProperty extends Component {
        constructor(props){
@@ -25,14 +27,10 @@ class BookProperty extends Component {
            }
                    }  
            componentWillMount(){
-
-
-          var properties = this.props.location.state.result;
-          var x = this.props.location.state;
-          console.log(x);
-          console.log(properties);
+     
           let imagePreview = [];
-          var properties = this.props.location.state.result;
+          var properties = this.props.bookproperty;
+          console.log(properties);
     
   axios.post('http://localhost:3001/getpropertypic/'+`${properties.headline}`)
   .then(response => {
@@ -44,45 +42,38 @@ class BookProperty extends Component {
       this.setState(  
         { ip : this.state.ip.concat(response.data)}              
       )
-     //console.log(this.state.ip)      
-    // console.log("sssssssssssssssssssssssssssssssssssssssssssssssssss")      
 
   })
   ;
-  
-
 }
 
-           
       book(pro){
-        console.log("in book");
-       // var properties = this.props.location.state.result;
-       const data = {
-          availfrom : pro.availfrom,
-         availto : pro.availto,
-         id : pro.id,
-         email : cookie.load('cookie')
-       }
-       
+  console.log("in book");
+ // var properties = this.props.location.state.result;
+ const data = {
+    availfrom : new Date(this.props.datefrom),
+   availto : new Date(this.props.dateto),
+   id : this.props.bookproperty.propid,
+   email : this.props.bookproperty.ownerid
+ }
+ 
 
-        console.log(pro);
-        axios.post('http://localhost:3001/BookProperty',pro)
-        .then(response => {
-            console.log("Status Code  is : ",response.status);
-            console.log(response.data);
-            if(response.status === 200){
-                    console.log('Changed saved successfully');
-                    this.setState({
-                     booked : true
-                    })
-            }else{
-                console.log('Changed failed !!! ');
+ /// console.log(pro);
+  axios.post('http://localhost:3001/BookProperty',data)
+  .then(response => {
+      console.log("Status Code  is : ",response.status);
+      console.log(response.data);
+      if(response.status === 200){
+              console.log('Changed saved successfully');
+              this.setState({
+               booked : true
+              })
+      }else{
+          console.log('Changed failed !!! ');
 
-            }
-        });
-        }
-
-
+      }
+  });
+  }
 
     render(){  
 
@@ -95,9 +86,13 @@ class BookProperty extends Component {
       redirectbook = <Redirect to= "/TravellerTrip"/>
       }
 
-    var properties = this.props.location.state.result;
-    
-    var dt = new Date(properties.availfrom);
+  //  var properties = this.props.location.state.result;
+    var properties = this.props.bookproperty;
+    // console.log(this.props.datefrom);
+    // var st = this.props.datefrom;
+    // var dttt = new Date(st);
+    // console.log(dttt);
+    var dt = new Date(new Date(this.props.datefrom));
         console.log(dt);
        var d1 = dt.getDate();
        console.log(d1);
@@ -106,14 +101,14 @@ class BookProperty extends Component {
        var d3 = dt.getFullYear();
        console.log(d3);
     
-      var dt1 = new Date(properties.availto);
-      console.log(dt);
+      var dt1 = new Date(new Date(this.props.dateto));
+      console.log(dt1);
       var d4 = dt1.getDate();
-      console.log(d1);
+      console.log(d4);
       var d5 = dt1.getMonth(); 
-      console.log(d2);
+      console.log(d5);
       var d6 = dt1.getFullYear();
-      console.log(d3);
+      console.log(d6);
 
   
         
@@ -125,7 +120,7 @@ class BookProperty extends Component {
       {redirectVar}
       {redirectbook}
         <Navbar />
-        <SearchBar />
+        {/* <SearchBar /> */}
 
       <div className="container-fluid" style={{padding:"10px"}}>  
       <div class="row">
@@ -228,7 +223,7 @@ class BookProperty extends Component {
             Total Amount
             </div>
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            {properties.rate}
+            {(Number(properties.rate)*(d4-d1+1))}
             </div>
             </div>
             <div className="row" style={{border: "1px solid gainsboro", alignContent:"center"}}>
@@ -258,6 +253,17 @@ class BookProperty extends Component {
 
     }
 }
+function mapStateToProps(state){
+  return{
+    bookproperty : state.bookproperty,
+     datefrom : state.searchproperty.datefrom,
+     dateto : state.searchproperty.dateto,
+     accomodation : state.searchproperty.accomodation,
+     place : state.searchproperty.place,
+  };
+}
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators({submitlogin},dispatch);
+// }
 
-
-export default BookProperty;
+export default connect (mapStateToProps)(BookProperty);

@@ -396,56 +396,56 @@ app.post('/BookProperty',function(req,res){
     var id = req.body.id; //uuvid
     var email = req.body.email;
     console.log(req.body);
-    console.log(availfrom);
+
     
-   var sql =  "select * from property where id =  " + mysql.escape(id) + " and date(availfrom) <= "
-   + availfrom+ " and date(availto) >= " + availto;
+//    var sql =  "select * from property where id =  " + mysql.escape(id) + " and date(availfrom) <= "
+//    + availfrom+ " and date(availto) >= " + availto;
 
-   //get property id 
+//    //get property id 
 
-    console.log(sql + " FIRED >>>>>>\n")
-    pool.getConnection(function(err,con){
-        if(err){
-            console.log(err);
-            res.writeHead(400,{
-                'Content-Type' : 'text/plain'
-            })
-            res.end("Could Not Get Connection Object");
-        }else{
-    con.query(sql,function(err,result){
+//     console.log(sql + " FIRED >>>>>>\n")
+//     pool.getConnection(function(err,con){
+//         if(err){
+//             console.log(err);
+//             res.writeHead(400,{
+//                 'Content-Type' : 'text/plain'
+//             })
+//             res.end("Could Not Get Connection Object");
+//         }else{
+//     con.query(sql,function(err,result){
 
-        if(err){
-        console.log(err);
-        res.end("Sign Up failed")
-        }   
-        else if(result!=null){
+//         if(err){
+//         console.log(err);
+//         res.end("Sign Up failed")
+//         }   
+//         else if(result!=null){
 
-            var sql1 = "insert into booking (id, bookfrom, bookto, email) values ("
-            + "  " +mysql.escape(id)+ " , " 
-            + "  " +mysql.escape(availfrom) + " , " 
-            + "  " +mysql.escape(availto) + " , " 
-            + "  " +mysql.escape(email) + " );" 
+//             var sql1 = "insert into booking (id, bookfrom, bookto, email) values ("
+//             + "  " +mysql.escape(id)+ " , " 
+//             + "  " +mysql.escape(availfrom) + " , " 
+//             + "  " +mysql.escape(availto) + " , " 
+//             + "  " +mysql.escape(email) + " );" 
 
-            console.log(sql1 + " FIRED >>>>>>\n")
-            con.query(sql1,function(err,result){
+//             console.log(sql1 + " FIRED >>>>>>\n")
+//             con.query(sql1,function(err,result){
 
-             if(err){
-             console.log(err);
-             res.end("Sign Up failed")
-              }   
-             else{
-                {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain'
-                    })
-                    res.end("Successfully Booked Property");
-                    console.log("Successfully Booked Property")
-                }
-             }
-        });
-    }
-    });
-}})
+//              if(err){
+//              console.log(err);
+//              res.end("Sign Up failed")
+//               }   
+//              else{
+//                 {
+//                     res.writeHead(200, {
+//                         'Content-Type': 'text/plain'
+//                     })
+//                     res.end("Successfully Booked Property");
+//                     console.log("Successfully Booked Property")
+//                 }
+//              }
+//         });
+//     }
+//     });
+// }})
 });
 
 app.post('/OwnerLogin',function(req,res){
@@ -552,10 +552,11 @@ app.get('/TravellerTrip', function(req,res){
 
 app.post('/search', function(req,res){
     console.log("Searching in Database"); 
+    console.log(req.body); 
 
     var place = req.body.place;
-    var dateTo = req.body.dateTo;
-    var dateFrom = req.body.dateFrom;
+    var dateTo = req.body.dateto;
+    var dateFrom = req.body.datefrom;
     var guest = req.body.guest;
     
     var arr = [ ];

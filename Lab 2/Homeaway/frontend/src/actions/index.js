@@ -4,6 +4,9 @@ export const  SUBMIT_LOGIN = "SUBMIT_LOGIN";
 export const  SUBMIT_SIGNUP = "SUBMIT_SIGNUP";
 export const  SUBMIT_OWNER_LOGIN = "SUBMIT_OWNER_LOGIN";
 export const  SUBMIT_PROPERTY = "SUBMIT_PROPERTY";
+export const  SUBMIT_SEARCH = "SUBMIT_SEARCH";
+export const  SUBMIT_SEARCH_PROPERTY = "SUBMIT_SEARCH_PROPERTY";
+export const  SUBMIT_BOOK_PROPERTY = "SUBMIT_BOOK_PROPERTY";
 
 
 
@@ -72,5 +75,30 @@ export function submitproperty(values) {
   return {
     type: SUBMIT_PROPERTY,
     payload: request,
+  };
+}
+
+
+export function submitsearch(values) {
+  axios.defaults.withCredentials = true;
+
+  const request = axios.post(`${ROOT_URL}/search`, values);
+  console.log(request);
+
+  return {
+    type: SUBMIT_SEARCH,
+    payload: request,
+  };
+}
+//after clicking on property
+export function submitbookproperty(values) {
+  // axios.defaults.withCredentials = true;
+
+  // const request = axios.post(`${ROOT_URL}/search`, values);
+  // console.log(request);
+  
+  return {
+    type: SUBMIT_BOOK_PROPERTY,
+    payload: values,
   };
 }
