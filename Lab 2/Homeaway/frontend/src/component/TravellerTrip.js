@@ -5,6 +5,8 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
+import { connect } from "react-redux";
+import { submittrip } from "../actions";
 
 class TravellerTrip extends Component{
        constructor(props){
@@ -19,13 +21,16 @@ class TravellerTrip extends Component{
 
     //submit Login handler to send a request to the node backend
     componentWillMount() {
-      //  var headers = new Headers();
-        //set the with credentials to true
+
+       // this.props.submittrip(this.props.traveller.details);
+        
+    
+
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.get('http://localhost:3001/TravellerTrip',{
+        axios.get('http://localhost:3001/TravellerTrip',{               //get the booking details
             params: {
-                id : cookie.load('cookie')
+                id : "varunsj18@gmail.com"
               }})
             .then(response => {
                 console.log("Status Code  is : ",response.status);
@@ -33,91 +38,75 @@ class TravellerTrip extends Component{
                 this.setState({
                     prop : this.state.prop.concat(response.data) 
                 });
+                this.state.prop.map((i)=>{
+                    console.log(i)
+                axios.post(`http://localhost:3001/getpropertypicsingle/${i.headline}`)    //get the photo
+                .then(response => {
+                    let imagePreview = '';
+                    console.log("Imgae Res : ",response);
+                         imagePreview = 'data:image/jpg;base64, ' + response.data;
+                         this.setState(  
+                        { 
+                            ip : this.state.ip.concat(imagePreview)}              
+                      )
+                    }); 
+                })
 
-               
+            })
+        }
 
-            });
-            let imagePreview = '';
-            console.log("imagesssssssssssssssss");
-            console.log(this.state.prop);
-
-            axios.post('http://localhost:3001/getpropertypicsingle/'+`Courtyard`)
-            .then(response => {
-    
-                console.log("Imgae Res : ",response);
-                imagePreview = 'data:image/jpg;base64, ' + response.data;
-                this.setState(  
-                  { ip : this.state.ip.concat(imagePreview)}              
-                )
-               console.log(this.state.ip)
-        
-            });
-
-     }
+     
     
 
     render(){
         //redirect based on successful login
+    console.log(this.state.ip);
+    console.log(this.state.prop);
         let redirectVar = null;
         if(!cookie.load('cookie')){
         redirectVar = <Redirect to= "/TravellerLogin"/>
         }
 
         var i;
-var imagePreview = '';
-i=-1;
+//var imagePreview = '';
+        i=-1;
         let property = this.state.prop.map(prop => {
-           i+1;
-
-           
-        var dt = new Date(prop.bookfrom);
-        console.log(dt);
+           i = i+1;  
+    console.log(i);
+                  
+        var dt = new Date(prop.bookedfrom);
        var d1 = dt.getDate();
-       console.log(d1);
        var d2 = dt.getMonth(); 
-       console.log(d2);
        var d3 = dt.getFullYear();
-       console.log(d3);
     
-      var dt1 = new Date(prop.bookto);
-      console.log(dt);
+      var dt1 = new Date(prop.bookedto);
       var d4 = dt1.getDate();
-      console.log(d1);
       var d5 = dt1.getMonth(); 
-      console.log(d2);
       var d6 = dt1.getFullYear();
-      console.log(d3);
 
-            console.log("in prop")
-            console.log(prop);
             return(
                 
           <li className="list-group-item" key={Math.random()} >
           <div className="ima">
           <div className="media-left">
           
-          <img className="media-object" src={this.state.ip} style={{width : "200px", height:"200px"}} />
+          <img className="media-object" src={this.state.ip[i]} style={{width : "200px", height:"200px"}} />
           </div>
           <div className="media-body">
           <div className="media-heading">
-          <div col-md-8>
+          <div className="col-md-8">
           <h3>{prop.headline}</h3>
           </div>
-           <div col-md-8 >
+           <div className="col-md-8" >
            <h4>{prop.description}</h4>          
           </div>
 
-          <div col-md-8 >
+          <div className="col-md-8" >
           Booked from  : {d2}/{d1}/{d3} . 
           Booked to : {d5}/{d4}/{d6}
 
           </div>
           <br></br>
-
-          <div col-md-8 >
-          Cost : {prop.rate}
- 
-          </div>
      
          
           </div>
@@ -152,8 +141,8 @@ i=-1;
         </nav>
 
         </div>
-        <div class="container-fluid">
-         <ul class="nav nav-tabs">
+        <div className="container-fluid">
+         <ul className="nav nav-tabs">
              <li><Link to="/TravellerTrip">My Trips</Link></li>
              <li><Link to="/TravellerProfile">Profile</Link></li>
              <li><Link to="/TravellerAccount">Account</Link></li>
@@ -174,4 +163,14 @@ i=-1;
         );
     }
 }
- export default TravellerTrip;
+
+function mapStateToProps(state){
+    return{
+        traveller : state.login,
+        trip : state.trip
+    };
+  }
+
+  
+  export default connect (mapStateToProps, {submittrip})(TravellerTrip);
+//export default TravellerTrip;

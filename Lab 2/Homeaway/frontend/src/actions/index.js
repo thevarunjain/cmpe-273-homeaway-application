@@ -7,8 +7,7 @@ export const  SUBMIT_PROPERTY = "SUBMIT_PROPERTY";
 export const  SUBMIT_SEARCH = "SUBMIT_SEARCH";
 export const  SUBMIT_SEARCH_PROPERTY = "SUBMIT_SEARCH_PROPERTY";
 export const  SUBMIT_BOOK_PROPERTY = "SUBMIT_BOOK_PROPERTY";
-
-
+export const  SUBMIT_TRIP = "SUBMIT_TRIP";
 
 
 const ROOT_URL = "http://localhost:3001";
@@ -90,6 +89,9 @@ export function submitsearch(values) {
     payload: request,
   };
 }
+
+
+
 //after clicking on property
 export function submitbookproperty(values) {
   // axios.defaults.withCredentials = true;
@@ -100,5 +102,23 @@ export function submitbookproperty(values) {
   return {
     type: SUBMIT_BOOK_PROPERTY,
     payload: values,
+  };
+}
+
+
+
+export function submittrip(values) {
+  axios.defaults.withCredentials = true;
+console.log(values)
+  const request = axios.get('http://localhost:3001/TravellerTrip',{               //get the booking details
+  params: {
+      id : "varunsj18@gmail.com"
+    }})
+ // const request = axios.post(`${ROOT_URL}/search`, values);
+  console.log(request);
+
+  return {
+    type: SUBMIT_TRIP,
+    payload: request,
   };
 }

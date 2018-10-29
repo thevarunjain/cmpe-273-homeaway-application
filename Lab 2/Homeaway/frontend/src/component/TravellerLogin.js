@@ -15,12 +15,12 @@ class TravellerLogin extends Component{
   renderField(field) {
     const { meta: { touched, error } } = field;
     const className = `form-group ${touched && error ? "has-danger" : ""}`;
-
+  //  const style = touched && error ? 'borderColor = "red"' : "";
     return (
-      <div className={className}>
-        <label>{field.label}</label>
-        <input className="form-control" type={field.type} {...field.input} />
-        <div className="text-help" stlye={{color: "red", textalign : "center"}}>
+      <div className={className} >
+        {/* //<label>{field.label}</label> */}
+        <input className="form-control" type={field.type} {...field.input} placeholder = {field.label}/>
+        <div className="text-help" style={{color: "red", textAlign : "center", padding : "5px", fontWeight : "bold" }}>
           {touched ? error : ""}
         </div>
       </div>

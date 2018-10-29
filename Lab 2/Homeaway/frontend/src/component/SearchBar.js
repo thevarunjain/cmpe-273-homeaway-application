@@ -66,7 +66,7 @@ class SearchBar extends Component {
     if(!cookie.load('cookie')){
     redirectVar = <Redirect to= "/TravellerLogin"/>
     }
-    console.log(this.props.searchprop)
+    //console.log(this.props.searchprop)
     if(this.props.searchprop.status == 200){
       return(
           <Redirect to="/SearchProperty" />

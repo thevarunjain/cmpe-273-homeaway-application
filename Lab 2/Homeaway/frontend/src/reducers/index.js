@@ -7,9 +7,10 @@ import submitpropertyReducer from "./reducer_submitproperty"
 import searchbarReducer from "./reducer_search";
 import searchpropertyReducer from "./reducer_searchproperty";
 import bookpropertyReducer from "./reducers_bookproperty";
-
+import tripReducer from './reducer_trip';
 
 const rootReducer = combineReducers({
+  trip : tripReducer,
   bookproperty :bookpropertyReducer,
   properties : searchpropertyReducer,
   searchproperty : searchbarReducer,

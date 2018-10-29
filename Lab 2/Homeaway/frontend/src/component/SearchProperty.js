@@ -65,6 +65,16 @@ class SearchProperty extends Component {
         i = i+1;
        //console.log("propertt to book", property);
         return (
+<div>
+{/* <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item"><a class="page-link" href="www.google.com ">Previous</a></li>
+    <li class="page-item"><a class="page-link" href="#" >1</a></li>
+    <li class="page-item"><a class="page-link" href="#" >2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+  </ul>
+</nav> */}
           
           <li className="list-group-item" key={Math.random()} onClick= {(e)=>this.book(property)} >
 
@@ -99,6 +109,8 @@ class SearchProperty extends Component {
           </div>
           </div>
           </li>
+</div>
+
         );
          
       }) 

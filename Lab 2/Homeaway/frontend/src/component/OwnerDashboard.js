@@ -29,7 +29,7 @@ class OwnerDashboard extends Component {
             minstay : '',   
             selectedFile: '',
             imageView : '',
-booked : ''
+            booked : ''
           };
           
            
@@ -65,8 +65,7 @@ booked : ''
                     rate : response.data[0].rate,
                     minstay : response.data[0].minstay,
                     email : response.data[0].email,
-                    //append email 
-                    //and call in the state 
+         
                 
                 });
                 console.log("In Home");

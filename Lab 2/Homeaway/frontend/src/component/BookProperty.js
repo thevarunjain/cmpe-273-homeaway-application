@@ -50,11 +50,14 @@ class BookProperty extends Component {
       book(pro){
   console.log("in book");
  // var properties = this.props.location.state.result;
+
  const data = {
-    availfrom : new Date(this.props.datefrom),
+   availfrom : new Date(this.props.datefrom),
    availto : new Date(this.props.dateto),
    id : this.props.bookproperty.propid,
-   email : this.props.bookproperty.ownerid
+   owneremail : this.props.bookproperty.ownerid,
+   travelleremail : this.props.traveller.details,
+   headline : this.props.bookproperty.headline
  }
  
 
@@ -255,6 +258,7 @@ class BookProperty extends Component {
 }
 function mapStateToProps(state){
   return{
+    traveller : state.login,
     bookproperty : state.bookproperty,
      datefrom : state.searchproperty.datefrom,
      dateto : state.searchproperty.dateto,

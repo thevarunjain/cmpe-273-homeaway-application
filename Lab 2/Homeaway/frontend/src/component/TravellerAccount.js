@@ -24,7 +24,7 @@ class TravellerAccount extends Component{
 
     //submit Login handler to send a request to the node backend
     changeEmail = (e) => {
-        var headers = new Headers();
+       // var headers = new Headers();
         const data = {
             newemail : this.state.newemail,
             oldemail : cookie.load('cookie')
@@ -52,7 +52,7 @@ class TravellerAccount extends Component{
     }
 
     changePass = (e) => {
-        var headers = new Headers();
+       // var headers = new Headers();
         if(this.state.newpass1 != this.state.newpass2){
             console.log("Password do not match");
             this.setState({

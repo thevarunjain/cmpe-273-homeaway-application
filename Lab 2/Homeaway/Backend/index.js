@@ -393,59 +393,49 @@ app.post('/BookProperty',function(req,res){
     console.log("Inside book property Request\n");
     var availfrom = req.body.availfrom;
     var availto = req.body.availto;
-    var id = req.body.id; //uuvid
-    var email = req.body.email;
+    var propid = req.body.id; //uuvid
+    var owneremail = req.body.owneremail;
+    var travelleremail = req.body.travelleremail;
+    var headline =  req.body.headline
+    //var travelleremail = "varunsj18@gmail.com";
     console.log(req.body);
 
-    
-//    var sql =  "select * from property where id =  " + mysql.escape(id) + " and date(availfrom) <= "
-//    + availfrom+ " and date(availto) >= " + availto;
+    var property = {                                //to travellers table 
+         bookedfrom : req.body.availfrom,
+         bookedto : req.body.availto,
+         propid : req.body.id, //uuvid
+         owneremail : req.body.owneremail,
+         headline :  req.body.headline
+    }
 
-//    //get property id 
+    var p = {                                       //to owners table 
+        bookedfrom : req.body.availfrom,
+        bookedto : req.body.availto,
+        bookedby : travelleremail
+        // propid : req.body.id, //uuvid
+        // owneremail : req.body.owneremail
+   }
+ 
+    traveller.findOneAndUpdate({email : travelleremail}, {$push : { properties :  property}}).then((result)=>{
+        if(result!= undefined){
+            console.log("Property booked by  !!", travelleremail)
+            console.log("........................",result);
+            res.status(200).json({ success : true, body : "Property booked Successfully"}).end("Booked Sucessfully");
+        }else{
+            console.log("Error in Booking property :( ",result);
+        }
+    })
 
-//     console.log(sql + " FIRED >>>>>>\n")
-//     pool.getConnection(function(err,con){
-//         if(err){
-//             console.log(err);
-//             res.writeHead(400,{
-//                 'Content-Type' : 'text/plain'
-//             })
-//             res.end("Could Not Get Connection Object");
-//         }else{
-//     con.query(sql,function(err,result){
+    owner.findOneAndUpdate({"properties.propid" : propid},{ $push : {"properties.$.booking" : p}}).then((result)=>{
+        if(result!= undefined){
+            console.log("Property Listed !!")
+            console.log("........................",result);
+          //  res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
+        }else{
+            console.log("Error in listing property :( ",result);
+        }
+    })
 
-//         if(err){
-//         console.log(err);
-//         res.end("Sign Up failed")
-//         }   
-//         else if(result!=null){
-
-//             var sql1 = "insert into booking (id, bookfrom, bookto, email) values ("
-//             + "  " +mysql.escape(id)+ " , " 
-//             + "  " +mysql.escape(availfrom) + " , " 
-//             + "  " +mysql.escape(availto) + " , " 
-//             + "  " +mysql.escape(email) + " );" 
-
-//             console.log(sql1 + " FIRED >>>>>>\n")
-//             con.query(sql1,function(err,result){
-
-//              if(err){
-//              console.log(err);
-//              res.end("Sign Up failed")
-//               }   
-//              else{
-//                 {
-//                     res.writeHead(200, {
-//                         'Content-Type': 'text/plain'
-//                     })
-//                     res.end("Successfully Booked Property");
-//                     console.log("Successfully Booked Property")
-//                 }
-//              }
-//         });
-//     }
-//     });
-// }})
 });
 
 app.post('/OwnerLogin',function(req,res){
@@ -516,38 +506,34 @@ app.get('/TravellerTrip', function(req,res){
     var email = req.query.id;
     console.log(email);
 
-
- var sql =   "SELECT booking.*, property.address, property.headline, property.description, property.rate " +
-"FROM booking JOIN property ON booking.id = property.id and booking.email = " + mysql.escape(email); 
-
-    console.log(sql + " FIRED >>>>>>\n")
-    pool.getConnection(function(err,con){
-        if(err){
-            console.log(err);
-            res.writeHead(400,{
-                'Content-Type' : 'text/plain'
+    var arr = [ ];
+    traveller.find({email : email}, {properties : 1 ,_id : 0 }).then((result)=>{
+      if(result!= null){
+        result.map((data)=>{
+            data.properties.map((prop)=>{
+                console.log(prop);
+                arr.push(prop)
             })
-            res.end("Could Not Get Connection Object");
+            });
+            console.log(".............",arr);
+            console.log("Property Found");
+           res.writeHead(200,{
+               'Content-Type' : 'application/json'
+           })
+           res.end(JSON.stringify(arr));
         }else{
-    con.query(sql,function(err,result){
-        if(err) throw err;
-        if(result!=null){
-
-        console.log("Property Found");
-        res.writeHead(200,{
-            'Content-Type' : 'application/json'
+            console.log(result)
+            console.log("No property found");
+        }
+        
         })
-        res.end(JSON.stringify(result));
-        console.log(JSON.stringify(result));
-        console.log(result);
-    }
-    else{
-        console.log("No property found");
-        console.log(JSON.stringify(result));
-        console.log(result);
-    }
-    })
-}})
+
+
+
+
+
+
+
 })
 
 app.post('/search', function(req,res){
