@@ -248,6 +248,56 @@ app.get('/TravellerProfile',function(req,res){
 });
 
 
+app.get('/GetMessage',function(req,res){
+    console.log("Inside get Traveller profile route" + req.session);
+    var email = req.query.id;                       // passing id as params in get request 
+    console.log(email);
+
+    traveller.find({email : email},          //conditions
+        "firstname lastname about company country school hometown languages phone gender",   // what to return
+    function(err,result){
+        if(err){
+            console.log(err);
+        }
+        res.end(JSON.stringify(result));
+        console.log(JSON.stringify(result));
+    });
+
+});
+app.post('/PostMessage', function(req,res){
+    console.log("Inside Login Traveller Profile\n");
+    
+    //var email = req.query.id;
+    var email = req.body.email;
+    console.log(email); 
+
+    var email = req.body.email;
+    var message = req.body.message;
+ 
+
+    traveller.updateOne({email: email},{                   //where condition
+    firstname : firstname, 
+    lastname: lastname,
+    about : about,
+    company : company,
+    country : country,
+    school :school,
+    hometown : hometown,
+    languages : languages,
+    gender : gender,
+    phone : phone },{multi:true},
+    function(err,log){
+        if(err) {
+            console.log("Traveller Profile cant update :( ");
+        }else{
+            console.log("Traveller Profile updated !!")
+        }
+
+    });
+
+});
+
+
 app.post('/TravellerProfile', function(req,res){
     console.log("Inside Login Traveller Profile\n");
     

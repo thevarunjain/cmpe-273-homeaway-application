@@ -12,6 +12,8 @@ import TravellerSignUp from './TravellerSignUp';
 import TravellerHomepage from './TravellerHomepage'
 import OwnerDashboard from './OwnerDashboard';
 import BookProperty from './BookProperty';
+import Message from "./Message";
+import TravellerMessage from "./TravellerMessage";
 
 
 //Create a Main Component
@@ -32,6 +34,8 @@ class Main extends Component {
                 <Route path="/TravellerHomepage" component ={TravellerHomepage} exact/>  
                 <Route path="/OwnerDashboard" component ={OwnerDashboard} exact/>  
                 <Route path="/BookProperty" component ={BookProperty} exact/>  
+                <Route path="/Message" component ={Message} exact/>  
+                <Route path="/TravellerMessage" component ={TravellerMessage} exact/>  
             
 
 

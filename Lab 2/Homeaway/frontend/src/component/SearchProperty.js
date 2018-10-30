@@ -16,7 +16,12 @@ class SearchProperty extends Component {
        constructor(props){
            super(props);
            this.state = {
+             searchlocation : "",
+             searchdate : "",
+             searchbedroom : "",
+             searchprice : "",
             currentPage : 1,
+            slidervalue : 0,
              ip :[],
               flag : '',
               p : ''
@@ -35,6 +40,17 @@ class SearchProperty extends Component {
         }
         handlePageChange= page =>{
           this.setState({currentPage : page });
+        }
+
+        updateSearch(e){
+          this.setState({
+            search : e.target.value.substr(0,20)
+          })
+        }
+        updateRange(e){
+          this.setState({
+            slidervalue : e.target.value
+          })
         }
 
         componentDidMount(){
@@ -57,22 +73,29 @@ class SearchProperty extends Component {
 
 
     render(){  
-     // console.log(this.state.flag);
+
+      
+      
+      
       var red;
       if (this.state.flag){
-
         red = <Redirect to="/BookProperty" />
       }
   
-      const prope = paginate(this.props.pro, this.state.currentPage, 5)
+           const prope = paginate(this.props.pro, this.state.currentPage, 5)
+           let filterdProperties = prope.filter(
+            (proper) =>{
+              return proper.headline.indexOf(this.state.search) !== -1 ;
+            }  
+          );
+          let i=-1;
+          var property1 = filterdProperties.map((property)=>{
+           i = i+1;
 
-     // var properties = this.props.pro;
-      let i=-1;
-      var property1 = prope.map((property)=>{
-        i = i+1;
-       //console.log("propertt to book", pro perty);
         return (
-<div>          
+        <div>
+        
+        <div>         
           <li className="list-group-item" key={Math.random()} onClick= {(e)=>this.book(property)} >
 
           {red}
@@ -107,7 +130,8 @@ class SearchProperty extends Component {
           </div>
           </div>
           </li>
-</div>
+          </div>
+        </div>
 
         );
          
@@ -120,6 +144,23 @@ class SearchProperty extends Component {
         <Navbar />
         <SearchBar />
         <div >
+        <div className="col-md-2">
+        <input className="form-control" placeholder="Location" type = "text" value= {this.state.search} onChange={this.updateSearch.bind(this)} /> 
+        </div>
+        <div className="col-md-2">
+        <p className = "priceclass">Price (0 - 5000) : $ {this.state.slidervalue}</p>
+        <input className="slider" placeholder="Price" type="range" name="points" min="0" max="5000" value= {this.state.slidervalue} onChange={this.updateRange.bind(this)} /> 
+        </div> 
+        <div className="col-md-2">
+        <input className="form-control" placeholder="Bedroom"  type="number" min="1" max="10" value= {this.state.search} onChange={this.updateSearch.bind(this)} /> 
+        </div>
+        <div className="col-md-2">
+        <input className="form-control" placeholder="Date" type="date" value= {this.state.search} onChange={this.updateSearch.bind(this)} /> 
+        </div>
+
+        </div>
+
+        <div >
         <Pagination
          pageSize={5}
          itemsCount = {this.props.pro.length}
@@ -127,6 +168,7 @@ class SearchProperty extends Component {
         onPageChange = {this.handlePageChange}/>
 
         </div>
+        
       <div className="container-fluid" style={{ backgroundColor : "#f4f4f4",height : "650px"}}>
       <div style={{margin : "3%", padding: "15px"}}> 
       <ul className="col-md-8 list-group" >

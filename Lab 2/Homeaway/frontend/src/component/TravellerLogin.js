@@ -57,7 +57,6 @@ class TravellerLogin extends Component{
                 </div><br></br>
 
     <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-      
       <Field
         label="Email"
         name="email"

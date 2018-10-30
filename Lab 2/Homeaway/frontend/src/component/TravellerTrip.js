@@ -146,6 +146,8 @@ class TravellerTrip extends Component{
              <li><Link to="/TravellerTrip">My Trips</Link></li>
              <li><Link to="/TravellerProfile">Profile</Link></li>
              <li><Link to="/TravellerAccount">Account</Link></li>
+             <li><Link to="/TravellerMessage">Message</Link></li>
+             
          </ul>
          </div>
         

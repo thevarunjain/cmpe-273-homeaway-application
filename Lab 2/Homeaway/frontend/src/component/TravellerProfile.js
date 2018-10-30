@@ -196,6 +196,8 @@ class TravellerProfile extends Component{
              <li><Link to="/TravellerTrip">My Trips</Link></li>
              <li><Link to={"/TravellerProfile/"+this.state.email}>Profile</Link></li>
              <li><Link to="/TravellerAccount">Account</Link></li>
+             <li><Link to="/TravellerMessage">Message</Link></li>
+
          </ul>
          </div>
 
