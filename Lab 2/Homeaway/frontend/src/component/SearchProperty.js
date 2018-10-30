@@ -6,15 +6,17 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Navbar from './NavBar';
 import SearchBar from './SearchBar';
-
+import Pagination from "./Pagination";
 import { connect } from "react-redux";
 import { submitbookproperty } from "../actions";
+import {paginate} from "../paginate"
 //import { Field, reduxForm } from "redux-form";
 
 class SearchProperty extends Component {
        constructor(props){
            super(props);
            this.state = {
+            currentPage : 1,
              ip :[],
               flag : '',
               p : ''
@@ -30,6 +32,9 @@ class SearchProperty extends Component {
             p : values,
             flag : true,
           })
+        }
+        handlePageChange= page =>{
+          this.setState({currentPage : page });
         }
 
         componentDidMount(){
@@ -52,30 +57,22 @@ class SearchProperty extends Component {
 
 
     render(){  
-      console.log(this.state.flag);
+     // console.log(this.state.flag);
       var red;
       if (this.state.flag){
 
         red = <Redirect to="/BookProperty" />
       }
+  
+      const prope = paginate(this.props.pro, this.state.currentPage, 5)
 
      // var properties = this.props.pro;
       let i=-1;
-      var property1 = this.props.pro.map((property)=>{
+      var property1 = prope.map((property)=>{
         i = i+1;
-       //console.log("propertt to book", property);
+       //console.log("propertt to book", pro perty);
         return (
-<div>
-{/* <nav aria-label="Page navigation example">
-  <ul class="pagination">
-    <li class="page-item"><a class="page-link" href="www.google.com ">Previous</a></li>
-    <li class="page-item"><a class="page-link" href="#" >1</a></li>
-    <li class="page-item"><a class="page-link" href="#" >2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-  </ul>
-</nav> */}
-          
+<div>          
           <li className="list-group-item" key={Math.random()} onClick= {(e)=>this.book(property)} >
 
           {red}
@@ -86,13 +83,14 @@ class SearchProperty extends Component {
           </div>
           <div className="media-body">
           <div className="media-heading">
-          <div col-md-8>
+          <div className="col-md-8">
           <h3>{property.headline}</h3>
           </div>
+          <br></br>
            <div >
            <h4>{property.description}</h4>          
           </div>
-
+          <br></br>
           <div   >
           BA : {property.bathroom} . 
           BR : {property.bedroom}  
@@ -121,15 +119,24 @@ class SearchProperty extends Component {
       <div className ="container-fluid">
         <Navbar />
         <SearchBar />
- 
+        <div >
+        <Pagination
+         pageSize={5}
+         itemsCount = {this.props.pro.length}
+         currentPage = {this.state.currentPage}
+        onPageChange = {this.handlePageChange}/>
+
+        </div>
       <div className="container-fluid" style={{ backgroundColor : "#f4f4f4",height : "650px"}}>
-        <div style={{margin : "3%", padding: "15px"}}> 
+      <div style={{margin : "3%", padding: "15px"}}> 
       <ul className="col-md-8 list-group" >
          {property1}
      </ul> 
      </div>
+
      </div>
      </div>
+    
 
 
     )

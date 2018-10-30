@@ -2,7 +2,8 @@ var kafka = require('kafka-node');
 
 function ConnectionProvider() {
     this.getConsumer = function(topic_name) {
-        
+        console.log("in get consumer");
+        console.log(topic_name);
             this.client = new kafka.Client("localhost:2181");
             this.kafkaConsumerConnection = new kafka.Consumer(this.client,[ { topic: topic_name, partition: 0 }]);
             this.client.on('ready', function () { console.log('client ready!') })

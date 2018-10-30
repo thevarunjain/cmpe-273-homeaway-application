@@ -20,6 +20,8 @@ var crypt = require("./crypt");
 var morgan = require('morgan');
 var jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
+var kafka = require('./kafka/client');
+
 
 //Passport
 var passport = require('passport');
@@ -169,6 +171,25 @@ app.post('/TravellerLogin', function(req,res){
 
         console.log("Email : ",email + " password : ",password);
 
+        // kafka.make_request("post_book",req.body, function(err,results){
+        //     console.log('In Traveller Login');
+        //     console.log(results);
+        //     if (err){
+        //         console.log("Inside err");
+        //         res.json({
+        //             status:"error",`
+        //             msg:"System Error, Try Again." 
+        //         })
+        //     }else{
+        //         console.log("Inside else of traveller login");
+        //             res.json({
+        //                 updatedList:results
+        //             });
+    
+        //             res.end();
+        //         }
+            
+        // });
 
         traveller.find({
             email : email

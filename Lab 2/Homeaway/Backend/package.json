@@ -20,6 +20,7 @@
     "express-session": "^1.15.6",
     "fs": "0.0.1-security",
     "jsonwebtoken": "^8.3.0",
+    "kafka-node": "^3.0.1",
     "mlab": "^1.0.30-beta",
     "mocha": "^5.2.0",
     "mongodb": "^3.1.8",
