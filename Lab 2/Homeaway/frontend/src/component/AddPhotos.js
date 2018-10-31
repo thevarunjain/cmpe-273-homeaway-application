@@ -36,7 +36,7 @@ class AddPhotos extends Component{
 
     render() {
         const previewStyle = {
-            display: 'inline',
+            display: 'inline', 
             width: 10,
             height: 10,
         };
@@ -46,7 +46,7 @@ class AddPhotos extends Component{
         return (
             <div className="app">
                 <Dropzone accept="image/*" onDrop={this.onPreviewDrop} name="propPhotos">
-                    Drop an image, get a preview!
+                    <h4>Click here to add pictures!!!</h4>
                 </Dropzone>
                 <input type="file" className="form-control-file" name="selectedFile" onChange={this.onChoose} />
                 {this.state.files.length > 0 &&

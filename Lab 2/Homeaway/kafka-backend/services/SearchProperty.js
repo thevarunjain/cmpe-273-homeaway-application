@@ -3,17 +3,18 @@ var { owner } = require("../../Backend/models/owner");
 require("../../Backend/Database/mongoose");
     
 function handle_request(msg, callback){
-console.log("Insearch handle request of kafka")
+console.log("In Search handle request")
     var arr = [ ];
-    console.log(msg);
+    console.log("Data from Node....\n",msg);
+
     var dateTo = new Date(msg.dateto);
     var dateFrom = new Date(msg.datefrom);
-    console.log(msg.place,dateFrom,dateTo,msg.guest)
-    // var q = "properties.accomodation";
+    console.log("Searching property for",msg.place,dateFrom,dateTo,msg.guest)
+
     owner.find({ })
      .then((result,err)=>{
          if(result.length != 0 ){
-             console.log("........result",result)
+            // console.log("........result",result)
  
              result.map((data)=>{
                 data.properties.map((prop)=>{
@@ -25,12 +26,11 @@ console.log("Insearch handle request of kafka")
                     }
                 });
             })
-              console.log(arr);
-              console.log("Property Found");
-                callback(null,arr)      // data to be sent backwards
+            console.log("Property Found >>>>>>\n\n",arr);
+            callback(null,arr)      // data to be sent backwards
        }else{
          console.log(result)
-         callback(null,"No prop find")
+         callback(null,"No property found")
          console.log("No property found");
        }
      }).catch(e => {
