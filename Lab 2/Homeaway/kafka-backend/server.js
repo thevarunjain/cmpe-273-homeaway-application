@@ -1,7 +1,8 @@
 var connection =  new require('./kafka/Connection');
 //topics files
 //var signin = require('./services/signin.js');
-var Books = require('./services/books.js');
+var SearchProperty = require('./services/SearchProperty');
+var TravellerTrip = require('./services/TravellerTrip');
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -34,7 +35,7 @@ function handleTopicRequest(topic_name,fname){
         
     });
 }
-// Add your TOPICs here
-//first argument is topic name
-//second argument is a function that will handle this topic request
-handleTopicRequest("post_book",Books)
+
+handleTopicRequest("search_property",SearchProperty);
+handleTopicRequest("traveller_trip",TravellerTrip);
+

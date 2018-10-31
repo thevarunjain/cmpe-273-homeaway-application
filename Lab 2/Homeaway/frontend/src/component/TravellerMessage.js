@@ -34,7 +34,7 @@ class TravellerAccount extends Component{
         return(
         
         <div className="container-fluid">
-        {redirectVar}
+        {/* {redirectVar} */}
         <div id="login-container1" className="row" >
         <div className ="container-fluid1">
         <nav className ="navbar navbar-expand-sm fixed-top navbar-light">

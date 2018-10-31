@@ -85,7 +85,8 @@ class SearchProperty extends Component {
            const prope = paginate(this.props.pro, this.state.currentPage, 5)
            let filterdProperties = prope.filter(
             (proper) =>{
-              return proper.headline.indexOf(this.state.search) !== -1 ;
+              return proper.headline.indexOf(this.state.search) !== -1 &&
+                     proper.headline.indexOf(this.state.search) !== -1 ;
             }  
           );
           let i=-1;

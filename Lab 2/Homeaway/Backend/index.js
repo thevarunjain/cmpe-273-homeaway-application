@@ -23,6 +23,7 @@ const uuidv4 = require('uuid/v4');
 var kafka = require('./kafka/client');
 
 
+// app.use("/search", require("./Routes/Search"))
 //Passport
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
@@ -171,25 +172,7 @@ app.post('/TravellerLogin', function(req,res){
 
         console.log("Email : ",email + " password : ",password);
 
-        // kafka.make_request("post_book",req.body, function(err,results){
-        //     console.log('In Traveller Login');
-        //     console.log(results);
-        //     if (err){
-        //         console.log("Inside err");
-        //         res.json({
-        //             status:"error",`
-        //             msg:"System Error, Try Again." 
-        //         })
-        //     }else{
-        //         console.log("Inside else of traveller login");
-        //             res.json({
-        //                 updatedList:results
-        //             });
-    
-        //             res.end();
-        //         }
-            
-        // });
+     
 
         traveller.find({
             email : email
@@ -268,12 +251,11 @@ app.post('/PostMessage', function(req,res){
     console.log("Inside Login Traveller Profile\n");
     
     //var email = req.query.id;
-    var email = req.body.email;
-    console.log(email); 
-
-    var email = req.body.email;
+    var fromEmail = req.body.fromEmail;
+    var toEmail = req.body.toEmail;
     var message = req.body.message;
- 
+    console.log(req.body); 
+
 
     traveller.updateOne({email: email},{                   //where condition
     firstname : firstname, 
@@ -577,34 +559,48 @@ app.get('/TravellerTrip', function(req,res){
     var email = req.query.id;
     console.log(email);
 
-    var arr = [ ];
-    traveller.find({email : email}, {properties : 1 ,_id : 0 }).then((result)=>{
-      if(result!= null){
-        result.map((data)=>{
-            data.properties.map((prop)=>{
-                console.log(prop);
-                arr.push(prop)
+    kafka.make_request('traveller_trip',email, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.json({
+                status:"error",
+                msg:"System Error, Try Again."
             })
-            });
-            console.log(".............",arr);
-            console.log("Property Found");
-           res.writeHead(200,{
-               'Content-Type' : 'application/json'
-           })
-           res.end(JSON.stringify(arr));
         }else{
-            console.log(result)
-            console.log("No property found");
-        }
+            console.log("Inside else");
+            res.writeHead(200,{
+                'Content-Type' : 'application/json'
+                })
+                res.end(JSON.stringify(results));
+                // res.end();
+            }
         
-        })
+    });
 
 
-
-
-
-
-
+    // var arr = [ ];
+    // traveller.find({email : email}, {properties : 1 ,_id : 0 }).then((result)=>{
+    //   if(result!= null){
+    //     result.map((data)=>{
+    //         data.properties.map((prop)=>{
+    //             console.log(prop);
+    //             arr.push(prop)
+    //         })
+    //         });
+    //         console.log(".............",arr);
+    //         console.log("Property Found");
+    //        res.writeHead(200,{
+    //            'Content-Type' : 'application/json'
+    //        })
+    //        res.end(JSON.stringify(arr));
+    //     }else{
+    //         console.log(result)
+    //         console.log("No property found");
+    //     }
+        
+    //     })
 })
 
 app.post('/search', function(req,res){
@@ -612,36 +608,65 @@ app.post('/search', function(req,res){
     console.log(req.body); 
 
     var place = req.body.place;
-    var dateTo = req.body.dateto;
-    var dateFrom = req.body.datefrom;
+    var dateTo = new Date(req.body.dateto);
+    var dateFrom = new Date(req.body.datefrom);
     var guest = req.body.guest;
     
-    var arr = [ ];
-   console.log(place,dateFrom,dateTo,guest)
-    var q = "properties.accomodation";
-   owner.find({ })
-    .then((result,err)=>{
-        if(result.length != 0 ){
-            console.log("........result",result)
-
-        result.map((data)=>{
-            data.properties.map((prop)=>{
-                if(prop.accomodation >= guest && prop.address.includes(place) && prop.availto >= dateTo && prop.availfrom <= dateFrom)
-              arr.push(prop)
-            });
-        })
-             console.log("dddddddddddddddd",arr);
-             console.log("Property Found");
+    kafka.make_request('search_property',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.json({
+                status:"error",
+                msg:"System Error, Try Again."
+            })
+        }else{
+            console.log("Inside else");
             res.writeHead(200,{
                 'Content-Type' : 'application/json'
-            })
-            res.end(JSON.stringify(arr));
-        //    console.log(JSON.stringify(arr));
-      }else{
-        console.log(result)
-        console.log("No property found");
-      }
-    })
+                })
+                res.end(JSON.stringify(results));
+                // res.end();
+            }
+        
+    });
+
+//     var arr = [ ];
+//    console.log(place,dateFrom,dateTo,guest)
+//    console.log(place)
+//     place = place.toLowerCase();
+//     console.log(place)
+    
+//    owner.find({ })
+//     .then((result,err)=>{
+//         if(result.length != 0 ){
+//             console.log("........result",result)
+
+//         result.map((data)=>{
+//             data.properties.map((prop)=>{
+//                var to = new Date(prop.availto);
+//                var from = new Date(prop.availfrom)
+//                 if(prop.accomodation >= guest && prop.address.toLowerCase().includes(place.toLowerCase()) && to >= dateTo && from <= dateFrom){
+//                     console.log(prop.headline, from , to);
+
+//                     arr.push(prop)
+//                 }
+
+//             });
+//         })
+//              console.log("dddddddddddddddd",arr);
+//              console.log("Property Found");
+//             res.writeHead(200,{
+//                 'Content-Type' : 'application/json'
+//             })
+//             res.end(JSON.stringify(arr));
+//         //    console.log(JSON.stringify(arr));
+//       }else{
+//         console.log(result)
+//         console.log("No property found");
+//       }
+//     })
 })
 
 app.listen(3001);
