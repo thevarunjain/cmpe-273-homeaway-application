@@ -22,8 +22,6 @@ var jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 var kafka = require('./kafka/client');
 
-
-// app.use("/search", require("./Routes/Search"))
 //Passport
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
@@ -36,9 +34,6 @@ app.use(passport.initialize());
 
 // Bring in defined Passport Strategy
 require('./passport')(passport);
-
-
-
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -106,19 +101,19 @@ app.use(function(req, res, next) {
 app.get('/', function(req,res){
     console.log("Inside Root Folder");
     res.end("Connected")
-    
 });
 
 
+
 app.post('/ProfilePicture', uploadpic.single('selectedFile'), (req, res) => {
-        //console.log("Req : ",req);
+        console.log("Inside Post profile picture");
         console.log("Res : ",res.file);
         console.log("REq Desc: ", req.body.email);
         res.send();
     });
 
 app.post('/GetProfilePicture/:file(*)',(req, res) => {
-      console.log("Inside get profile pic file");
+      console.log("Inside Get profile picture ");
       var file = req.params.file;
       console.log(file);
       var fileLocation = path.join(__dirname + '/uploads/profile',file);
@@ -129,7 +124,7 @@ app.post('/GetProfilePicture/:file(*)',(req, res) => {
     });
 
 app.post('/getpropertypic/:file(*)',(req, res) => {
-        console.log("Inside get property pic");
+        console.log("Inside Get property picture");
         var file = req.params.file;
         var fileLocation = path.join(__dirname + '/uploads/property/' + file );
         var base64img = [];
@@ -145,7 +140,7 @@ app.post('/getpropertypic/:file(*)',(req, res) => {
 
     });
 app.post('/getpropertypicsingle/:file(*)',(req, res) => {
-        console.log("Inside get profile pic");
+        console.log("Inside Get Property pic Single");
         var file = req.params.file;
         console.log(file);
         var fileLocation = path.join(__dirname + '/uploads/property/' + file );
@@ -163,88 +158,91 @@ app.post('/getpropertypicsingle/:file(*)',(req, res) => {
 
     });
 
-   
+   //For Traveller Routes 
+app.use(require("../Backend/Routes/Traveller"));
+app.use(require("../Backend/Routes/Owner"));
+app.use(require("../Backend/Routes/Property"));
 
-app.post('/TravellerLogin', function(req,res){
-        console.log("Inside Login Post Request\n");
-        var email = req.body.email;
-        var password = req.body.password;
+// app.post('/TravellerLogin', function(req,res){
+//         console.log("Inside Login Post Request\n");
+//         var email = req.body.email;
+//         var password = req.body.password;
 
-        console.log("Email : ",email + " password : ",password);
+//         console.log("Email : ",email + " password : ",password);
 
-        traveller.find({
-            email : email
-        }).then((docs) => {
-            console.log(".................",docs)
+//         traveller.find({
+//             email : email
+//         }).then((docs) => {
+//             console.log(".................",docs)
 
-            if(docs.length!=0){
-            var user = {                    // for creating JWT token
-                id: docs.id,
-                email: docs.email,
-            };
+//             if(docs.length!=0){
+//             var user = {                    // for creating JWT token
+//                 id: docs.id,
+//                 email: docs.email,
+//             };
             
-            crypt.compareHash(req.body.password, docs[0].passwordHash, function (err, isMatch) {
-                console.log(isMatch,err)
-                console.log(req.body.password, docs[0].passwordHash)
+//             crypt.compareHash(req.body.password, docs[0].passwordHash, function (err, isMatch) {
+//                 console.log(isMatch,err)
+//                 console.log(req.body.password, docs[0].passwordHash)
 
-                if (isMatch && !err) {
-                    //Create token if the password matched and no error was thrown
-                    var token = jwt.sign(user, "Lamborghini", {
-                        expiresIn: 10080 // in seconds
-                    });
-                    res.value = docs;
-                    res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
-                   res.status(200).json({success: true, token: 'JWT' + token });
-                } else {
-                    res.status(401).json({
-                        success: false,
-                        message: 'Authentication failed. Passwords did not match.'
-                    });
-                    console.log('Password did not match');
-                    console.log(err);
-                }
-            });
-        }else{
-            console.log("Authentication failed. User not found.");
-            res.status(401).json({success: false, message: 'Authentication failed....User doesnot exist'});
-        }
-    })
-});
+//                 if (isMatch && !err) {
+//                     //Create token if the password matched and no error was thrown
+//                     var token = jwt.sign(user, "Lamborghini", {
+//                         expiresIn: 10080 // in seconds
+//                     });
+//                     res.value = docs;
+//                     res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+//                    res.status(200).json({success: true, token: 'JWT' + token });
+//                 } else {
+//                     res.status(401).json({
+//                         success: false,
+//                         message: 'Authentication failed. Passwords did not match.'
+//                     });
+//                     console.log('Password did not match');
+//                     console.log(err);
+//                 }
+//             });
+//         }else{
+//             console.log("Authentication failed. User not found.");
+//             res.status(401).json({success: false, message: 'Authentication failed....User doesnot exist'});
+//         }
+//     })
+// });
 
-app.get('/TravellerProfile',function(req,res){
-    console.log("Inside get Traveller profile route" + req.session);
-    var email = req.query.id;                       // passing id as params in get request 
-    console.log(email);
+// app.get('/TravellerProfile',function(req,res){
+//     console.log("Inside get Traveller profile route" + req.session);
+//     var email = req.query.id;                       // passing id as params in get request 
+//     console.log(email);
 
-    kafka.make_request('traveller_profile',email, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            res.json({
-                status:"error",
-                msg:"System Error, Try Again."
-            })
-        }else{
-            console.log("\nProfile for user " + email +" sent to client");
-            res.writeHead(200,{
-                'Content-Type' : 'application/json'
-                })
-                res.end(JSON.stringify(results));
-            }
-    });
+//     kafka.make_request('traveller_profile',email, function(err,results){
+//         console.log('Result from Kafka Backend\n', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             res.json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             })
+//         }else{
+//             console.log("\nProfile for user " + email +" sent to client");
+//             res.writeHead(200,{
+//                 'Content-Type' : 'application/json'
+//                 })
+//                 res.end(JSON.stringify(results));
+//             }
+//     });
 
 
-    // traveller.find({email : email},          //conditions
-    //     "firstname lastname about company country school hometown languages phone gender",   // what to return
-    // function(err,result){
-    //     if(err){
-    //         console.log(err);
-    //     }
-    //     res.end(JSON.stringify(result));
-    //     console.log(JSON.stringify(result));
-    // });
+//     // traveller.find({email : email},          //conditions
+//     //     "firstname lastname about company country school hometown languages phone gender",   // what to return
+//     // function(err,result){
+//     //     if(err){
+//     //         console.log(err);
+//     //     }
+//     //     res.end(JSON.stringify(result));
+//     //     console.log(JSON.stringify(result));
+//     // });
 
-});
+// });
 
 
 app.get('/GetMessage',function(req,res){
@@ -296,80 +294,80 @@ app.post('/PostMessage', function(req,res){
 });
 
 
-app.post('/TravellerProfile', function(req,res){
-    console.log("Inside Posting Traveller Profile\n");
-    var email = req.body.email;
-    console.log(email); 
+// app.post('/TravellerProfile', function(req,res){
+//     console.log("Inside Posting Traveller Profile\n");
+//     var email = req.body.email;
+//     console.log(email); 
 
-    kafka.make_request('traveller_profile_post',req.body, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            res.json({
-                status:"error",
-                msg:"System Error, Try Again."
-            })
-        }else{
-            console.log("\nProfile for user " + email +" sent to client");
-            res.writeHead(200,{
-                'Content-Type' : 'application/json'
-                })
-                res.end(JSON.stringify(results));
-            }
-    });
+//     kafka.make_request('traveller_profile_post',req.body, function(err,results){
+//         console.log('Result from Kafka Backend\n', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             res.json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             })
+//         }else{
+//             console.log("\nProfile for user " + email +" sent to client");
+//             res.writeHead(200,{
+//                 'Content-Type' : 'application/json'
+//                 })
+//                 res.end(JSON.stringify(results));
+//             }
+//     });
 
-    // var firstname = req.body.firstname;
-    // var lastname = req.body.lastname;
-    // var about = req.body.about;
-    // var company = req.body.company;
-    // var country = req.body.country;
-    // var school = req.body.school;
-    // var hometown = req.body.hometown;
-    // var languages = req.body.languages;
-    // var gender = req.body.gender;
-    // var phone = req.body.phone;
+//     // var firstname = req.body.firstname;
+//     // var lastname = req.body.lastname;
+//     // var about = req.body.about;
+//     // var company = req.body.company;
+//     // var country = req.body.country;
+//     // var school = req.body.school;
+//     // var hometown = req.body.hometown;
+//     // var languages = req.body.languages;
+//     // var gender = req.body.gender;
+//     // var phone = req.body.phone;
 
-    // traveller.updateOne({email: email},{                   //where condition
-    // firstname : firstname, 
-    // lastname: lastname,
-    // about : about,
-    // company : company,
-    // country : country,
-    // school :school,
-    // hometown : hometown,
-    // languages : languages,
-    // gender : gender,
-    // phone : phone },{multi:true},
-    // function(err,log){
-    //     if(err) {
-    //         console.log("Traveller Profile cant update :( ");
-    //     }else{
-    //         console.log("Traveller Profile updated !!")
-    //     }
+//     // traveller.updateOne({email: email},{                   //where condition
+//     // firstname : firstname, 
+//     // lastname: lastname,
+//     // about : about,
+//     // company : company,
+//     // country : country,
+//     // school :school,
+//     // hometown : hometown,
+//     // languages : languages,
+//     // gender : gender,
+//     // phone : phone },{multi:true},
+//     // function(err,log){
+//     //     if(err) {
+//     //         console.log("Traveller Profile cant update :( ");
+//     //     }else{
+//     //         console.log("Traveller Profile updated !!")
+//     //     }
 
-    // });
+//     // });
 
-});
+// });
 
 
-app.post('/ListProperty',upload.array('proppics',5), function(req,res){
-    console.log("Inside List property\n");
-    var reqdata = JSON.parse(req.body.propdata);
+// app.post('/ListProperty',upload.array('proppics',5), function(req,res){
+//     console.log("Inside List property\n");
+//     var reqdata = JSON.parse(req.body.propdata);
     
 
-    kafka.make_request('list_property',reqdata, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            res.json({
-                status:"error",
-                msg:"System Error, Try Again."
-            })
-        }else{
-            console.log("\nProperty Posted ...\n\n",results);
-            res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
-            }
-    });
+//     kafka.make_request('list_property',reqdata, function(err,results){
+//         console.log('Result from Kafka Backend\n', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             res.json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             })
+//         }else{
+//             console.log("\nProperty Posted ...\n\n",results);
+//             res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
+//             }
+//     });
 
 
 
@@ -406,378 +404,378 @@ app.post('/ListProperty',upload.array('proppics',5), function(req,res){
 
 
 
-});
+//});
 
-app.post('/TravellerSignUp',function(req,res){
-    console.log("Inside Traveller Sign up Request\n");
-
-
-    kafka.make_request('traveller_sign_up',req.body, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            console.log("Error in signing up");
-            res.sendStatus(400).json({
-                status:"error",
-                msg:"System Error, Try Again."
-            }).end();
-        }else{
-            console.log("\n Traveller created with email :- ", req.body.email);
-           // res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.sendStatus(200).end(JSON.stringify(results));
-            }
-    });
-
-    // var firstname = req.body.firstname;
-    // var lastname = req.body.lastname;
-    // var email = req.body.email;
-    // var password = req.body.password;
-
-    // var passwordHash;
-    // crypt.createHash(password, function (hash) {
-    //     passwordHash = hash;
-
-    //     console.log("Email : ",email + "\n Password : ",password+"\n Hash Value : "+ passwordHash + "\nFirst Name : ", firstname + "\nLast Name : ", lastname);
-
-    //     new traveller({                // ES6 syntax
-    //          email,
-    //          password,
-    //          firstname,
-    //          lastname,
-    //          passwordHash
-    //     }).save().then((docs)=>{
-    //         console.log("Traveller created : ",docs);
-    //         res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
-    //         res.sendStatus(200).end();
-    //     },(err)=>{
-    //         console.log("Error in signing up");
-    //         res.sendStatus(400).end();
-    //     })
-
-    // });
-});
-
-app.post('/TravellerAccountEmail',function(req,res){
-    console.log("Inside Traveller Email Change Request\n");
-
-    kafka.make_request('traveller_account_email',req.body, function(err,results){
-        console.log('Result from Kafka Backend\n', );
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            console.log("Error in changing email :( ",err);
-            res.status(201).json({success: false, message : ' Email Change Failed...' });
-            res.end("Old Password Incorrect ");
-        }else{
-             console.log("\n Email changed", );
-             console.log("Changed Successfully !!")
-         //  res.cookie('cookie',req.body.newemail,{maxAge: 900000, httpOnly: false, path : '/'});
-             res.status(200).json({success: true, message : 'Changed Successfully' });
-             res.end("Changed Successfully");
-            }
-    });
+// app.post('/TravellerSignUp',function(req,res){
+//     console.log("Inside Traveller Sign up Request\n");
 
 
-    // var oldemail = req.body.oldemail;
-    // var newemail = req.body.newemail;
-
-    // traveller.updateOne({email: oldemail},{email : newemail},{multi:true},function(err,log){
-    //     if(err) {
-    //         console.log("Error in changing email :( ",err);
-    //         res.status(201).json({success: false, message : ' Password Change failed..' });
-    //         res.end("Old Password Incorrect ");
-    //     }else{
-    //         res.cookie('cookie',newemail,{maxAge: 900000, httpOnly: false, path : '/'});
-    //         res.status(200).json({success: true, message : 'Changed Successfully' });
-    //             res.end("Changed Successfully");
-    //         console.log("Changed Successfully !!",log)
-    //     }
-    // });
-
-
-});
-
-
-app.post('/TravellerAccountPassword',function(req,res){
-    console.log("Inside Traveller Password Change Request\n");
- 
-    kafka.make_request('traveller_account_password',req.body, function(err,results){
-        console.log('Result from Kafka Backend\n');
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            console.log("Error in changing password :( ");
-            res.status(201).json({success: false, message : ' Password Change failed..' });
-            res.end("Old Password Incorrect ");
-            
-        }else{
-            console.log("\n Password changed Successfully\n");           
-            res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.status(200).json({success: true, message : ' Password Changed Successfully' });
-            res.end("Password Changed Successfully");
-            }
-    });
-
-    // var oldpass = req.body.oldpass;
-    // var email = req.body.email;
-    // var newpass = req.body.newpass;
-    // crypt.createHash(newpass, function (hash) {
-    //     passwordHash = hash;
-    //     console.log("hash",hash);
-    //     console.log("newpass",newpass);
-
-    //     traveller.updateOne({email: email, password : oldpass},{$set : {password : newpass, passwordHash : hash}},{multi:true},function(err,log){
-    //         if(log.nModified == 0) {
-    //             console.log("Error in changing password :( ",log);
-    //             res.status(201).json({success: false, message : ' Password Change failed..' });
-    //             res.end("Old Password Incorrect ");
-    
-    //         }else{
-    
-    //             res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
-    //             res.status(200).json({success: true, message : ' Password Changed Successfully' });
-    //             res.end("Password Changed Successfully");
-    //             console.log("\n Password changed Successfully\n",log);
-    //         }
-    //     });
-    // })
-});
-
-app.post('/BookProperty',function(req,res){
-     console.log("Inside book property Request\n");
-
-     kafka.make_request('book_property',req.body, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            console.log("Error in Booking property :( ",err);
-            res.sendStatus(400).json({
-                status:"error",
-                msg:"System Error, Try Again."
-            }).end();
-        }else{
-            console.log("Property booked by  !!", req.body.travelleremail)
-            console.log("\n Property Booked ", results);
-             res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
-            }
-    });
-//     var availfrom = req.body.availfrom;
-//     var availto = req.body.availto;
-//     var propid = req.body.id; //uuvid
-//     var owneremail = req.body.owneremail;
-//     var travelleremail = req.body.travelleremail;
-//     var headline =  req.body.headline
-//     //var travelleremail = "varunsj18@gmail.com";
-//     console.log(req.body);
-
-//     var property = {                                //to travellers table 
-//          bookedfrom : req.body.availfrom,
-//          bookedto : req.body.availto,
-//          propid : req.body.id, //uuvid
-//          owneremail : req.body.owneremail,
-//          headline :  req.body.headline
-//     }
-
-//     var p = {                                       //to owners table 
-//         bookedfrom : req.body.availfrom,
-//         bookedto : req.body.availto,
-//         bookedby : travelleremail
-//         // propid : req.body.id, //uuvid
-//         // owneremail : req.body.owneremail
-//    }
- 
-//     traveller.findOneAndUpdate({email : travelleremail}, {$push : { properties :  property}}).then((result)=>{
-//         if(result!= undefined){
-//             console.log("Property booked by  !!", travelleremail)
-//             console.log("........................",result);
-//             res.status(200).json({ success : true, body : "Property booked Successfully"}).end("Booked Sucessfully");
+//     kafka.make_request('traveller_sign_up',req.body, function(err,results){
+//         console.log('Result from Kafka Backend\n', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             console.log("Error in signing up");
+//             res.sendStatus(400).json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             }).end();
 //         }else{
-//             console.log("Error in Booking property :( ",result);
-//         }
-//     })
+//             console.log("\n Traveller created with email :- ", req.body.email);
+//            // res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+//             res.sendStatus(200).end(JSON.stringify(results));
+//             }
+//     });
 
-//     owner.findOneAndUpdate({"properties.propid" : propid},{ $push : {"properties.$.booking" : p}}).then((result)=>{
-//         if(result!= undefined){
-//             console.log("Property Listed !!")
-//             console.log("........................",result);
-//           //  res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
+//     // var firstname = req.body.firstname;
+//     // var lastname = req.body.lastname;
+//     // var email = req.body.email;
+//     // var password = req.body.password;
+
+//     // var passwordHash;
+//     // crypt.createHash(password, function (hash) {
+//     //     passwordHash = hash;
+
+//     //     console.log("Email : ",email + "\n Password : ",password+"\n Hash Value : "+ passwordHash + "\nFirst Name : ", firstname + "\nLast Name : ", lastname);
+
+//     //     new traveller({                // ES6 syntax
+//     //          email,
+//     //          password,
+//     //          firstname,
+//     //          lastname,
+//     //          passwordHash
+//     //     }).save().then((docs)=>{
+//     //         console.log("Traveller created : ",docs);
+//     //         res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+//     //         res.sendStatus(200).end();
+//     //     },(err)=>{
+//     //         console.log("Error in signing up");
+//     //         res.sendStatus(400).end();
+//     //     })
+
+//     // });
+// });
+
+// app.post('/TravellerAccountEmail',function(req,res){
+//     console.log("Inside Traveller Email Change Request\n");
+
+//     kafka.make_request('traveller_account_email',req.body, function(err,results){
+//         console.log('Result from Kafka Backend\n', );
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             console.log("Error in changing email :( ",err);
+//             res.status(201).json({success: false, message : ' Email Change Failed...' });
+//             res.end("Old Password Incorrect ");
 //         }else{
-//             console.log("Error in listing property :( ",result);
-//         }
-//     })
+//              console.log("\n Email changed", );
+//              console.log("Changed Successfully !!")
+//          //  res.cookie('cookie',req.body.newemail,{maxAge: 900000, httpOnly: false, path : '/'});
+//              res.status(200).json({success: true, message : 'Changed Successfully' });
+//              res.end("Changed Successfully");
+//             }
+//     });
 
-});
 
-app.post('/OwnerLogin',function(req,res){
-    console.log("Inside Owner Login Post Request\n");
-    var email = req.body.email;
-    var password = req.body.password;
+//     // var oldemail = req.body.oldemail;
+//     // var newemail = req.body.newemail;
 
-    //check first same id exists, if yes, then 
-    console.log(email);
+//     // traveller.updateOne({email: oldemail},{email : newemail},{multi:true},function(err,log){
+//     //     if(err) {
+//     //         console.log("Error in changing email :( ",err);
+//     //         res.status(201).json({success: false, message : ' Password Change failed..' });
+//     //         res.end("Old Password Incorrect ");
+//     //     }else{
+//     //         res.cookie('cookie',newemail,{maxAge: 900000, httpOnly: false, path : '/'});
+//     //         res.status(200).json({success: true, message : 'Changed Successfully' });
+//     //             res.end("Changed Successfully");
+//     //         console.log("Changed Successfully !!",log)
+//     //     }
+//     // });
 
-    owner.findOne({email : email}).then((result)=>{
-        if(result==null){               //no user with email found 
-            new owner({                // ES6 syntax
-                email,
-                password
-           }).save().then((docs)=>{
-               console.log("Owner created : ",docs);
-               res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
-               res.sendStatus(200).end();
-           },(err)=>{
-               console.log("Error in signing up");
-               res.sendStatus(400).end();
-           })
-        }else{                          //user found, then update password
-            owner.findOneAndUpdate({email : email},{$set : {password : password}}).then((data) => {
-                 // console.log(data);
-                  console.log("Owner found with email : ", email);
-                  res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
-                  res.sendStatus(200).end();
-            
-              })
-        }
+
+// });
+
+
+// app.post('/TravellerAccountPassword',function(req,res){
+//     console.log("Inside Traveller Password Change Request\n");
  
-    });
-});
+//     kafka.make_request('traveller_account_password',req.body, function(err,results){
+//         console.log('Result from Kafka Backend\n');
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             console.log("Error in changing password :( ");
+//             res.status(201).json({success: false, message : ' Password Change failed..' });
+//             res.end("Old Password Incorrect ");
+            
+//         }else{
+//             console.log("\n Password changed Successfully\n");           
+//             res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+//             res.status(200).json({success: true, message : ' Password Changed Successfully' });
+//             res.end("Password Changed Successfully");
+//             }
+//     });
 
-app.get('/OwnerDashboard', function(req,res){
-    console.log("IN dashBoard " + req.body);
-    var email = req.query.id;
-    console.log(email);
+//     // var oldpass = req.body.oldpass;
+//     // var email = req.body.email;
+//     // var newpass = req.body.newpass;
+//     // crypt.createHash(newpass, function (hash) {
+//     //     passwordHash = hash;
+//     //     console.log("hash",hash);
+//     //     console.log("newpass",newpass);
 
-    owner.find({email :email}).then((result)=>{
-        if(result == null){
-        console.log(result);
-      //  console.log(JSON.stringify(result[0].properties));
-        console.log(result[0].properties);
-        console.log("Property Found");
-            res.writeHead(200,{
-                'Content-Type' : 'application/json'
-            })
-            res.json({"sucess": true , message : "property found" }).end(result[0].properties);
-        }else{
-            console.log("No property found");
-            res.status(400).json({"sucess": false , message : "property not found" }).end("property not found" );
-        }
-    })
-
-})
-
-app.get('/OwnerDashboardBookedBy', function(req,res){
-    console.log("IN dashBoard bokerrrrrrrrrrrrrrr " + req.body);
-    var email = req.query.id;
-    console.log(email);
-})
-
-app.get('/TravellerTrip', function(req,res){
-    console.log("IN trav trip " + req.body);
-    var email = req.query.id;
-    console.log(email);
-
-    kafka.make_request('traveller_trip',email, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            res.json({
-                status:"error",
-                msg:"System Error, Try Again."
-            })
-        }else{
-            console.log("\nProperty for user " + email +" sent to client");
-            res.writeHead(200,{
-                'Content-Type' : 'application/json'
-                })
-                res.end(JSON.stringify(results));
-            }
-    });
-
-
-
-    // var arr = [ ];
-    // traveller.find({email : email}, {properties : 1 ,_id : 0 }).then((result)=>{
-    //   if(result!= null){
-    //     result.map((data)=>{
-    //         data.properties.map((prop)=>{
-    //             console.log(prop);
-    //             arr.push(prop)
-    //         })
-    //         });
-    //         console.log(".............",arr);
-    //         console.log("Property Found");
-    //        res.writeHead(200,{
-    //            'Content-Type' : 'application/json'
-    //        })
-    //        res.end(JSON.stringify(arr));
-    //     }else{
-    //         console.log(result)
-    //         console.log("No property found");
-    //     }
-        
-    //     })
-})
-
-app.post('/search', function(req,res){
-    console.log("Searching in Database"); 
-    console.log(req.body); 
-
-    var place = req.body.place;
-    var dateTo = new Date(req.body.dateto);
-    var dateFrom = new Date(req.body.datefrom);
-    var guest = req.body.guest;
+//     //     traveller.updateOne({email: email, password : oldpass},{$set : {password : newpass, passwordHash : hash}},{multi:true},function(err,log){
+//     //         if(log.nModified == 0) {
+//     //             console.log("Error in changing password :( ",log);
+//     //             res.status(201).json({success: false, message : ' Password Change failed..' });
+//     //             res.end("Old Password Incorrect ");
     
-    kafka.make_request('search_property',req.body, function(err,results){
-        console.log('Result from Kafka Backend', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            res.json({
-                status:"error",
-                msg:"System Error, Try Again."
-            })
-        }else{
-            console.log("\nProperties sent to client");
-            res.writeHead(200,{
-                'Content-Type' : 'application/json'
-                })
-                res.end(JSON.stringify(results));
-            }
-    });
-
-//     var arr = [ ];
-//    console.log(place,dateFrom,dateTo,guest)
-//    console.log(place)
-//     place = place.toLowerCase();
-//     console.log(place)
+//     //         }else{
     
-//    owner.find({ })
-//     .then((result,err)=>{
-//         if(result.length != 0 ){
-//             console.log("........result",result)
+//     //             res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+//     //             res.status(200).json({success: true, message : ' Password Changed Successfully' });
+//     //             res.end("Password Changed Successfully");
+//     //             console.log("\n Password changed Successfully\n",log);
+//     //         }
+//     //     });
+//     // })
+// });
 
-//         result.map((data)=>{
-//             data.properties.map((prop)=>{
-//                var to = new Date(prop.availto);
-//                var from = new Date(prop.availfrom)
-//                 if(prop.accomodation >= guest && prop.address.toLowerCase().includes(place.toLowerCase()) && to >= dateTo && from <= dateFrom){
-//                     console.log(prop.headline, from , to);
+// app.post('/BookProperty',function(req,res){
+//      console.log("Inside book property Request\n");
 
-//                     arr.push(prop)
-//                 }
+//      kafka.make_request('book_property',req.body, function(err,results){
+//         console.log('Result from Kafka Backend\n', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             console.log("Error in Booking property :( ",err);
+//             res.sendStatus(400).json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             }).end();
+//         }else{
+//             console.log("Property booked by  !!", req.body.travelleremail)
+//             console.log("\n Property Booked ", results);
+//              res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
+//             }
+//     });
+// //     var availfrom = req.body.availfrom;
+// //     var availto = req.body.availto;
+// //     var propid = req.body.id; //uuvid
+// //     var owneremail = req.body.owneremail;
+// //     var travelleremail = req.body.travelleremail;
+// //     var headline =  req.body.headline
+// //     //var travelleremail = "varunsj18@gmail.com";
+// //     console.log(req.body);
 
-//             });
-//         })
-//              console.log("dddddddddddddddd",arr);
-//              console.log("Property Found");
+// //     var property = {                                //to travellers table 
+// //          bookedfrom : req.body.availfrom,
+// //          bookedto : req.body.availto,
+// //          propid : req.body.id, //uuvid
+// //          owneremail : req.body.owneremail,
+// //          headline :  req.body.headline
+// //     }
+
+// //     var p = {                                       //to owners table 
+// //         bookedfrom : req.body.availfrom,
+// //         bookedto : req.body.availto,
+// //         bookedby : travelleremail
+// //         // propid : req.body.id, //uuvid
+// //         // owneremail : req.body.owneremail
+// //    }
+ 
+// //     traveller.findOneAndUpdate({email : travelleremail}, {$push : { properties :  property}}).then((result)=>{
+// //         if(result!= undefined){
+// //             console.log("Property booked by  !!", travelleremail)
+// //             console.log("........................",result);
+// //             res.status(200).json({ success : true, body : "Property booked Successfully"}).end("Booked Sucessfully");
+// //         }else{
+// //             console.log("Error in Booking property :( ",result);
+// //         }
+// //     })
+
+// //     owner.findOneAndUpdate({"properties.propid" : propid},{ $push : {"properties.$.booking" : p}}).then((result)=>{
+// //         if(result!= undefined){
+// //             console.log("Property Listed !!")
+// //             console.log("........................",result);
+// //           //  res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
+// //         }else{
+// //             console.log("Error in listing property :( ",result);
+// //         }
+// //     })
+
+// });
+
+// app.post('/OwnerLogin',function(req,res){
+//     console.log("Inside Owner Login Post Request\n");
+//     var email = req.body.email;
+//     var password = req.body.password;
+
+//     //check first same id exists, if yes, then 
+//     console.log(email);
+
+//     owner.findOne({email : email}).then((result)=>{
+//         if(result==null){               //no user with email found 
+//             new owner({                // ES6 syntax
+//                 email,
+//                 password
+//            }).save().then((docs)=>{
+//                console.log("Owner created : ",docs);
+//                res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
+//                res.sendStatus(200).end();
+//            },(err)=>{
+//                console.log("Error in signing up");
+//                res.sendStatus(400).end();
+//            })
+//         }else{                          //user found, then update password
+//             owner.findOneAndUpdate({email : email},{$set : {password : password}}).then((data) => {
+//                  // console.log(data);
+//                   console.log("Owner found with email : ", email);
+//                   res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
+//                   res.sendStatus(200).end();
+            
+//               })
+//         }
+ 
+//     });
+// });
+
+// app.get('/OwnerDashboard', function(req,res){
+//     console.log("IN dashBoard " + req.body);
+//     var email = req.query.id;
+//     console.log(email);
+
+//     owner.find({email :email}).then((result)=>{
+//         if(result == null){
+//         console.log(result);
+//       //  console.log(JSON.stringify(result[0].properties));
+//         console.log(result[0].properties);
+//         console.log("Property Found");
 //             res.writeHead(200,{
 //                 'Content-Type' : 'application/json'
 //             })
-//             res.end(JSON.stringify(arr));
-//         //    console.log(JSON.stringify(arr));
-//       }else{
-//         console.log(result)
-//         console.log("No property found");
-//       }
+//             res.json({"sucess": true , message : "property found" }).end(result[0].properties);
+//         }else{
+//             console.log("No property found");
+//             res.status(400).json({"sucess": false , message : "property not found" }).end("property not found" );
+//         }
 //     })
-})
+
+// })
+
+// app.get('/OwnerDashboardBookedBy', function(req,res){
+//     console.log("IN dashBoard bokerrrrrrrrrrrrrrr " + req.body);
+//     var email = req.query.id;
+//     console.log(email);
+// })
+
+// app.get('/TravellerTrip', function(req,res){
+//     console.log("IN trav trip " + req.body);
+//     var email = req.query.id;
+//     console.log(email);
+
+//     kafka.make_request('traveller_trip',email, function(err,results){
+//         console.log('Result from Kafka Backend\n', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             res.json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             })
+//         }else{
+//             console.log("\nProperty for user " + email +" sent to client");
+//             res.writeHead(200,{
+//                 'Content-Type' : 'application/json'
+//                 })
+//                 res.end(JSON.stringify(results));
+//             }
+//     });
+
+
+
+//     // var arr = [ ];
+//     // traveller.find({email : email}, {properties : 1 ,_id : 0 }).then((result)=>{
+//     //   if(result!= null){
+//     //     result.map((data)=>{
+//     //         data.properties.map((prop)=>{
+//     //             console.log(prop);
+//     //             arr.push(prop)
+//     //         })
+//     //         });
+//     //         console.log(".............",arr);
+//     //         console.log("Property Found");
+//     //        res.writeHead(200,{
+//     //            'Content-Type' : 'application/json'
+//     //        })
+//     //        res.end(JSON.stringify(arr));
+//     //     }else{
+//     //         console.log(result)
+//     //         console.log("No property found");
+//     //     }
+        
+//     //     })
+// })
+
+// app.post('/search', function(req,res){
+//     console.log("Searching in Database"); 
+//     console.log(req.body); 
+
+//     var place = req.body.place;
+//     var dateTo = new Date(req.body.dateto);
+//     var dateFrom = new Date(req.body.datefrom);
+//     var guest = req.body.guest;
+    
+//     kafka.make_request('search_property',req.body, function(err,results){
+//         console.log('Result from Kafka Backend', results);
+//         if (err){
+//             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+//             res.json({
+//                 status:"error",
+//                 msg:"System Error, Try Again."
+//             })
+//         }else{
+//             console.log("\nProperties sent to client");
+//             res.writeHead(200,{
+//                 'Content-Type' : 'application/json'
+//                 })
+//                 res.end(JSON.stringify(results));
+//             }
+//     });
+
+// //     var arr = [ ];
+// //    console.log(place,dateFrom,dateTo,guest)
+// //    console.log(place)
+// //     place = place.toLowerCase();
+// //     console.log(place)
+    
+// //    owner.find({ })
+// //     .then((result,err)=>{
+// //         if(result.length != 0 ){
+// //             console.log("........result",result)
+
+// //         result.map((data)=>{
+// //             data.properties.map((prop)=>{
+// //                var to = new Date(prop.availto);
+// //                var from = new Date(prop.availfrom)
+// //                 if(prop.accomodation >= guest && prop.address.toLowerCase().includes(place.toLowerCase()) && to >= dateTo && from <= dateFrom){
+// //                     console.log(prop.headline, from , to);
+
+// //                     arr.push(prop)
+// //                 }
+
+// //             });
+// //         })
+// //              console.log("dddddddddddddddd",arr);
+// //              console.log("Property Found");
+// //             res.writeHead(200,{
+// //                 'Content-Type' : 'application/json'
+// //             })
+// //             res.end(JSON.stringify(arr));
+// //         //    console.log(JSON.stringify(arr));
+// //       }else{
+// //         console.log(result)
+// //         console.log("No property found");
+// //       }
+// //     })
+// })
 
 app.listen(3001);
 console.log("Server Listening on port 3001");
