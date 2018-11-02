@@ -6,6 +6,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import Message from "./Message";
+import Navbarwhite from "../component/Navbarwhite"
 
 class TravellerAccount extends Component{
        constructor(props){
@@ -20,7 +21,12 @@ class TravellerAccount extends Component{
         }
 
         }
-    
+        logout = () => {
+        cookie.remove("cookie")
+            sessionStorage.removeItem("JWT");
+            sessionStorage.removeItem("email");
+            sessionStorage.removeItem("password")
+          }
 
 
 
@@ -36,27 +42,15 @@ class TravellerAccount extends Component{
         <div className="container-fluid">
         {/* {redirectVar} */}
         <div id="login-container1" className="row" >
-        <div className ="container-fluid1">
-        <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
-             <div className="container-fluid">
-               <div className="navbar-header">
-                <a href = "#">  <img src= {require("../image/homeaway_blue.svg")}></img> </a>
-                </div>
-                <span className="blankspace">                            
-                </span>
-                <img  src={require('../image/logoblue.svg')}></img>
-
-                 </div>
-        </nav>
-
-        </div>
+        <Navbarwhite />
 
         <div class="container-fluid">
-         <ul class="nav nav-tabs">
-             <li><Link to="/TravellerTrip">My Trips</Link></li>
-             <li><Link to="/TravellerProfile">Profile</Link></li>
-             <li><Link to="/TravellerAccount">Account</Link></li>
-             <li><Link to="/TravellerMessage">Message</Link></li>
+         <ul class="nav nav-tabs" >
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerTrip">My Trips</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerProfile">Profile</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerAccount">Account</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerMessage">Message</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
              
          </ul>
          </div>

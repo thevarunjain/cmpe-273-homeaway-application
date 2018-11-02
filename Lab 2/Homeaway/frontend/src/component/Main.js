@@ -14,7 +14,7 @@ import OwnerDashboard from './OwnerDashboard';
 import BookProperty from './BookProperty';
 import Message from "./Message";
 import TravellerMessage from "./TravellerMessage";
-
+import OwnerSignUp from "./OwnerSignUp";
 
 //Create a Main Component
 class Main extends Component {
@@ -36,6 +36,7 @@ class Main extends Component {
                 <Route path="/BookProperty" component ={BookProperty} exact/>  
                 <Route path="/Message" component ={Message} exact/>  
                 <Route path="/TravellerMessage" component ={TravellerMessage} exact/>  
+                <Route path="/OwnerSignUp" component ={OwnerSignUp} exact/>  
             
 
 

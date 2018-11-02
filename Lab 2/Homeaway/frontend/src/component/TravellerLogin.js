@@ -8,7 +8,8 @@ import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { submitlogin } from "../actions";
 import { Field, reduxForm } from "redux-form";
-import navbarwhite from "./navbarwhite";
+import Navbarwhite from './Navbarwhite';
+import { readdir } from 'fs';
 
 class TravellerLogin extends Component{
 
@@ -19,7 +20,7 @@ class TravellerLogin extends Component{
     return (
       <div className={className} >
         {/* //<label>{field.label}</label> */}
-        <input className="form-control" type={field.type} {...field.input} placeholder = {field.label}/>
+        <input className="form-control" type={field.type} {...field.input} placeholder = {field.label} required/>
         <div className="text-help" style={{color: "red", textAlign : "center", padding : "5px", fontWeight : "bold" }}>
           {touched ? error : ""}
         </div>
@@ -34,17 +35,29 @@ class TravellerLogin extends Component{
       }
 
     render(){
-    
+        var errBlock = ""; 
         var red;
-        red = this.props.traveller.status == 200 ? <Redirect to='/TravellerHomepage'/>:null;
+        var redirectVar ;
+          // if(sessionStorage.getItem("JWT")!=null || undefined){
+          //   redirectVar = <Redirect to= "/TravellerHomepage"/>
+          // }
+    
+          if(this.props.traveller.status === 200){
+           }
+
+        this.props.traveller.status == 201 ?  errBlock =  <div className="login-err">
+        <h4 style= {{color : "white", textAlign : "center"}}>No user found, SIGN UP</h4>
+        </div> : null;
+
+        red = this.props.traveller.status == 200 ? <Redirect to='/TravellerHomepage'/> : null
         const { handleSubmit } = this.props;
 
         return(    
          <div>
+         {redirectVar}
          {red}
         <div id="login-container" className="row" >
-        
-        <navbarwhite />
+        <Navbarwhite />
         
         <div className="panel-heading">
                     <h1>Log in to HomeAway</h1>
@@ -55,7 +68,8 @@ class TravellerLogin extends Component{
                 <div className="heading1">
                 <p className="heading">Account login</p>
                 </div><br></br>
-
+               {errBlock}
+       
     <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
       <Field
         label="Email"
@@ -86,7 +100,6 @@ class TravellerLogin extends Component{
                 <div >
                 <button className="googlebutton"  > Log in with Google </button>  
                 </div> <br></br>
-   
             </div>
     </div>
         </div>

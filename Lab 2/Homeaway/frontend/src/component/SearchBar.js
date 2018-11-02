@@ -11,6 +11,8 @@ import { connect } from "react-redux";
 import { submitsearch } from "../actions";
 import { Field, reduxForm } from "redux-form";
 
+import { withAlert } from 'react-alert'
+import { Alert } from 'react-alert'
 
 class SearchBar extends Component {
   constructor(props){
@@ -25,36 +27,28 @@ class SearchBar extends Component {
       guest : "",
       passon :""
     }}
+    
 
     
   renderField(field) {
     const { meta: { touched, error } } = field;
-    //const className = `form-group ${touched && error ? "has-danger" : ""}`;
+    const className = `form-group ${touched && error ? "has-danger" : ""}`;
 
-    if(true){
       return (
       <div className="searchbox">
-        <input className="form-control" type={field.type} {...field.input}  placeholder = {field.placeholder} />
-        <div className="text-help" style={{color: "red", textalign : "center"}}>
+        <input className="form-control" type={field.type} {...field.input} required placeholder = {field.placeholder} />
+        <div className="text-help" >
           {touched ? error : ""}
         </div>
       </div>
     );
-  }else{
-    return (
-      <div className="searchbox">
-        <input className="form-control" type={field.type} {...field.input}  placeholder = {field.x} />
-        <div className="text-help" style={{color: "red", textalign : "center"}}>
-          {touched ? error : ""}
-        </div>
-      </div>
-    );
-  }
+  
   }
 
 
 
     search(values) {
+      console.log(values);
         this.props.submitsearch(values);
       }
 
@@ -66,8 +60,13 @@ class SearchBar extends Component {
     if(!cookie.load('cookie')){
     redirectVar = <Redirect to= "/TravellerLogin"/>
     }
-    //console.log(this.props.searchprop)
     if(this.props.searchprop.status == 200){
+      console.log(this.props.searchprop);
+     sessionStorage.setItem("datefrom",this.props.searchprop.datefrom);
+     sessionStorage.setItem("dateto",this.props.searchprop.dateto);
+     sessionStorage.setItem("accomodation",this.props.searchprop.accomodation);
+     sessionStorage.setItem("place", this.props.searchprop.place);
+
       return(
           <Redirect to="/SearchProperty" />
         )
@@ -80,37 +79,31 @@ class SearchBar extends Component {
 <div className="homesearch">
 
   <form className="form-inline" onSubmit={handleSubmit(this.search.bind(this))}>
-     
+        
+   
       <Field
         placeholder = "Las Vegas, CA"
-       // x = {this.state.searchproperty.place}
         name="place"
         type="text"
-      //  className = "form-control"
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
       <Field
         placeholder = "Arrival Date"
-       // x = {this.state.searchproperty.dateto}
+        
         name="datefrom"
         type="date"
-       // className = "form-control"
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
       <Field
         placeholder = "Departure Date"
-     //   x = {this.state.searchproperty.datefrom}
         name="dateto"
         type="date"
-       // className = "form-control"
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
       <Field
         placeholder = "Guest"
-     //   x = {this.state.searchproperty.guest}
         name="guest"
         type="text"
-       // className = "form-control"
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
        <div className="searchbox" >
@@ -126,16 +119,14 @@ class SearchBar extends Component {
   }
 }
 
+
+
 function mapStateToProps(state){
   return{
     searchprop : state.searchproperty
   };
 }
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators({submitlogin},dispatch);
-// }
 
  export default reduxForm({
-   // validate,
     form: "NewLoginForm" 
   })(connect(mapStateToProps, {submitsearch})(SearchBar));

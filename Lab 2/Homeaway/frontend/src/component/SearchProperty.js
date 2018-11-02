@@ -7,6 +7,7 @@ import {Redirect} from 'react-router';
 import Navbar from './NavBar';
 import SearchBar from './SearchBar';
 import Pagination from "./Pagination";
+import { submitsearch } from "../actions";
 import { connect } from "react-redux";
 import { submitbookproperty } from "../actions";
 import {paginate} from "../paginate"
@@ -17,7 +18,8 @@ class SearchProperty extends Component {
            super(props);
            this.state = {
              searchlocation : "",
-             searchdate : "",
+             searchDeparture : "",
+             searchArrival : "",
              searchbedroom : "",
              searchprice : "",
             currentPage : 1,
@@ -28,6 +30,7 @@ class SearchProperty extends Component {
            }
       this.book =  this.book.bind(this);
       }
+
 
       book(values){
         console.log("in book")
@@ -44,7 +47,22 @@ class SearchProperty extends Component {
 
         updateSearch(e){
           this.setState({
-            search : e.target.value.substr(0,20)
+            searchlocation : e.target.value
+          })
+        } 
+        updateSearchBedroom(e){
+          this.setState({
+            searchbedroom : e.target.value
+          })
+        }
+        updateSearchArrival(e){
+          this.setState({
+            searchArrival : e.target.value
+          })
+        }
+        updateSearchDeparture(e){
+          this.setState({
+            searchDeparture : e.target.value
           })
         }
         updateRange(e){
@@ -54,28 +72,64 @@ class SearchProperty extends Component {
         }
 
         componentDidMount(){
+        console.log(this.props.pro)
+
+        if(this.props.pro != null || undefined ){ // state is set 
+          console.log(this.props.pro)
+
           let imagePreview = '';
           var property1 = this.props.pro.map((property)=>{
-          //  console.log(property.headline);
               
             axios.post('http://localhost:3001/getpropertypicsingle/'+`${property.headline}`)
             .then(response => {
-    
-              //  console.log("Imgae Res : ",response);
-                imagePreview = 'data:image/jpg;base64, ' + response.data;
+                    imagePreview = 'data:image/jpg;base64, ' + response.data;
                 this.setState(  
                   { ip : this.state.ip.concat(imagePreview)}              
                 )
-            //   console.log(this.state.ip)
             });
           });
+        }else{            //undefined state is not set , then get from hit action 
+          var values ={};
+          console.log(sessionStorage.getItem('datefrom'))
+          values.datefrom = sessionStorage.getItem('datefrom')
+          values.dateto = sessionStorage.getItem('dateto')
+          values.guest = sessionStorage.getItem('accomodation')
+          values.place = sessionStorage.getItem('place')
+          console.log(values)
+          this.props.submitsearch(values);
+        }
+        }
+        componentWillReceiveProps(){
+          console.log(this.props.pro)
+              if(this.props.pro != null || undefined ){
+                let imagePreview = '';
+                var property1 = this.props.pro.map((property)=>{
+                    
+                  axios.post('http://localhost:3001/getpropertypicsingle/'+`${property.headline}`)
+                  .then(response => {
+                          imagePreview = 'data:image/jpg;base64, ' + response.data;
+                      this.setState(  
+                        { ip : this.state.ip.concat(imagePreview)}              
+                      )
+                  });
+                });
+              }
         }
 
-
     render(){  
-
-      
-      
+        var message ;
+        console.log(this.props.pro)
+     
+        if(this.props.pro == null || undefined){
+          message = "Sorry, No properties found :(";
+        console.log("xxxxxxxxxxxxxxxxxxxxxxx")
+        return(
+          
+          <div className ="App-logo" style={{width: "100px"}}>
+          <img src={require("../image/load.svg") }/>
+          </div>
+        )
+      }
       
       var red;
       if (this.state.flag){
@@ -85,20 +139,26 @@ class SearchProperty extends Component {
            const prope = paginate(this.props.pro, this.state.currentPage, 5)
            let filterdProperties = prope.filter(
             (proper) =>{
-              return proper.headline.indexOf(this.state.search) !== -1 &&
-                     proper.headline.indexOf(this.state.search) !== -1 ;
+              // console.log(new Date(proper.availfrom))
+              // console.log(new Date(proper.availto))
+              // console.log(new Date(this.state.searchArrival))
+
+    
+              return  proper.headline.indexOf(this.state.searchlocation) !== -1 && 
+                      proper.bedroom.indexOf(this.state.searchbedroom) !== -1 
+                     
             }  
           );
           let i=-1;
           var property1 = filterdProperties.map((property)=>{
            i = i+1;
+           console.log(property)
 
-        return (
+        return (        // Single Card 
         <div>
         
         <div>         
           <li className="list-group-item" key={Math.random()} onClick= {(e)=>this.book(property)} >
-
           {red}
           <div className="ima">
           <div className="media-left">
@@ -108,24 +168,26 @@ class SearchProperty extends Component {
           <div className="media-body">
           <div className="media-heading">
           <div className="col-md-8">
-          <h3>{property.headline}</h3>
+          <h3 className = "property-headline">{property.headline}</h3>
           </div>
-          <br></br>
            <div >
-           <h4>{property.description}</h4>          
+           <br></br>
+           <h5>{property.description}</h5>          
           </div>
           <br></br>
-          <div   >
-          BA : {property.bathroom} . 
-          BR : {property.bedroom}  
+          <div>
+          <h5>BA :   {property.bathroom} . </h5>
+          <h5>BR :   {property.bedroom}  </h5>
           </div>
-          <br></br>
 
           <div>
-          Cost : {property.rate} .  
-          Guest : {property.accomodation}    
+          <h5>Cost :   {property.rate} .  </h5>
+          <h5>Guest : {property.accomodation}    </h5>
           </div>
-     
+          <div>
+          <h5>Avail from : {property.availfrom} .  </h5>
+          <h5>Avail to  :  {property.availto}    </h5>
+          </div>
          
           </div>
           </div>
@@ -139,24 +201,33 @@ class SearchProperty extends Component {
       }) 
         
 
-    return(
+    return(       // full page 
    
       <div className ="container-fluid">
         <Navbar />
-        <SearchBar />
+        <div >
+          <SearchBar />
+
+        </div>
+
         <div >
         <div className="col-md-2">
-        <input className="form-control" placeholder="Location" type = "text" value= {this.state.search} onChange={this.updateSearch.bind(this)} /> 
+        <input className="form-control" placeholder="Location" type = "text" value= {this.state.searchlocation} onChange={this.updateSearch.bind(this)} /> 
         </div>
         <div className="col-md-2">
         <p className = "priceclass">Price (0 - 5000) : $ {this.state.slidervalue}</p>
         <input className="slider" placeholder="Price" type="range" name="points" min="0" max="5000" value= {this.state.slidervalue} onChange={this.updateRange.bind(this)} /> 
         </div> 
         <div className="col-md-2">
-        <input className="form-control" placeholder="Bedroom"  type="number" min="1" max="10" value= {this.state.search} onChange={this.updateSearch.bind(this)} /> 
+        <input className="form-control" placeholder="Bedroom"  type="number" min="1" max="10" value= {this.state.searchbedroom} onChange={this.updateSearchBedroom.bind(this)} /> 
         </div>
+        Arrival
         <div className="col-md-2">
-        <input className="form-control" placeholder="Date" type="date" value= {this.state.search} onChange={this.updateSearch.bind(this)} /> 
+         <input className="form-control" placeholder="Arrival" type="date" value= {this.state.searchArrival} onChange={this.updateSearchArrival.bind(this)} /> 
+        </div>
+        Dept
+        <div className="col-md-2">
+        <input className="form-control" placeholder="Departure" type="date" value= {this.state.searchDeparture} onChange={this.updateSearchDeparture.bind(this)} /> 
         </div>
 
         </div>
@@ -168,10 +239,14 @@ class SearchProperty extends Component {
          currentPage = {this.state.currentPage}
         onPageChange = {this.handlePageChange}/>
 
+
+
+
         </div>
-        
       <div className="container-fluid" style={{ backgroundColor : "#f4f4f4",height : "650px"}}>
       <div style={{margin : "3%", padding: "15px"}}> 
+       <h3>{message}</h3>
+
       <ul className="col-md-8 list-group" >
          {property1}
      </ul> 
@@ -195,11 +270,9 @@ function mapStateToProps(state){
     
   };
 }
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators({submitlogin},dispatch);
-// }
 
-export default connect (mapStateToProps, {submitbookproperty})(SearchProperty);
+
+export default connect (mapStateToProps, {submitbookproperty,submitsearch})(SearchProperty);
 //  export default reduxForm({
 //    // validate,
 //     form: "NewLoginForm" 

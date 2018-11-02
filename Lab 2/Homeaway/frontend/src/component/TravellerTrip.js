@@ -7,6 +7,7 @@ import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import { connect } from "react-redux";
 import { submittrip } from "../actions";
+import Navbarwhite from "../component/Navbarwhite"
 
 class TravellerTrip extends Component{
        constructor(props){
@@ -22,15 +23,13 @@ class TravellerTrip extends Component{
     //submit Login handler to send a request to the node backend
     componentWillMount() {
 
-       // this.props.submittrip(this.props.traveller.details);
-        
-    
+       // this.props.submittrip(this.props.traveller.details);    
 
         axios.defaults.withCredentials = true;
         //make a post request with the user data
         axios.get('http://localhost:3001/TravellerTrip',{               //get the booking details
             params: {
-                id : "varunsj18@gmail.com"
+                id : this.props.traveller.details != undefined ? this.props.traveller.details : sessionStorage.getItem("email") 
               }})
             .then(response => {
                 console.log("Status Code  is : ",response.status);
@@ -56,7 +55,12 @@ class TravellerTrip extends Component{
         }
 
      
-    
+        logout = () => {
+        cookie.remove("cookie")
+            sessionStorage.removeItem("JWT");
+            sessionStorage.removeItem("email");
+            sessionStorage.removeItem("password")
+          }
 
     render(){
         //redirect based on successful login
@@ -95,7 +99,7 @@ class TravellerTrip extends Component{
           <div className="media-body">
           <div className="media-heading">
           <div className="col-md-8">
-          <h3>{prop.headline}</h3>
+          <h3 className = "property-headline" >{prop.headline}</h3>
           </div>
            <div className="col-md-8" >
            <h4>{prop.description}</h4>          
@@ -127,27 +131,15 @@ class TravellerTrip extends Component{
         <div className="container-fluid">
         {redirectVar}
         <div id="login-container" className="row" >
-        <div className ="container-fluid1">
-        <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
-             <div className="container-fluid">
-               <div className="navbar-header">
-                <a href = "#">  <img src= {require("../image/homeaway_blue.svg")}></img> </a>
-                </div>
-                <span className="blankspace">                            
-                </span>
-                <img  src={require('../image/logoblue.svg')}></img>
-
-                 </div>
-        </nav>
-
-        </div>
+        <Navbarwhite />
+        
         <div className="container-fluid">
-         <ul className="nav nav-tabs">
-             <li><Link to="/TravellerTrip">My Trips</Link></li>
-             <li><Link to="/TravellerProfile">Profile</Link></li>
-             <li><Link to="/TravellerAccount">Account</Link></li>
-             <li><Link to="/TravellerMessage">Message</Link></li>
-             
+         <ul className="nav nav-tabs" >
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerTrip">My Trips</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerProfile">Profile</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerAccount">Account</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerMessage">Message</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
          </ul>
          </div>
         

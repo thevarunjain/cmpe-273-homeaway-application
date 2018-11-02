@@ -6,7 +6,7 @@ function handle_request(msg, callback){
 console.log("In Search handle request")
     var arr = [ ];
     console.log("Data from Node....\n",msg);
-
+    console.log(msg);
     var dateTo = new Date(msg.dateto);
     var dateFrom = new Date(msg.datefrom);
     console.log("Searching property for",msg.place,dateFrom,dateTo,msg.guest)

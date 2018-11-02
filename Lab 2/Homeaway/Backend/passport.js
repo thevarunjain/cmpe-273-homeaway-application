@@ -8,7 +8,7 @@ var { traveller } = require("./models/traveller");
 // Setup work and export for the JWT passport strategy
 module.exports = function (passport) {
     var opts = {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken("JWT"),
         secretOrKey: "Lamborghini"
     };
 

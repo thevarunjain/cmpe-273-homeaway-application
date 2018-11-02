@@ -11,7 +11,7 @@ import { Field, reduxForm } from "redux-form";
 import Navbarwhite from "../component/Navbarwhite"
 
 
-class TravellerSignUp extends Component{
+class OwnerSignUp extends Component{
    
 renderField(field) {
     const { meta: { touched, error } } = field;
@@ -35,10 +35,10 @@ renderField(field) {
         const { handleSubmit } = this.props;
 
         //redirect based on successful login
-        var redirectVar ;
-        if(sessionStorage.getItem("JWT")!= undefined || null ){
-          redirectVar = <Redirect to= "/TravellerHomepage"/>
-        }
+         let redirectVar = null;
+    //     if(this.props.traveller.status === 200){
+    //     redirectVar = <Redirect to= "/OwnerLogin"/>
+    //    }
 
         return(
         
@@ -49,13 +49,13 @@ renderField(field) {
         
         <div className="panel-heading">
                     <h1>Sign up for HomeAway</h1>
-                    <span>Already have an account  </span><Link to="TravellerLogin"> Log in </Link>
+                    <span>Already have an account  </span><Link to="OwnerLogin"> Log in </Link>
         </div>
         <div className ="form-container">
             <div className="login-form  traveler">
 
                 <div className="heading1">
-                <p className="heading">Account SignUp</p>
+                <p className="heading">Owner Account SignUp</p>
                 </div><br></br>
                 
     
@@ -136,12 +136,12 @@ function validate(values) {
 
 function mapStateToProps(state){
   return{
-    traveller : state.signup
+    owner : state.ownersignup
   };
 }
 
  export default reduxForm({
     validate,
     form: "NewLoginForm" 
-  })(connect(mapStateToProps, { submitsignup })(TravellerSignUp));
+  })(connect(mapStateToProps, { })(OwnerSignUp));
   

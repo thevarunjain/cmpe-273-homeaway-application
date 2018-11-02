@@ -142,11 +142,11 @@ app.use(function(req, res, next) {
                 });
                 console.log('Password did not match');
                 console.log(err);
-            }
+            }   
         });
     }else{
         console.log("Authentication failed. User not found.");
-        res.status(401).json({success: false, message: 'Authentication failed....User doesnot exist'});
+        res.status(201).json({success: false, message: 'Authentication failed....User doesnot exist'});
     }
 })
 });

@@ -15,7 +15,7 @@ var dateFormat = require('dateformat');
 var MongoClient = require("mongodb").MongoClient;
 // var mongoose = require("../Backend/Database/mongoose");
 var { traveller } = require("../models/traveller");
-// var { owner } = require("./models/owner");
+ var { owner } = require("../models/owner");
 var crypt = require("../crypt");
 var morgan = require('morgan');
 var jwt = require('jsonwebtoken');
@@ -25,42 +25,6 @@ var kafka = require('../kafka/client');
 //Passport
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
-
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        console.log(req.body.headline);
-        const dir = `./uploads/property/${req.body.headline}`
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-        }
-        cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-            console.log(file);
-        const newFilename = `${file.originalname}`;
-        cb(null, newFilename);
-    },
-});
-
-const upload = multer({ storage });
-
-const storagepic = multer.diskStorage({
-    destination: (req, file, cb) => {
-        console.log('Request to multer:' );
-        console.log(req.body.email);
-        
-        cb(null, './uploads/profile');
-    },
-    filename: (req, file, cb) => {
-
-        const newFilename = `profile_${req.body.email}.jpg`;
-        cb(null, newFilename);
-    },
-});
-
-const uploadpic = multer({ storage : storagepic });
-
 
 // Log requests to console
 app.use(morgan('dev'));
@@ -138,33 +102,50 @@ router.post('/OwnerLogin',function(req,res){
 });
 
 router.get('/OwnerDashboard', function(req,res){
-    console.log("IN dashBoard " + req.body);
+    console.log("\nIn owner dashBoard\n" + req.body);
     var email = req.query.id;
     console.log(email);
 
-    owner.find({email :email}).then((result)=>{
-        if(result == null){
-        console.log(result);
-      //  console.log(JSON.stringify(result[0].properties));
-        console.log(result[0].properties);
-        console.log("Property Found");
+    
+    kafka.make_request('owner_dashboard',email, function(err,results){
+        console.log('Result from Kafka Backend\n', results);
+        if (err){
+            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+            res.json({
+                status:"error",
+                msg:"NO Property Found."
+            })
+        }else{
+            console.log("\nProperty for user " + email +" sent to client");
             res.writeHead(200,{
                 'Content-Type' : 'application/json'
-            })
-            res.json({"sucess": true , message : "property found" }).end(result[0].properties);
-        }else{
-            console.log("No property found");
-            res.status(400).json({"sucess": false , message : "property not found" }).end("property not found" );
-        }
-    })
+                })
+                res.end(JSON.stringify(results));
+            }
+    });
 
+    //var arr = [];
+
+    //owner.find({email :email},{properties : 1 ,_id : 0 }).then((result)=>{
+    //     if(result != null){
+    //     result.map((data)=>{
+    //         data.properties.map((prop)=>{
+    //             arr.push(prop)
+    //         })
+    //         });
+    //     console.log("\nProperty Found >>>> \n\n",arr);
+    //     console.log("\nProperty for user " + email +" sent to client");
+    //     res.writeHead(200,{
+    //         'Content-Type' : 'application/json'
+    //         })
+    //         res.end(JSON.stringify(arr));
+            
+    //     }else{
+    //         console.log("No property found");
+    //     }
+    // })
 })
 
-router.get('/OwnerDashboardBookedBy', function(req,res){
-    console.log("IN dashBoard bokerrrrrrrrrrrrrrr " + req.body);
-    var email = req.query.id;
-    console.log(email);
-})
 
 
   module.exports = router;

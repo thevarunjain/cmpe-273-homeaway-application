@@ -5,7 +5,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-
+import Navbarwhite from "../component/Navbarwhite"
 
 class TravellerAccount extends Component{
        constructor(props){
@@ -50,6 +50,12 @@ class TravellerAccount extends Component{
                 }
             });
     }
+    logout = () => {
+        cookie.remove("cookie")
+        sessionStorage.removeItem("JWT");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("password");
+      }
 
     changePass = (e) => {
        // var headers = new Headers();
@@ -95,39 +101,30 @@ class TravellerAccount extends Component{
     }
 
     render(){
-        
+        var message = "";
         let redirectVar = null;
         if(!cookie.load('cookie')){
         redirectVar = <Redirect to= "/TravellerLogin"/>
         }
-      
+        while(this.state.newpass1 !== this.state.newpass2){
+            message = <div className="login-err">
+            <h4 style= {{color : "white", textAlign : "center"}}>Password do not match</h4>
+            </div>
+        }
         return(
-        
+            
         <div className="container-fluid">
         {redirectVar}
         <div id="login-container1" className="row" >
-        <div className ="container-fluid1">
-        <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
-             <div className="container-fluid">
-               <div className="navbar-header">
-                <a href = "#">  <img src= {require("../image/homeaway_blue.svg")}></img> </a>
-                </div>
-                <span className="blankspace">                            
-                </span>
-                <img  src={require('../image/logoblue.svg')}></img>
-
-                 </div>
-        </nav>
-
-        </div>
+        <Navbarwhite />
 
         <div class="container-fluid">
-         <ul class="nav nav-tabs">
-             <li><Link to="/TravellerTrip">My Trips</Link></li>
-             <li><Link to="/TravellerProfile">Profile</Link></li>
-             <li><Link to="/TravellerAccount">Account</Link></li>
-             <li><Link to="/TravellerMessage">Message</Link></li>
-
+         <ul class="nav nav-tabs" >
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerTrip">My Trips</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerProfile">Profile</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerAccount">Account</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerMessage">Message</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
          </ul>
          </div>
 
@@ -139,7 +136,7 @@ class TravellerAccount extends Component{
                 </div><br></br>
                 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ newemail : event.target.value })}} type="text" className="form-control"  placeholder="New email address"/>
+                    <input  required onChange = {(event) => {this.setState({ newemail : event.target.value })}} type="text" className="form-control"  placeholder="New email address"/>
                 <div ><br></br>
         
                 <button className="loginbutton" onClick = {this.changeEmail} >Save Changes</button>  
@@ -155,15 +152,15 @@ class TravellerAccount extends Component{
                 </div><br></br>
                 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ oldpass : event.target.value })}} type="password" className="form-control"  placeholder="Current Password"/>
+                    <input required onChange = {(event) => {this.setState({ oldpass : event.target.value })}} type="password" className="form-control"  placeholder="Current Password"/>
                 </div> 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ newpass1 : event.target.value })}} type="password" className="form-control"  placeholder="New Password"/>
+                    <input required onChange = {(event) => {this.setState({ newpass1 : event.target.value })}} type="password" className="form-control"  placeholder="New Password"/>
                 </div> 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ newpass2 : event.target.value })}} type="password    " className="form-control"  placeholder="Confirm Password"/>
+                    <input required onChange = {(event) => {this.setState({ newpass2 : event.target.value })}} type="password" className="form-control"  placeholder="Confirm Password"/>
                 </div>
-              
+                {message}
                 <div >
                 <button className="loginbutton" onClick = {this.changePass} >Save Changes</button>  
                 </div>     

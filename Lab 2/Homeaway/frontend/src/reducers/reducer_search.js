@@ -11,9 +11,10 @@ export default function(state = {}, action) {
   switch (action.type) {
 
     case  SUBMIT_SEARCH :
+    console.log("In submit search of reducer");
     newState = action.payload;
     var holddata = JSON.parse(action.payload.config.data);
-
+    console.log(holddata)
     newState.datefrom = holddata.datefrom;
     newState.dateto = holddata.dateto;
     newState.place = holddata.place;

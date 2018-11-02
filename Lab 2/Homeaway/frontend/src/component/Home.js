@@ -117,6 +117,11 @@ class Home extends Component {
       
        <div >
           <SearchBar />
+        
+          
+       
+         
+
         </div>
 
       </div>

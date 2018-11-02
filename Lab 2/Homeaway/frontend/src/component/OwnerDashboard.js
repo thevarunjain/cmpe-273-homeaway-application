@@ -8,6 +8,9 @@ import TravellerAccount from './TravellerAccount';
 import TravellerTrip from './TravellerTrip';
 import {Redirect} from 'react-router';
 import Navbar from './NavBar';
+import {Link} from 'react-router-dom';
+import Navbarwhite from './Navbarwhite';
+
 
 class OwnerDashboard extends Component {
        constructor(props){
@@ -16,126 +19,92 @@ class OwnerDashboard extends Component {
            this.state = {
             prop : [],
             ip : [],
-            address : '',
-            headline :'',
-            description: '',
-            propertytype : '',
-            bedroom:'',
-            accomodation:'',
-            bathroom:'',
-            availfrom : '',
-            availto : '',
-            rate : '',
-            minstay : '',   
-            selectedFile: '',
-            imageView : '',
             booked : ''
           };
-          
            
        }
+
        componentWillMount(){
         console.log("cookies _ "+cookie.load('cookieOwner'));
-        var email = cookie.load('cookieOwner')
-
-        
-  
-        
+        //var email = cookie.load('cookieOwner')
+        var email = sessionStorage.getItem("Owneremail")
+           axios.defaults.withCredentials = true;
        axios.get('http://localhost:3001/OwnerDashboard',{
             params: {
-              id : email
+              id : email 
             }})
-                .then((response) => {
-                //update the state with the response data
-                console.log(response);
-                console.log(response.data[0]);
-                this.setState({
-
-
-                    prop : this.state.prop.concat(response.data),
-                    address : response.data[0].address,
-                    headline : response.data[0].headline,
-                    description : response.data[0].description,
-                    propertytype : response.data[0].propertytype,
-                    bedroom : response.data[0].bedroom,
-                    accomodation : response.data[0].accomodation,
-                    bathroom : response.data[0].bathroom,
-                    availfrom : response.data[0].availfrom,
-                    availto : response.data[0].availto,
-                    rate : response.data[0].rate,
-                    minstay : response.data[0].minstay,
-                    email : response.data[0].email,
-         
-                
-                });
-                console.log("In Home");
-            });
-            let imagePreview = '';
-            console.log("imagesssssssssssssssss");
-            console.log(this.state.prop);
-
-            axios.post('http://localhost:3001/getpropertypicsingle/'+`Courtyard`)
             .then(response => {
-    
-                console.log("Imgae Res : ",response);
-                imagePreview = 'data:image/jpg;base64, ' + response.data;
-                this.setState(  
-                  { ip : this.state.ip.concat(imagePreview)}              
-                )
-               console.log(this.state.ip)
-        
-            });
-
-
-
-        
-
-
-            axios.get('http://localhost:3001/OwnerDashboardBookedBy',{
-              params: {
-                id : email
-              }})
-                  .then((response) => {
-                  //update the state with the response data
-                  console.log(response);
-                  console.log(response.data[0]);
-                  this.setState({
-                      booked : response.data[0].email,
-                      //append email 
-                      //and call in the state 
-                  
-                  });
-                  console.log(" booked wali route mai ");
+              console.log(response);
+              console.log("Status Code  is : ",response.status);
+              this.setState({
+                  prop : this.state.prop.concat(response.data) 
               });
+              this.state.prop.map((i)=>{
+                  console.log(i)
+              axios.post(`http://localhost:3001/getpropertypicsingle/${i.headline}`)    //get the photo
+              .then(response => {
+                  let imagePreview = '';
+                  console.log("Imgae Res : ",response);
+                       imagePreview = 'data:image/jpg;base64, ' + response.data;
+                       this.setState(  
+                      { 
+                          ip : this.state.ip.concat(imagePreview)}              
+                    )
+                  }); 
+              })
 
+          })
+
+        
        }
+       logout = () => {
+        sessionStorage.removeItem("Owneremail");
+        sessionStorage.removeItem("Ownerpassword");
+      }
       
       
     render(){ 
         
         let redirectVar = null;
-        if(!cookie.load('cookieOwner')){
+        if(!sessionStorage.getItem("Owneremail")){
         redirectVar = <Redirect to= "/OwnerLogin"/>
         }  
+      var i,j;
+      i =-1,j =-1;
+     
+   var property = this.state.prop.map((property)=>{   // extracting property 
+     i =i+1;
 
-      
-   var property = this.state.prop.map((property)=>{
+     if(property.booking !=undefined) // for showing multiple bookings 
+     { property.booking.map((x)=>{
+           j = j+1
+       })}
           return (
             <li className="list-group-item" key={Math.random()}>
             <div className="ima">
             <div className="media-left">
-            <img className="media-object" src={this.state.ip}/>
+            <img className="media-object" style = {{width : "247px"}}src={this.state.ip[i]}/>
             </div>
             <div className="media-body">
             <div className="media-heading">
-            <h3>{property.headline}</h3>
+            <h3 >{property.headline}</h3>
             <h4>{property.description}</h4>
-  
-            BA : {property.bathroom}
+            BA : {property.bathroom} . 
             BR : {property.bedroom}<br></br>
-            Cost : {property.rate}
-            Guest : {property.accomodation}
-            Booked by : {this.state.booked}
+            Cost : {property.rate} . 
+            Guest : {property.accomodation}<br></br><br></br>
+            Booked by : {property.booking != undefined ? property.booking[0].bookedby : "Property Not Booked" }<br></br>
+            Booked from : {property.booking != undefined ?
+             (new Date(property.booking[0].bookedfrom)).getMonth() +" / "+ 
+             (new Date(property.booking[0].bookedfrom)).getDate() +" / "+
+            (new Date(property.booking[0].bookedfrom)).getFullYear() 
+            : "Property Not Booked" }<br></br>
+            Booked to : {property.booking != undefined ?  
+            (new Date(property.booking[0].bookedto)).getMonth() +" / "+ 
+            (new Date(property.booking[0].bookedto)).getDate() +" / "+
+            (new Date(property.booking[0].bookedto)).getFullYear()
+            : "Property Not Booked " }
+
             </div>
             </div>
             </div>
@@ -144,19 +113,24 @@ class OwnerDashboard extends Component {
           })
  
     return(
+        <div> 
+        <Navbarwhite />
       <div className ="container-fluid">
       {redirectVar}
-        <Navbar />
+        <div className="container-fluid">
+         <ul className="nav nav-tabs" >
+             <li style= {{paddingLeft : "11%" }}><Link to="/OwnerDashboard">OwnerDashboard</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
+         </ul>
+         </div>
         <div className ="container-fluid" style={{ backgroundColor : "#f4f4f4",height : "650px"}}>
         <div style={{margin : "3%", padding: "15px"}}>
                 <div className="col-md-1">
                 </div>
-    <h2> Owner DashBoard </h2>
-
                 <div className="col-md-7">
                 <div className="container">  
       <ul className="col-md-8 list-group">
-    {property}
+                     {property}
      </ul> 
      </div>
                 </div>
@@ -166,6 +140,7 @@ class OwnerDashboard extends Component {
          </div>
         </div>
 
+        </div>
 
     )
 

@@ -10,6 +10,7 @@ var TravellerSignUp = require('./services/TravellerSignUp');
 var TravellerAccountEmail = require("./services/TravellerAccountEmail");
 var TravellerAccountPassword = require("./services/TravellerAccountPassword");
 var BookProperty = require("./services/BookProperty")
+var OwnerDashboard = require("./services/OwnerDashboard")
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -51,4 +52,5 @@ handleTopicRequest("traveller_sign_up",TravellerSignUp);
 handleTopicRequest("traveller_account_email",TravellerAccountEmail);
 handleTopicRequest("traveller_account_password",TravellerAccountPassword);
 handleTopicRequest("book_property",BookProperty);
+handleTopicRequest("owner_dashboard",OwnerDashboard);
 

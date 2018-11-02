@@ -34,7 +34,7 @@ class Message extends Component{
         //         });
         // }
 
-
+       
     postMessage = (e) => {
         e.preventDefault();
         const {email, message} = this.state;

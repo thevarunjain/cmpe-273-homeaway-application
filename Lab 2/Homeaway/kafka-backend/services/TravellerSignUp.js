@@ -1,9 +1,7 @@
-
 var { owner } = require("../../Backend/models/owner");
 var { traveller } = require("../../Backend/models/traveller");
 require("../../Backend/Database/mongoose");
 var crypt = require("../../Backend/crypt");
-
     
 function handle_request(msg, callback){
 
@@ -35,7 +33,6 @@ crypt.createHash(password, function (hash) {
     })
 });
 }
-
 exports.handle_request = handle_request;
 
 

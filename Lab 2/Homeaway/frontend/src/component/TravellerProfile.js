@@ -5,7 +5,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-
+import Navbarwhite from "../component/Navbarwhite"
 
 class TravellerProfile extends Component{
        constructor(props){
@@ -31,6 +31,12 @@ class TravellerProfile extends Component{
 
         }
 
+        logout = () => {
+        cookie.remove("cookie")
+            sessionStorage.removeItem("JWT");
+            sessionStorage.removeItem("email");
+            sessionStorage.removeItem("password")
+          }
       
     
         componentDidMount(){
@@ -177,26 +183,15 @@ class TravellerProfile extends Component{
         <div className="container-fluid">
           {redirectVar}
         <div id="login-container1" className="row" >
-        <div className ="container-fluid1">
-        <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
-             <div className="container-fluid">
-               <div className="navbar-header">
-                <Link to="/TravellerHomePage">  <img src= {require("../image/homeaway_blue.svg")}></img> </Link>
-                </div>
-                <span className="blankspace">                            
-                </span>
-                <img  src={require('../image/logoblue.svg')}></img>
+        <Navbarwhite />
 
-                 </div>
-        </nav>
-
-        </div>
         <div className="container-fluid">
-         <ul className="nav nav-tabs">
-             <li><Link to="/TravellerTrip">My Trips</Link></li>
-             <li><Link to={"/TravellerProfile/"+this.state.email}>Profile</Link></li>
-             <li><Link to="/TravellerAccount">Account</Link></li>
-             <li><Link to="/TravellerMessage">Message</Link></li>
+         <ul className="nav nav-tabs" >
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerTrip">My Trips</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to={"/TravellerProfile/"+this.state.email}>Profile</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerAccount">Account</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/TravellerMessage">Message</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
 
          </ul>
          </div>
@@ -243,34 +238,34 @@ class TravellerProfile extends Component{
                 </div><br></br>
                 
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ firstname : event.target.value })}} type="text" className="form-control" value={this.state.firstname} placeholder="First Name"/>
+                    <input required onChange = {(event) => {this.setState({ firstname : event.target.value })}} type="text" className="form-control" value={this.state.firstname} placeholder="First Name"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ lastname : event.target.value })}} type="text" className="form-control"  value={this.state.lastname} placeholder="Last Name"/>
+                    <input required onChange = {(event) => {this.setState({ lastname : event.target.value })}} type="text" className="form-control"  value={this.state.lastname} placeholder="Last Name"/>
                 </div>
                 <div className="form-group">
                     <textarea onChange = {(event) => {this.setState({ about : event.target.value })}} type="text" className="form-control"  value={this.state.about} placeholder="About me"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ country : event.target.value })}} type="text" className="form-control"   value={this.state.country} placeholder="My City, Country"/>
+                    <input required onChange = {(event) => {this.setState({ country : event.target.value })}} type="text" className="form-control"   value={this.state.country} placeholder="My City, Country"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ company : event.target.value })}} type="text" className="form-control"  value={this.state.company} placeholder="Company"/>
+                    <input required onChange = {(event) => {this.setState({ company : event.target.value })}} type="text" className="form-control"  value={this.state.company} placeholder="Company"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ school : event.target.value })}} type="text" className="form-control"  value={this.state.school} placeholder="School"/>
+                    <input required onChange = {(event) => {this.setState({ school : event.target.value })}} type="text" className="form-control"  value={this.state.school} placeholder="School"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ hometown : event.target.value })}} type="text" className="form-control"  value={this.state.hometown} placeholder="Hometown"/>
+                    <input required onChange = {(event) => {this.setState({ hometown : event.target.value })}} type="text" className="form-control"  value={this.state.hometown} placeholder="Hometown"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ languages : event.target.value })}} type="text" className="form-control"  value={this.state.languages} placeholder="Languages"/>
+                    <input required onChange = {(event) => {this.setState({ languages : event.target.value })}} type="text" className="form-control"  value={this.state.languages} placeholder="Languages"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ gender : event.target.value })}} type="text" className="form-control"  value={this.state.gender} placeholder="Gender"/>
+                    <input required onChange = {(event) => {this.setState({ gender : event.target.value })}} type="text" className="form-control"  value={this.state.gender} placeholder="Gender"/>
                 </div>
                 <div className="form-group">
-                    <input onChange = {(event) => {this.setState({ phone : event.target.value })}} type="text" className="form-control" value={this.state.phone}  placeholder="Phone Number "/>
+                    <input required onChange = {(event) => {this.setState({ phone : event.target.value })}} type="text" className="form-control" value={this.state.phone}  placeholder="Phone Number "/>
                 </div>
                 <div ><br></br>
         

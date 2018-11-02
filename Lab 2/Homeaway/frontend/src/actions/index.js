@@ -9,11 +9,13 @@ export const  SUBMIT_SEARCH_PROPERTY = "SUBMIT_SEARCH_PROPERTY";
 export const  SUBMIT_BOOK_PROPERTY = "SUBMIT_BOOK_PROPERTY";
 export const  SUBMIT_TRIP = "SUBMIT_TRIP";
 
+axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("JWT") ? sessionStorage.getItem("JWT") : ""; 
 
 const ROOT_URL = "http://localhost:3001";
 
 export function submitlogin(values) {
   axios.defaults.withCredentials = true;
+  console.log(values);
 
   const request = axios.post(`${ROOT_URL}/TravellerLogin`, values);
   console.log(request);
@@ -79,8 +81,9 @@ export function submitproperty(values) {
 
 
 export function submitsearch(values) {
+  console.log("In submit search of action");
   axios.defaults.withCredentials = true;
-
+console.log(values);
   const request = axios.post(`${ROOT_URL}/search`, values);
   console.log(request);
 

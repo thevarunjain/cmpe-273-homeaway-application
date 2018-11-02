@@ -3,64 +3,25 @@ import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
+import {Link} from 'react-router-dom';
 import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { submitownerlogin } from "../actions";
 import { Field, reduxForm } from "redux-form";
+import navbarwhite from "./Navbarwhite";
+import Navbarwhite from './Navbarwhite';
 
 
 class OwnerLogin extends Component{
-    //    //call the constructor method
-    //    constructor(props){
-    //     //Call the constrictor of Super class i.e The Component
-    //     super(props);
-    //     //maintain the state required for this component
-    //     this.state = {
-    //         email : "",
-    //         password : "",
-    //         authFlag : ""
-    //     }
-    // }
-
-    // submitLogin = (e) => {
-    //     var headers = new Headers();
-    //     const data = {
-    //         email : this.state.email,
-    //         password : this.state.password
-    //     }
-    //     console.log(data);
-    //     //set the with credentials to true
-    //     axios.defaults.withCredentials = true;
-    //     //make a post request with the user data
-    //     axios.post('http://localhost:3001/OwnerLogin',data)
-    //         .then(response => {
-    //             console.log("Status Code  is : ",response.status);
-    //             console.log(response.data);
-    //             if(response.status === 200){
-    //                 this.setState({
-    //                     authFlag : true
-    //                 })
-    //             }
-    //             else{
-    //                 this.setState({
-    //                    authFlag : false,
-    //                    email : "",
-    //                    password : ""
-    //                 })
-                   
-                
-    //             }
-    //         });
-    // }
-
-    renderField(field) {
+  
+  renderField(field) {
         const { meta: { touched, error } } = field;
         const className = `form-group ${touched && error ? "has-danger" : ""}`;
     
         return (
           <div className={className}>
             <label>{field.label}</label>
-            <input className="form-control" type={field.type} {...field.input} />
+            <input className="form-control" type={field.type} {...field.input} required />
             <div className="text-help" stlye={{color: "red", textalign : "center"}}>
               {touched ? error : ""}
             </div>
@@ -77,34 +38,23 @@ class OwnerLogin extends Component{
 
         //redirect based on successful login
         let redirectVar = null;
-        if(this.props.owner.status === 200){
+        // if(this.props.owner.status === 200){
+          if(sessionStorage.getItem("Owneremail")!=null || undefined){
          redirectVar =  <Redirect to='/OwnerDashboard' />
         }
-        if(cookie.load('cookieOwner')){
-            return (
-                <Redirect to='/OwnerDashboard'/>
-            )
-        }
+        // if(cookie.load('cookieOwner')){
+        //     return (
+        //         <Redirect to='/OwnerDashboard'/>
+        //     )
+        // }
         return(
         
         <div>
         {redirectVar}
         
         <div id="login-container-fluid" className="row" style={{backgroundColor: "#f5f5f5", height : "650px"}} >
-        <div className ="container-fluid1">
-        <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
-             <div className="container-fluid">
-               <div className="navbar-header">
-                <a href = "#">  <img src= {require("../image/homeaway_blue.svg")}></img> </a>
-                </div>
-                <span className="blankspace">                            
-                </span>
-                <img  src={require('../image/logoblue.svg')}></img>
+        <Navbarwhite />
 
-                 </div>
-        </nav>
-
-        </div>
 
         <div className="col-md-6">
         <div className="ownerloginimage">
@@ -119,6 +69,7 @@ class OwnerLogin extends Component{
             <div className="login-form  traveler">
                 <div class="heading1">
                 <p className="heading">Owner login</p>
+                <span>Need an account ? </span><Link to="/OwnerSignUp">Sign up</Link>
                 </div><br></br>
     <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
       
