@@ -25,14 +25,15 @@ class TravellerProfile extends Component{
             gender : '',
             phone : '',
             email:'',
-            pic:''
+            pic:'',
+            status : ""
           };
           this.onSubmit = this.onSubmit.bind(this);
 
         }
 
         logout = () => {
-        cookie.remove("cookie")
+            cookie.remove("cookie")
             sessionStorage.removeItem("JWT");
             sessionStorage.removeItem("email");
             sessionStorage.removeItem("password")
@@ -93,6 +94,9 @@ class TravellerProfile extends Component{
                 console.log("Status Code  is : ",response.status);
                 console.log(response.data);
                 if(response.status === 200){
+                    this.setState({
+                        status : 200
+                    })
                         console.log('Changed saved successfully');
                 }else{
                     console.log('Changed failed !!! ');
@@ -155,19 +159,6 @@ class TravellerProfile extends Component{
           });
   
     }
-  /*
-    handleGetPhoto = (e) => {
-        axios.post('http://localhost:3001/GetProfilePicture/'+'profile_.jpg')
-  
-          .then(response => {
-              console.log("Imgae Res : ",response);
-              let imagePreview = 'data:image/jpg;base64, ' + response.data;
-              this.setState({
-                  imageView: imagePreview
-              })
-          });
-    }*/
-      
 
 
     render(){
@@ -175,6 +166,11 @@ class TravellerProfile extends Component{
         let redirectVar = null;
         if(!cookie.load('cookie')){
         redirectVar = <Redirect to= "/TravellerLogin"/>
+        }
+        var message;
+        if(this.state.status == 200){
+           // message = "Changes Saved";
+            alert("Profile Updated Successfully")
         }
 
       const { description, selectedFile } = this.state;
@@ -215,7 +211,7 @@ class TravellerProfile extends Component{
               onChange={this.onChange}
             />
             
-            <button type="submit" className="btn btn-primary">Save Changes</button>
+            <button type="submit" className="btn btn-primary">View</button>
 
           </form>
 
@@ -268,10 +264,9 @@ class TravellerProfile extends Component{
                     <input required onChange = {(event) => {this.setState({ phone : event.target.value })}} type="text" className="form-control" value={this.state.phone}  placeholder="Phone Number "/>
                 </div>
                 <div ><br></br>
-        
+                    {/* <h4 style={{color : "red", align : "center"}}> {message}</h4> */}
                 <button className="loginbutton" onClick = {this.saveChanges} >Save Changes</button>  
                 </div>
-
     
                
 

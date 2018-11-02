@@ -8,8 +8,10 @@ import {Link} from 'react-router-dom';
 import AddPhotos from './AddPhotos';
 import { connect } from "react-redux";
 import { submitproperty } from "../actions";
+import Navbarwhite from './Navbarwhite';
 
 import { Field, reduxForm } from "redux-form";
+import { number } from 'prop-types';
 
 
 class ListProperty extends Component{
@@ -41,11 +43,12 @@ class ListProperty extends Component{
   renderField(field) {
     const { meta: { touched, error } } = field;
     const className = `form-group ${touched && error ? "has-danger" : ""}`;
-
+    var min = field.min
+    var max = field.max
     return (
       <div className={className}>
         <label>{field.label}</label>
-        <input className="form-control" type={field.type} {...field.input} />
+        <input className="form-control" type={field.type} {...field.input} min = {field.type == "number" ? field.min : null} max = {field.type == "number" ? field.max : null} />
         <div className="text-help" stlye={{color: "red", textalign : "center"}}>
           {touched ? error : ""}
         </div>
@@ -58,7 +61,6 @@ class ListProperty extends Component{
     onsubmitproperty(values) {
         values.files = this.state.files;
         values.email = cookie.load("cookieOwner")
-        //this.props.ownersignup.details will give you owner email
         console.log(values)
         this.props.submitproperty(values);
       }
@@ -66,16 +68,12 @@ class ListProperty extends Component{
 
     render(){
         let redirectVar = null;
-        if(this.props.property.status == 200){
+        if(!sessionStorage.getItem("Owneremail")){
             return(
-                <Redirect to="/OwnerDashboard" />
+                <Redirect to="/OwnerLogin" />
               )
         }
 
-        let redirect = null;
-        if(!cookie.load('cookieOwner')){
-        redirect = <Redirect to= "/OwnerLogin"/>
-        }
        
       const { description, selectedFile } = this.state;
 
@@ -83,23 +81,9 @@ class ListProperty extends Component{
                           
           return(
         <div id="login-container" className="row" >
-        {redirect}
-     
+        {/* {redirect} */}
+            <Navbarwhite />
 
-        <div className ="container-fluid1">
-        <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
-             <div className="container-fluid">
-               <div className="navbar-header">
-                <a href = "#">  <img src= {require("../image/homeaway_blue.svg")}></img> </a>
-                </div>
-                <span className="blankspace">                            
-                </span>
-                <img  src={require('../image/logoblue.svg')}></img>
-
-                 </div>
-                 
-        </nav>
-        </div>
         <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-2" style={{padding:"20px", margin:"30px"}}>
@@ -125,12 +109,10 @@ class ListProperty extends Component{
 
 
 
-                            <div className="progress">
+  <div className="progress">
   <div className="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
   </div>
-                            {/* <div className="form-group">
-  <input onChange = {(event) => {this.setState({ address : event.target.value })}} value={this.state.adress} type="text" className="form-control" placeholder="Address" ></input>
-  </div> */}
+                           
 
    <Field
         label="Address"
@@ -139,6 +121,7 @@ class ListProperty extends Component{
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
                             </div>
+
  
                             <div className="tab-pane fade" id="details" role="tabpanel">
                             <div className="progress">
@@ -164,40 +147,26 @@ class ListProperty extends Component{
       /><Field
         label="Bedroom"
         name="bedroom"
-        type="text"
+        type="number"
+        min = "0"
+        max = "10"
         component={this.renderField}            // this funtion will return jsx for the field. 
       /><Field
         label="Accomodation"
         name="accomodation"
-        type="text"
+        type="number"
+        min = "0"
+        max = "10"
         component={this.renderField}            // this funtion will return jsx for the field. 
       /><Field
         label="Bathroom"
         name="bathroom"
-        type="text"
+        type="number"
+        min = "0"
+        max = "10"
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
-
-
-                              {/* <div className="form-group">
-  <input onChange = {(event) => {this.setState({ headline : event.target.value })}} value={this.state.headline} type="text" className="form-control"   placeholder="Headline"/>
-  </div>
-  <br></br>
-  <div className="form-group">
-  <input onChange = {(event) => {this.setState({ description : event.target.value })}} value={this.state.description} type="text" className="form-control"  placeholder="Description"/>
-  </div>
-  <div className="form-group">
-  <input onChange = {(event) => {this.setState({ propertytype : event.target.value })}} value={this.state.propertytype} type="text" className="form-control"  placeholder="Property Type"/>
-  </div>
-  <div className="form-group">
-  <input onChange = {(event) => {this.setState({ bedroom : event.target.value })}} value={this.state.bedroom} type="text" className="form-control"  placeholder="Bedroom"/>
-  </div>
-  <div className="form-group">
-  <input onChange = {(event) => {this.setState({ accomodation : event.target.value })}} value={this.state.accomodation} type="text" className="form-control"  placeholder="Accomodation"/>
-  </div>
-  <div className="form-group">
-  <input onChange = {(event) => {this.setState({ bathroom : event.target.value })}} value={this.state.bathroom} type="text" className="form-control"  placeholder="Bathroom"/>
-  </div> */}
+ 
                             </div>
 
 
@@ -215,10 +184,7 @@ class ListProperty extends Component{
   <div className="progress-bar" role="progressbar" style={{width: "75%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
  <ul className="nav flex-column">
- <li className="nav-item"><a href="" className="nav-link" data-toggle="pill" data-target="#availability">Available</a></li>
- <div className="row">
 
- <div className="tab-pane fade" id="availability" role="tabpanel">
 
 
 <Field
@@ -232,19 +198,9 @@ name="availto"
 type="date"
 component={this.renderField} // this funtion will return jsx for the field.
 />
-  {/* <div className="searchbox">
-      <input type="date" className="form-control" id="dateTo" placeholder="Available from" onChange ={(e) => { this.setState({availfrom : e.target.value})  }}/>
-      </div>
-      <div className="searchbox">
-      <input type="date" className="form-control" id="dateFrom" placeholder="Available to" onChange ={(e) => { this.setState({availto : e.target.value})  }}/>
-      </div> */}
- </div>
- </div>
+ 
 
- <li className="nav-item"><a href="" className="nav-link" data-toggle="pill" data-target="#rates">Rates</a></li>
- <div className="row">
 
- <div className="tab-pane fade" id="rates" role="tabpanel">
 
 <Field
 label="Rate"
@@ -257,23 +213,13 @@ name="minstay"
 type="text"
 component={this.renderField} // this funtion will return jsx for the field.
 />
-{/* <div className="searchbox"> 
-      <input type="text" className="form-control" id="guest" placeholder="Rate" onChange ={(e) => { this.setState({rate : e.target.value})  }}/>
-      </div>
-      <div className="searchbox"> 
-      <input type="text" className="form-control" id="guest" placeholder="Minimum Stay" onChange ={(e) => { this.setState({minstay : e.target.value})  }}/>
-      </div> */}
-</div>
+
+</ul>
 </div>
 
-
-
- </ul>
-                           
-
-                          </div>
-                           <div className="tab-pane fade" id="submit" role="tabpanel">
-                           <div className="progress">
+<div className="tab-pane fade" id="submit" role="tabpanel">
+ 
+<div className="progress">
   <div className="progress-bar" role="progressbar" style={{width: "100%"}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 

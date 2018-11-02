@@ -93,7 +93,7 @@ class Home extends Component {
         </li>
        <li >
        <div className="searchbox1">
-       <Link to="/ListProperty"><button className="listyourproperty"  >List your property  </button></Link>
+       <Link to="/ListProperty"><button className="listyourproperty">List your property  </button></Link>
        </div>
        </li> 
         <img  src={require('../image/logo.svg')}></img>

@@ -8,7 +8,7 @@ import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { submitlogin } from "../actions";
 import { Field, reduxForm } from "redux-form";
-import Navbarwhite from './Navbarwhite';
+import Navbarwhite from './Navbarwhite';  
 import { readdir } from 'fs';
 
 class TravellerLogin extends Component{
@@ -41,12 +41,13 @@ class TravellerLogin extends Component{
           // if(sessionStorage.getItem("JWT")!=null || undefined){
           //   redirectVar = <Redirect to= "/TravellerHomepage"/>
           // }
-    
-          if(this.props.traveller.status === 200){
-           }
 
         this.props.traveller.status == 201 ?  errBlock =  <div className="login-err">
-        <h4 style= {{color : "white", textAlign : "center"}}>No user found, SIGN UP</h4>
+        <h4 style= {{color : "white", textAlign : "center"}}>Username or password incorrect</h4>
+        </div> : null;
+
+        this.props.traveller.status == 202 ?  errBlock =  <div className="login-err">
+        <h4 style= {{color : "white", textAlign : "center"}}>No user found, sign up</h4>
         </div> : null;
 
         red = this.props.traveller.status == 200 ? <Redirect to='/TravellerHomepage'/> : null

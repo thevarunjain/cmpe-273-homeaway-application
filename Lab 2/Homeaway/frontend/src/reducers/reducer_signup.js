@@ -14,6 +14,7 @@ export default function(state = {}, action) {
     newState = action.payload;
      var holdemail = JSON.parse(action.payload.config.data);
       newState.details = holdemail.email;
+
      // newState.token = action.payload.data.token
      console.log(newState);
       return newState;

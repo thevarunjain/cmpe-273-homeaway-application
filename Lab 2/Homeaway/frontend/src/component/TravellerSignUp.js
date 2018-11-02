@@ -21,7 +21,7 @@ renderField(field) {
       <div className={className}>
         <label>{field.label}</label>
         <input className="form-control" type={field.type} {...field.input} required />
-        <div className="text-help" stlye={{color: "red", textalign : "center"}}>
+        <div className="text-help" style={{color: "red", textAlign : "center", padding : "5px", fontWeight : "bold" }}>
           {touched ? error : ""}
         </div>
       </div>
@@ -33,11 +33,20 @@ renderField(field) {
 
     render(){
         const { handleSubmit } = this.props;
-
+      var errBlock ;
         //redirect based on successful login
         var redirectVar ;
         if(sessionStorage.getItem("JWT")!= undefined || null ){
           redirectVar = <Redirect to= "/TravellerHomepage"/>
+        }
+        if(this.props.signup.status === 201){
+          alert("User Already Exist")
+
+          errBlock =  <div className="login-err">
+          <h4 style= {{color : "white", textAlign : "center"}}>User Already Exist</h4>
+          </div>
+        }else if(this.props.signup.status==200){
+          return <Redirect to = "/TravellerLogin" />
         }
 
         return(
@@ -57,7 +66,7 @@ renderField(field) {
                 <div className="heading1">
                 <p className="heading">Account SignUp</p>
                 </div><br></br>
-                
+                {errBlock}
     
     <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <Field
@@ -136,7 +145,7 @@ function validate(values) {
 
 function mapStateToProps(state){
   return{
-    traveller : state.signup
+    signup : state.signup
   };
 }
 

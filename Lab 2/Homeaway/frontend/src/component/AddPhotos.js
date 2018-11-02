@@ -37,8 +37,8 @@ class AddPhotos extends Component{
     render() {
         const previewStyle = {
             display: 'inline', 
-            width: 10,
-            height: 10,
+            width: 100,
+            height: 100,
         };
 
 
@@ -46,7 +46,7 @@ class AddPhotos extends Component{
         return (
             <div className="app">
                 <Dropzone accept="image/*" onDrop={this.onPreviewDrop} name="propPhotos">
-                    <h4>Click here to add pictures!!!</h4>
+                    <h2>Click<br></br>or<br></br> Drag your files here!!!</h2>
                 </Dropzone>
                 <input type="file" className="form-control-file" name="selectedFile" onChange={this.onChoose} />
                 {this.state.files.length > 0 &&
@@ -63,7 +63,7 @@ class AddPhotos extends Component{
                 </Fragment>
                 }
 
-                <button type="button" className="btn btn-primary" onClick={ (e) => this.handleSave(e)}>Save</button>
+                <button type="button" style =  {{width : "144px"}} className="btn btn-primary" onClick={ (e) => this.handleSave(e)}>Save Photos</button>
             </div>
         );
     }

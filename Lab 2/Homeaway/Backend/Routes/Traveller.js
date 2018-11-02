@@ -101,10 +101,6 @@ app.use(function(req, res, next) {
 
   const router = express.Router()
 
-
-
-
-
  router.post('/TravellerLogin', function(req,res){
     console.log("Inside Login Post Request\n");
     var email = req.body.email;
@@ -118,6 +114,7 @@ app.use(function(req, res, next) {
         console.log(".................",docs)
 
         if(docs.length!=0){
+
         var user = {                    // for creating JWT token
             id: docs.id,
             email: docs.email,
@@ -136,7 +133,7 @@ app.use(function(req, res, next) {
                 res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
                res.status(200).json({success: true, token: 'JWT' + token });
             } else {
-                res.status(401).json({
+                res.status(201).json({
                     success: false,
                     message: 'Authentication failed. Passwords did not match.'
                 });
@@ -146,7 +143,7 @@ app.use(function(req, res, next) {
         });
     }else{
         console.log("Authentication failed. User not found.");
-        res.status(201).json({success: false, message: 'Authentication failed....User doesnot exist'});
+        res.status(202).json({success: false, message: 'Authentication failed....User doesnot exist'});
     }
 })
 });
@@ -175,17 +172,6 @@ router.get('/TravellerProfile',function(req,res){
             }
     });
 
-
-    // traveller.find({email : email},          //conditions
-    //     "firstname lastname about company country school hometown languages phone gender",   // what to return
-    // function(err,result){
-    //     if(err){
-    //         console.log(err);
-    //     }
-    //     res.end(JSON.stringify(result));
-    //     console.log(JSON.stringify(result));
-    // });
-
 });
 
 
@@ -211,36 +197,6 @@ router.post('/TravellerProfile', function(req,res){
             }
     });
 
-    // var firstname = req.body.firstname;
-    // var lastname = req.body.lastname;
-    // var about = req.body.about;
-    // var company = req.body.company;
-    // var country = req.body.country;
-    // var school = req.body.school;
-    // var hometown = req.body.hometown;
-    // var languages = req.body.languages;
-    // var gender = req.body.gender;
-    // var phone = req.body.phone;
-
-    // traveller.updateOne({email: email},{                   //where condition
-    // firstname : firstname, 
-    // lastname: lastname,
-    // about : about,
-    // company : company,
-    // country : country,
-    // school :school,
-    // hometown : hometown,
-    // languages : languages,
-    // gender : gender,
-    // phone : phone },{multi:true},
-    // function(err,log){
-    //     if(err) {
-    //         console.log("Traveller Profile cant update :( ");
-    //     }else{
-    //         console.log("Traveller Profile updated !!")
-    //     }
-
-    // });
 
 });
 
@@ -257,11 +213,16 @@ router.post('/TravellerSignUp',function(req,res){
                 status:"error",
                 msg:"System Error, Try Again."
             }).end();
-        }else{
-            console.log("\n Traveller created with email :- ", req.body.email);
-           // res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.sendStatus(200).end(JSON.stringify(results));
+        }else if(results == 201){
+            console.log("\n Traveller already there with email :- ", req.body.email);
+            // res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+             res.sendStatus(201).end(JSON.stringify(results));
+            }else{
+                console.log("\n Traveller created with email :- ", req.body.email);
+                // res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+                 res.sendStatus(200).end(JSON.stringify(results));
             }
+
     });
 
     // var firstname = req.body.firstname;
@@ -351,30 +312,6 @@ router.post('/TravellerAccountPassword',function(req,res){
             res.end("Password Changed Successfully");
             }
     });
-
-    // var oldpass = req.body.oldpass;
-    // var email = req.body.email;
-    // var newpass = req.body.newpass;
-    // crypt.createHash(newpass, function (hash) {
-    //     passwordHash = hash;
-    //     console.log("hash",hash);
-    //     console.log("newpass",newpass);
-
-    //     traveller.updateOne({email: email, password : oldpass},{$set : {password : newpass, passwordHash : hash}},{multi:true},function(err,log){
-    //         if(log.nModified == 0) {
-    //             console.log("Error in changing password :( ",log);
-    //             res.status(201).json({success: false, message : ' Password Change failed..' });
-    //             res.end("Old Password Incorrect ");
-    
-    //         }else{
-    
-    //             res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
-    //             res.status(200).json({success: true, message : ' Password Changed Successfully' });
-    //             res.end("Password Changed Successfully");
-    //             console.log("\n Password changed Successfully\n",log);
-    //         }
-    //     });
-    // })
 });
 
 router.get('/TravellerTrip', function(req,res){
@@ -399,29 +336,6 @@ router.get('/TravellerTrip', function(req,res){
             }
     });
 
-
-
-    // var arr = [ ];
-    // traveller.find({email : email}, {properties : 1 ,_id : 0 }).then((result)=>{
-    //   if(result!= null){
-    //     result.map((data)=>{
-    //         data.properties.map((prop)=>{
-    //             console.log(prop);
-    //             arr.push(prop)
-    //         })
-    //         });
-    //         console.log(".............",arr);
-    //         console.log("Property Found");
-    //        res.writeHead(200,{
-    //            'Content-Type' : 'application/json'
-    //        })
-    //        res.end(JSON.stringify(arr));
-    //     }else{
-    //         console.log(result)
-    //         console.log("No property found");
-    //     }
-        
-    //     })
 })
 
 

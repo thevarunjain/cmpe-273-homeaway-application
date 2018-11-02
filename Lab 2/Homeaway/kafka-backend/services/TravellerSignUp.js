@@ -18,19 +18,34 @@ crypt.createHash(password, function (hash) {
 
     console.log("\nEmail : ",email + "\n Password : ",password+"\n Hash Value : "+ passwordHash + "\nFirst Name : ", firstname + "\nLast Name : ", lastname);
 
-    new traveller({                // ES6 syntax
-         email,
-         password,
-         firstname,
-         lastname,
-         passwordHash
-    }).save().then((docs)=>{
-        console.log("Traveller created : ",docs);
-        callback(null,docs)
-    },(err)=>{
-        console.log("Error in signing up");
-        callback(null,err)
+    traveller.find({
+        email : email
+    }).then((data)=>{
+        console.log(data);  
+        console.log(data.length);  
+        if(data.length!=0){
+            console.log("\nUser already exist with the email\n",email)
+            callback(null,201)
+        }else{
+            console.log("done")
+               new traveller({                // ES6 syntax
+                    email,
+                    password,
+                    firstname,
+                    lastname,
+                    passwordHash
+                    }).save().then((docs)=>{
+                    console.log("Traveller created : ",docs);
+                    callback(null,docs)
+                },(err)=>{
+                    console.log("Error in signing up");
+                    callback(err,null)
     })
+
+        }
+    })
+
+ 
 });
 }
 exports.handle_request = handle_request;
