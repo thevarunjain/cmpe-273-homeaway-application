@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
-import axios from 'axios';
-import cookie from 'react-cookies';
 import {Link} from 'react-router-dom';
 import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { submitownerlogin } from "../actions";
 import { Field, reduxForm } from "redux-form";
-import navbarwhite from "./Navbarwhite";
 import Navbarwhite from './Navbarwhite';
 
 
@@ -38,15 +35,19 @@ class OwnerLogin extends Component{
 
         //redirect based on successful login
         let redirectVar = null;
-        // if(this.props.owner.status === 200){
-          if(sessionStorage.getItem("Owneremail")!=null || undefined){
+        console.log(this.props.owner.status)
+        console.log(sessionStorage.getItem("OwnerJWT"))        
+        if((this.props.owner.status === 200 || 202) && (sessionStorage.getItem("OwnerJWT")!=null || undefined)){
          redirectVar =  <Redirect to='/OwnerDashboard' />
         }
-        // if(cookie.load('cookieOwner')){
-        //     return (
-        //         <Redirect to='/OwnerDashboard'/>
-        //     )
-        // }
+
+        var errBlock;
+        this.props.owner.status == 201 ?  errBlock =  <div className="login-err">
+        <h4 style= {{color : "white", textAlign : "center"}}>Username or password incorrect</h4>
+        </div> : null;
+
+        
+
         return(
         
         <div>
@@ -69,8 +70,8 @@ class OwnerLogin extends Component{
             <div className="login-form  traveler">
                 <div class="heading1">
                 <p className="heading">Owner login</p>
-                <span>Need an account ? </span><Link to="/OwnerSignUp">Sign up</Link>
                 </div><br></br>
+                {errBlock}
     <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
       
       <Field

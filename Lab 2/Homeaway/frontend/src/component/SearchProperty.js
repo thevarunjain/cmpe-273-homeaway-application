@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import Navbar from './NavBar';
-import SearchBar from './SearchBar';
+import Navbarwhite from "../component/Navbarwhite"
+import SearchBar from "../component/SearchBar";
 import Pagination from "./Pagination";
 import { submitsearch } from "../actions";
 import { connect } from "react-redux";
 import { submitbookproperty } from "../actions";
 import {Link} from 'react-router-dom';
 import {paginate} from "../paginate"
-//import { Field, reduxForm } from "redux-form";
 
 class SearchProperty extends Component {
        constructor(props){
@@ -119,6 +117,8 @@ class SearchProperty extends Component {
 
     render(){  
 
+
+
       var from,to;
       from = sessionStorage.getItem('datefrom');
       to = sessionStorage.getItem('dateto');
@@ -158,12 +158,10 @@ class SearchProperty extends Component {
            const prope = paginate(this.props.pro, this.state.currentPage, 5)
            let filterdProperties = prope.filter(
             (proper) =>{
-              // console.log(new Date(proper.availfrom))
-              // console.log(new Date(proper.availto))
-              // console.log(new Date(this.state.searchArrival))
+   
 
     
-              return  proper.headline.indexOf(this.state.searchlocation) !== -1 && 
+              return  proper.headline.toLowerCase().indexOf(this.state.searchlocation.toLowerCase()) !== -1 && 
                       proper.bedroom.indexOf(this.state.searchbedroom) !== -1 &&
                       Number(proper.rate) <= this.state.slidervalue 
                      
@@ -224,10 +222,11 @@ class SearchProperty extends Component {
     return(       // full page 
          
 
-      <div className ="container-fluid">
-        <Navbar />
+      <div className ="container-fluid" className="row">
+        <Navbarwhite />
+        <SearchBar />
+    
         <div >
-          <SearchBar />
 
         </div>
 
@@ -239,6 +238,7 @@ class SearchProperty extends Component {
         <p className = "priceclass">Price ($ 0 - $ {this.state.slidervalue})</p>
         <input className="slider" placeholder="Price" type="range" name="points" min="0" max="5000" value= {this.state.slidervalue} onChange={this.updateRange.bind(this)} /> 
         </div> 
+
         <div className="col-md-2">
         <input className="form-control" placeholder="Bedroom"  type="number" min="1" max="10" value= {this.state.searchbedroom} onChange={this.updateSearchBedroom.bind(this)} /> 
         </div>
@@ -265,6 +265,7 @@ class SearchProperty extends Component {
      </div>
 
      </div>
+     
      </div>
     
 

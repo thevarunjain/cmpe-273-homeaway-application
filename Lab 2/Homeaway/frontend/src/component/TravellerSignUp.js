@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import { connect } from "react-redux";
@@ -40,7 +39,6 @@ renderField(field) {
           redirectVar = <Redirect to= "/TravellerHomepage"/>
         }
         if(this.props.signup.status === 201){
-          alert("User Already Exist")
 
           errBlock =  <div className="login-err">
           <h4 style= {{color : "white", textAlign : "center"}}>User Already Exist</h4>

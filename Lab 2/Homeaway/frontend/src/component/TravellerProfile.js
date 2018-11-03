@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import Navbarwhite from "../component/Navbarwhite"
@@ -33,7 +32,6 @@ class TravellerProfile extends Component{
         }
 
         logout = () => {
-            cookie.remove("cookie")
             sessionStorage.removeItem("JWT");
             sessionStorage.removeItem("email");
             sessionStorage.removeItem("password")
@@ -41,9 +39,8 @@ class TravellerProfile extends Component{
       
     
         componentDidMount(){
-            console.log("cookies _ "+cookie.load('cookie'));
-            var email = cookie.load('cookie')
-            
+            var email =  sessionStorage.getItem("email");
+
             axios.get('http://localhost:3001/TravellerProfile',{
                 params: {
                   id : email
@@ -83,7 +80,7 @@ class TravellerProfile extends Component{
             languages : this.state.languages,  
             gender : this.state.gender,
             phone : this.state.phone,
-            email : cookie.load('cookie')
+            email : sessionStorage.getItem("email")
         }
         console.log(data);
         //set the with credentials to true
@@ -111,7 +108,7 @@ class TravellerProfile extends Component{
         console.log("in mount");
       //  let formData = new FormData();
        
-          axios.post('http://localhost:3001/GetProfilePicture/'+`profile_${cookie.load('cookie')}.jpg`)
+          axios.post('http://localhost:3001/GetProfilePicture/'+`profile_${sessionStorage.getItem("email")}.jpg`)
 
           .then(response => {
               console.log("Imgae Res : ",response);
@@ -140,14 +137,14 @@ class TravellerProfile extends Component{
       let formData = new FormData();
       console.log(this.state.description)
 
-      formData.append('email', cookie.load('cookie'));        
+      formData.append('email', sessionStorage.getItem("email"));        
       formData.append('description', description);
       formData.append('selectedFile', selectedFile);
-      console.log("form wali email :" + cookie.load('cookie'))
+      console.log("form wali email :" + sessionStorage.getItem("email"))
   
         axios.post('http://localhost:3001/ProfilePicture', formData)
           .then((result) => {
-            axios.post('http://localhost:3001/GetProfilePicture/'+`profile_${cookie.load('cookie')}.jpg`)
+            axios.post('http://localhost:3001/GetProfilePicture/'+`profile_${sessionStorage.getItem("email")}.jpg`)
   
             .then(response => {
                 console.log("Imgae Res : ",response);
@@ -164,7 +161,7 @@ class TravellerProfile extends Component{
     render(){
         //redirect based on successful login
         let redirectVar = null;
-        if(!cookie.load('cookie')){
+        if(sessionStorage.getItem("JWT") == null || undefined){
         redirectVar = <Redirect to= "/TravellerLogin"/>
         }
         var message;

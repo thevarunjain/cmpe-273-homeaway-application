@@ -2,41 +2,65 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-import Message from "./Message";
 import Navbarwhite from "../component/Navbarwhite"
 
-class TravellerAccount extends Component{
+class TravellerMessage extends Component{
        constructor(props){
         super(props);
 
         this.state ={
-            oldemail :"",
-            oldpass : "",
-            newpass1 :"",
-            newpass2 :"",
+            owneremail :"",
+            propid :"",
+            travelleremail :"",
+            question :"",
+                reply : ""
             
         }
+        
 
         }
         logout = () => {
-        cookie.remove("cookie")
             sessionStorage.removeItem("JWT");
             sessionStorage.removeItem("email");
             sessionStorage.removeItem("password")
           }
-
-
+          
+      //Get Reply
+        componentWillMount(){
+            console.log("in will mount");
+           
+            var email = sessionStorage.getItem("email"); 
+            console.log(email)       
+            axios.get('http://localhost:3001/GetReply',{
+                params: {
+                    id : email
+                }})
+                    .then((response) => {
+                    console.log(response);
+                    console.log(response.data);
+                    var {id, owneremail, propid, travelleremail, question, reply} = response.data;
+                    
+                    this.setState({
+                        owneremail,
+                        propid,
+                        travelleremail,
+                        question,
+                        reply
+                    })
+                    console.log(this.state)
+                });
+        }
 
     render(){
-        
-        // let redirectVar = null;
-        // if(!cookie.load('cookie')){
-        // redirectVar = <Redirect to= "/TravellerLogin"/>
-        // }
-      
+        console.log("in render");
+
+        var redirectVar;
+        if(sessionStorage.getItem("JWT") == null || undefined){
+            redirectVar = <Redirect to= "/TravellerLogin"/>
+        }
+
         return(
         
         <div className="container-fluid">
@@ -54,7 +78,28 @@ class TravellerAccount extends Component{
              
          </ul>
          </div>
-         <Message email = "test@gmail.com"/>
+            
+
+                    
+        <div className="container" style={{width :"530px"}}>  
+        <ul className="col-md-8 list-group">
+                {/* {message} */}
+
+                <h2> Traveller Messages </h2>
+
+        <div class="container"  style={{width :"394px", marginLeft : "83px"}}>
+        <h4>{this.state.question}</h4>
+        </div>
+        <div class="container darker" style={{width :"480px"}}>
+        <h4>{this.state.reply}</h4>
+        </div>
+        <div style = {{marginLeft : "158px"}}>
+        <input style = {{width : "321px"} } className="form-control" />
+        <br></br>
+        <button style = {{marginLeft : "221px"}} className= "btn btn-primary" onClick={this.replymessage}>Reply </button>
+        </div>
+         </ul> 
+         </div>
 
         </div>
         </div>
@@ -62,4 +107,4 @@ class TravellerAccount extends Component{
         );
     }
 }
- export default TravellerAccount;
+ export default TravellerMessage;

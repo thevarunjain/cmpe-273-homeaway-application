@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
-import axios from 'axios';
-import cookie from 'react-cookies';
-
 import {Redirect} from 'react-router';
-import SearchProperty from './SearchProperty';
-
 import { connect } from "react-redux";
 import { submitsearch } from "../actions";
 import { Field, reduxForm } from "redux-form";
-
-import { withAlert } from 'react-alert'
-import { Alert } from 'react-alert'
 
 class SearchBar extends Component {
   constructor(props){
@@ -58,7 +50,7 @@ class SearchBar extends Component {
     const { handleSubmit } = this.props;
 
     let redirectVar = null;
-    if(!cookie.load('cookie')){
+    if(sessionStorage.getItem("JWT") == null || undefined){
     redirectVar = <Redirect to= "/TravellerLogin"/>
     }
     if(this.props.searchprop.status == 200){

@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import Navbar from './NavBar';
-import SearchBar from './SearchBar';
 import { connect } from "react-redux";
+import Navbarwhite from "../component/Navbarwhite";
+
 
 
 class BookProperty extends Component {
@@ -22,8 +21,8 @@ class BookProperty extends Component {
             total  : "",
             image : [] ,
             booked : '',
-            final : ''
-
+            final : '',
+            message : ""
            }
                    }  
            componentWillMount(){
@@ -46,10 +45,33 @@ class BookProperty extends Component {
   })
   ;
 }
+      postMessage = (e) => {
+        e.preventDefault();
+           const data = {
+            owneremail : this.props.bookproperty.ownerid,
+            propid :  this.props.bookproperty.headline ,
+            travelleremail : sessionStorage.getItem("email"),
+            question :this.state.message,
+          }
+          console.log(data);
+          //set the with credentials to true
+          axios.defaults.withCredentials = true;
+          //make a post request with the user data
+          axios.post('http://localhost:3001/PostMessage',data)
+              .then(response => {
+                  console.log("Status Code  is : ",response.status);
+                  console.log(response.data);
+                  if(response.status === 200){
+                          console.log('Post successfully');
+                  }else{
+                      console.log('Post failed !!! ');
+  
+                  }
+              });
+}
 
       book(pro){
   console.log("in book");
- // var properties = this.props.location.state.result;
 
  const data = {
    availfrom : new Date(this.props.datefrom),
@@ -81,7 +103,7 @@ class BookProperty extends Component {
     render(){  
 
       let redirectVar = null;
-      if(!cookie.load('cookie')){
+      if(sessionStorage.getItem("JWT") == null || undefined){
       redirectVar = <Redirect to= "/TravellerLogin"/>
       }
       let redirectbook = null;
@@ -112,6 +134,10 @@ class BookProperty extends Component {
       console.log(d5);
       var d6 = dt1.getFullYear();
       console.log(d6);
+      
+      var res = Math.abs(dt1 - dt) / 1000;
+      var days = Math.floor(res / 86400);
+    
 
   
         
@@ -119,12 +145,12 @@ class BookProperty extends Component {
     return(
       
    
-      <div className ="container-fluid" >
+      <div className ="container-fluid" className="row" >
       {redirectVar}
       {redirectbook}
-        <Navbar />
-        {/* <SearchBar /> */}
+        <Navbarwhite />
 
+        
       <div className="container-fluid" style={{padding:"10px"}}>  
       <div class="row">
       <div className="col-md-7" >
@@ -191,8 +217,7 @@ class BookProperty extends Component {
            <div className="col-md-8" >
            <div className ="price">
 
-           Cost per Night
-           $ {properties.rate}
+           <h3>Cost Per Night $ {properties.rate}</h3>
            </div>
             </div>
            </div> 
@@ -200,36 +225,39 @@ class BookProperty extends Component {
           <br></br>
 
             <div className="row">
-            <div className ="col-md-9">
-            <h4> Your date are <b> Available!</b> </h4>     
+            <div className ="col-md-12">
+            <h4> Your date are <b><p style ={{color : "green"}}>Available!</p></b> </h4>     
            
             </div>
             </div>
             <br></br>
+            
             <div className="row">
+
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            <h5> Booking from : {d2}/{d1}/{d3}</h5>
+            <h4> Booking from :<br></br> {d2}/{d1}/{d3}</h4>
             </div>
+            
             <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-           <h5> Booking to : {d5}/{d4}/{d6}</h5>
+            <h4> Booking to : <br></br> {d5}/{d4}/{d6}</h4>
             </div>
+
             </div>
 
 
             <div className="row">
-            <div className="col-md-12" style={{border: "1px solid gainsboro"}}>
-            Guest  : {properties.accomodation}
+            <div className="col-md-12" style={{border: "1px solid gainsboro",padding : "10px"}}>
+            <h4>Guest  : {properties.accomodation}</h4>
             </div>
             </div>
+            
             <div className="row">
-            <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            Total Amount
-            </div>
-            <div className="col-md-6" style={{border: "1px solid gainsboro"}}>
-            {(Number(properties.rate)*(d4-d1+1))}
+            <div className="col-md-12" style={{padding : "10px",border: "1px solid gainsboro"}}>
+            <h4>Total Amount : $  {(Number(properties.rate)*(days))}</h4>
             </div>
             </div>
-            <div className="row" style={{border: "1px solid gainsboro", alignContent:"center"}}>
+
+            <div className="row" style={{marginLeft : "155px",padding : "12px"}}>
             <div className="searchbox"> 
             <button onClick= {(e)=>this.book(properties)} style ={{width : "137px",  height : "44px"}}className="btn btn-primary">BOOK NOW</button>
             </div>
@@ -239,13 +267,26 @@ class BookProperty extends Component {
             
             </div>
 
+              
+      
 
      </div>
      </div>
-
+    
+     
 
      
      </div> 
+     <div className ="form-container">
+            <div className="login-form  traveler" style ={{ marginLeft: "304px", width: "519px",marginTop: "-30px"}}>
+
+        <h3 style={{textAlign : "center"}} >Ask a question</h3>
+        <input className="form-control" type = "textarea" value = {this.state.message} onChange = {(event) => {this.setState({ message : event.target.value })}}/>
+      <br></br>
+        <button onClick={this.postMessage} className="btn btn-primary" style={{width : "160px",marginLeft : "170px"}}>Send Message</button>
+               
+        </div> 
+        </div> 
      
     </div>
 

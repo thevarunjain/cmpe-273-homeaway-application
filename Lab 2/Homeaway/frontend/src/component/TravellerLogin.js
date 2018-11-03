@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
-// import axios from 'axios';
-// import cookie from 'react-cookies';
 import {Link} from 'react-router-dom';
 import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import { submitlogin } from "../actions";
 import { Field, reduxForm } from "redux-form";
 import Navbarwhite from './Navbarwhite';  
-import { readdir } from 'fs';
 
 class TravellerLogin extends Component{
 
@@ -38,7 +35,7 @@ class TravellerLogin extends Component{
         var errBlock = ""; 
         var red;
         var redirectVar ;
-        // console.log(sessionStorage.getItem("JWT"),this.props.traveller.status);   //null when comming from homepage
+        console.log(this.props.traveller.status)
           if(sessionStorage.getItem("JWT") != null){
             redirectVar = <Redirect to= "/TravellerHomepage"/>
           }
@@ -51,7 +48,7 @@ class TravellerLogin extends Component{
         <h4 style= {{color : "white", textAlign : "center"}}>No user found, sign up</h4>
         </div> : null;
 
-        red = this.props.traveller.status == 200 && sessionStorage.getItem("JWT") != null ? <Redirect to='/TravellerHomepage'/> : null
+        red = this.props.traveller.status == 200 && sessionStorage.getItem("JWT") != null || undefined ? <Redirect to='/TravellerHomepage'/> : null
         const { handleSubmit } = this.props;
 
         return(    

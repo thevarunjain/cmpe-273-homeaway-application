@@ -141,53 +141,12 @@ app.use(function(req, res, next) {
                 res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
                }
        });
-   //     var availfrom = req.body.availfrom;
-   //     var availto = req.body.availto;
-   //     var propid = req.body.id; //uuvid
-   //     var owneremail = req.body.owneremail;
-   //     var travelleremail = req.body.travelleremail;
-   //     var headline =  req.body.headline
-   //     //var travelleremail = "varunsj18@gmail.com";
-   //     console.log(req.body);
-   
-   //     var property = {                                //to travellers table 
-   //          bookedfrom : req.body.availfrom,
-   //          bookedto : req.body.availto,
-   //          propid : req.body.id, //uuvid
-   //          owneremail : req.body.owneremail,
-   //          headline :  req.body.headline
-   //     }
-   
-   //     var p = {                                       //to owners table 
-   //         bookedfrom : req.body.availfrom,
-   //         bookedto : req.body.availto,
-   //         bookedby : travelleremail
-   //         // propid : req.body.id, //uuvid
-   //         // owneremail : req.body.owneremail
-   //    }
-    
-   //     traveller.findOneAndUpdate({email : travelleremail}, {$push : { properties :  property}}).then((result)=>{
-   //         if(result!= undefined){
-   //             console.log("Property booked by  !!", travelleremail)
-   //             console.log("........................",result);
-   //             res.status(200).json({ success : true, body : "Property booked Successfully"}).end("Booked Sucessfully");
-   //         }else{
-   //             console.log("Error in Booking property :( ",result);
-   //         }
-   //     })
-   
-   //     owner.findOneAndUpdate({"properties.propid" : propid},{ $push : {"properties.$.booking" : p}}).then((result)=>{
-   //         if(result!= undefined){
-   //             console.log("Property Listed !!")
-   //             console.log("........................",result);
-   //           //  res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
-   //         }else{
-   //             console.log("Error in listing property :( ",result);
-   //         }
-   //     })
+
    
    });
-   router.post('/search', function(req,res){
+
+
+router.post('/search', function(req,res){
     console.log("Searching in Database"); 
     console.log(req.body); 
 
@@ -212,44 +171,6 @@ app.use(function(req, res, next) {
                 res.end(JSON.stringify(results));
             }
     });
-
-//     var arr = [ ];
-//    console.log(place,dateFrom,dateTo,guest)
-//    console.log(place)
-//     place = place.toLowerCase();
-//     console.log(place)
-    
-//    owner.find({ })
-//     .then((result,err)=>{
-//         if(result.length != 0 ){
-//             console.log("........result",result)
-
-//         result.map((data)=>{
-//             data.properties.map((prop)=>{
-//                var to = new Date(prop.availto);
-//                var from = new Date(prop.availfrom)
-//                 if(prop.accomodation >= guest && prop.address.toLowerCase().includes(place.toLowerCase()) && to >= dateTo && from <= dateFrom){
-//                     console.log(prop.headline, from , to);
-
-//                     arr.push(prop)
-//                 }
-
-//             });
-//         })
-//              console.log("dddddddddddddddd",arr);
-//              console.log("Property Found");
-//             res.writeHead(200,{
-//                 'Content-Type' : 'application/json'
-//             })
-//             res.end(JSON.stringify(arr));
-//         //    console.log(JSON.stringify(arr));
-//       }else{
-//         console.log(result)
-//         console.log("No property found");
-//       }
-//     })
 })
-
-
 
   module.exports = router;

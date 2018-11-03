@@ -5,10 +5,9 @@ import axios from 'axios';
 import SearchBar from './SearchBar';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-//import cookie from 'react-cookies';
 import { connect } from "react-redux";
 import { submitlogin } from "../actions";
-import cookie from 'react-cookies';
+
 
 
 
@@ -40,9 +39,8 @@ class TravellerHomepage extends Component {
   }
   }
   
-  //handle logout to destroy the cookie
+
   logout = () => {
-    cookie.remove("cookie")
     sessionStorage.removeItem("JWT");
     sessionStorage.removeItem("email");
     sessionStorage.removeItem("password")
@@ -86,11 +84,9 @@ class TravellerHomepage extends Component {
 
     console.log(this.props.traveller);
     let redirectVar = null;
-      console.log((sessionStorage.getItem("JWT") == undefined || null));
+     
       console.log(sessionStorage.getItem("JWT"))
-    if(sessionStorage.getItem("JWT") == null || undefined){
-      console.log("in if cond")
-
+    if(sessionStorage.getItem("JWT") == undefined || null){
       redirectVar = <Redirect to= "/TravellerLogin"/>
     }
 
@@ -136,7 +132,7 @@ class TravellerHomepage extends Component {
                         <img  src={require('../image/logo.svg')}></img>
                         
 
-                      </ul>
+                    </ul>
                     </div>
                     </div>
                     </nav>

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import { connect } from "react-redux";
@@ -56,7 +55,6 @@ class TravellerTrip extends Component{
 
      
         logout = () => {
-        cookie.remove("cookie")
             sessionStorage.removeItem("JWT");
             sessionStorage.removeItem("email");
             sessionStorage.removeItem("password")
@@ -67,7 +65,7 @@ class TravellerTrip extends Component{
     console.log(this.state.ip);
     console.log(this.state.prop);
         let redirectVar = null;
-        if(!cookie.load('cookie')){
+        if(sessionStorage.getItem("JWT") == null || undefined){
         redirectVar = <Redirect to= "/TravellerLogin"/>
         }
 

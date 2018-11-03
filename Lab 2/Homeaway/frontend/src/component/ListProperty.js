@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import AddPhotos from './AddPhotos';
 import { connect } from "react-redux";
 import { submitproperty } from "../actions";
 import Navbarwhite from './Navbarwhite';
-
+import { formValueSelector } from 'redux-form'; 
 import { Field, reduxForm } from "redux-form";
 import { number } from 'prop-types';
 
@@ -34,7 +33,9 @@ class ListProperty extends Component{
           minstay : '',   
           selectedFile: '',
           imageView : '',
-          files : []
+          files : [],
+          from : "",
+          to :""
         };
     }
  
@@ -43,8 +44,9 @@ class ListProperty extends Component{
   renderField(field) {
     const { meta: { touched, error } } = field;
     const className = `form-group ${touched && error ? "has-danger" : ""}`;
-    var min = field.min
-    var max = field.max
+
+   
+    
     return (
       <div className={className}>
         <label>{field.label}</label>
@@ -59,19 +61,27 @@ class ListProperty extends Component{
 
 
     onsubmitproperty(values) {
+      
         values.files = this.state.files;
-        values.email = cookie.load("cookieOwner")
+        values.email = sessionStorage.getItem("Owneremail")
         console.log(values)
         this.props.submitproperty(values);
       }
 
 
     render(){
+
         let redirectVar = null;
-        if(!sessionStorage.getItem("Owneremail")){
+        if(!sessionStorage.getItem("OwnerJWT")){
             return(
                 <Redirect to="/OwnerLogin" />
               )
+        }
+        console.log(this.props.property.status)
+        if(this.props.property.status == 200){
+          return(
+            <Redirect to="/OwnerDashboard"/ >
+          )
         }
 
        
@@ -246,7 +256,8 @@ component={this.renderField} // this funtion will return jsx for the field.
 function mapStateToProps(state){
     return{
         property : state.submitproperty,
-        owner : state.ownersignup
+        owner : state.ownersignup,
+        form  : state.formReducer
     };
   }
 

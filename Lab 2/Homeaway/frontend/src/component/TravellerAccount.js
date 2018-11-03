@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import Navbarwhite from "../component/Navbarwhite"
@@ -16,6 +15,7 @@ class TravellerAccount extends Component{
             oldpass : "",
             newpass1 :"",
             newpass2 :"",
+            status : ""
             
         }
 
@@ -27,7 +27,7 @@ class TravellerAccount extends Component{
        // var headers = new Headers();
         const data = {
             newemail : this.state.newemail,
-            oldemail : cookie.load('cookie')
+            oldemail : sessionStorage.getItem("email")
         }
         console.log(data);
         //set the with credentials to true
@@ -38,7 +38,9 @@ class TravellerAccount extends Component{
                 console.log("Status Code  is : ",response.status);
                 console.log(response.data);
                 if(response.status === 200){
-                    cookie.remove('cookie', { path: '/' })
+        sessionStorage.removeItem("JWT");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("password");
                     this.setState({
                         authFlag : true
                     })
@@ -51,7 +53,6 @@ class TravellerAccount extends Component{
             });
     }
     logout = () => {
-        cookie.remove("cookie")
         sessionStorage.removeItem("JWT");
         sessionStorage.removeItem("email");
         sessionStorage.removeItem("password");
@@ -72,7 +73,7 @@ class TravellerAccount extends Component{
 
         const data = {
             newpass : this.state.newpass1,
-            email : cookie.load('cookie'),
+            email : sessionStorage.getItem("email"),
             oldpass : this.state.oldpass
         }
         console.log(data);
@@ -84,15 +85,22 @@ class TravellerAccount extends Component{
                 console.log("Status Code  is : ",response.status);
                 console.log(response.data);
                 if(response.status === 200){
-                    cookie.remove('cookie', { path: '/' })
+        sessionStorage.removeItem("JWT");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("password");
                     this.setState({
                         authFlag : true
                     })
                    
-                }else{
+                }else if(response.status === 201){
+                    this.setState({
+                        status : 201
+                    })
+                }
+                else{
                     this.setState({
                        authFlag : false
-                    
+                        
                     })
                 }
             });
@@ -102,15 +110,19 @@ class TravellerAccount extends Component{
 
     render(){
         var message = "";
+        var message1 = "";
         let redirectVar = null;
-        if(!cookie.load('cookie')){
+        if(sessionStorage.getItem("JWT") == null || undefined){
         redirectVar = <Redirect to= "/TravellerLogin"/>
         }
-        while(this.state.newpass1 !== this.state.newpass2){
-            message = <div className="login-err">
-            <h4 style= {{color : "white", textAlign : "center"}}>Password do not match</h4>
-            </div>
+        if(this.state.newpass1 !== this.state.newpass2){
+            message = <h5 style= {{color : "red", textAlign : "center"}}>Confirm password do not match</h5>
         }
+        if(this.state.status == 201){
+            message1 = <h5 style= {{color : "red", textAlign : "center"}}>Incorrect Old Password</h5>
+
+        }
+        
         return(
             
         <div className="container-fluid">
@@ -161,6 +173,7 @@ class TravellerAccount extends Component{
                     <input required onChange = {(event) => {this.setState({ newpass2 : event.target.value })}} type="password" className="form-control"  placeholder="Confirm Password"/>
                 </div>
                 {message}
+                {message1}
                 <div >
                 <button className="loginbutton" onClick = {this.changePass} >Save Changes</button>  
                 </div>     

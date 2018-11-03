@@ -19,9 +19,13 @@ export default function(state = {}, action) {
       newState.token = action.payload.data.token
 
 
+      console.log(action.payload.status);
+      if(action.payload.status === 200 ){
+      console.log(action.payload.status);
       sessionStorage.setItem("JWT",newState.token);
       sessionStorage.setItem("email",newState.details);
       sessionStorage.setItem("password",newState.password);
+      }
      console.log(newState);
       return newState;
 

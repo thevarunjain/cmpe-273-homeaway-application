@@ -130,7 +130,7 @@ app.use(function(req, res, next) {
                     expiresIn: 10080 // in seconds
                 });
                 res.value = docs;
-                res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+                //res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
                res.status(200).json({success: true, token: 'JWT' + token });
             } else {
                 res.status(201).json({
@@ -225,33 +225,6 @@ router.post('/TravellerSignUp',function(req,res){
 
     });
 
-    // var firstname = req.body.firstname;
-    // var lastname = req.body.lastname;
-    // var email = req.body.email;
-    // var password = req.body.password;
-
-    // var passwordHash;
-    // crypt.createHash(password, function (hash) {
-    //     passwordHash = hash;
-
-    //     console.log("Email : ",email + "\n Password : ",password+"\n Hash Value : "+ passwordHash + "\nFirst Name : ", firstname + "\nLast Name : ", lastname);
-
-    //     new traveller({                // ES6 syntax
-    //          email,
-    //          password,
-    //          firstname,
-    //          lastname,
-    //          passwordHash
-    //     }).save().then((docs)=>{
-    //         console.log("Traveller created : ",docs);
-    //         res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
-    //         res.sendStatus(200).end();
-    //     },(err)=>{
-    //         console.log("Error in signing up");
-    //         res.sendStatus(400).end();
-    //     })
-
-    // });
 });
 
 router.post('/TravellerAccountEmail',function(req,res){
@@ -273,24 +246,6 @@ router.post('/TravellerAccountEmail',function(req,res){
             }
     });
 
-
-    // var oldemail = req.body.oldemail;
-    // var newemail = req.body.newemail;
-
-    // traveller.updateOne({email: oldemail},{email : newemail},{multi:true},function(err,log){
-    //     if(err) {
-    //         console.log("Error in changing email :( ",err);
-    //         res.status(201).json({success: false, message : ' Password Change failed..' });
-    //         res.end("Old Password Incorrect ");
-    //     }else{
-    //         res.cookie('cookie',newemail,{maxAge: 900000, httpOnly: false, path : '/'});
-    //         res.status(200).json({success: true, message : 'Changed Successfully' });
-    //             res.end("Changed Successfully");
-    //         console.log("Changed Successfully !!",log)
-    //     }
-    // });
-
-
 });
 
 
@@ -305,9 +260,14 @@ router.post('/TravellerAccountPassword',function(req,res){
             res.status(201).json({success: false, message : ' Password Change failed..' });
             res.end("Old Password Incorrect ");
             
-        }else{
+        }else if(results  == 201){
+            console.log("\n Incorrect Old Password \n");           
+            //res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.status(201).json({success: false, message : ' Incorrect Old Password' });
+            res.end("Incorrect Old Password");
+        }else if(results == 200){
             console.log("\n Password changed Successfully\n");           
-            res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
+            //res.cookie('cookie',req.body.email,{maxAge: 900000, httpOnly: false, path : '/'});
             res.status(200).json({success: true, message : ' Password Changed Successfully' });
             res.end("Password Changed Successfully");
             }

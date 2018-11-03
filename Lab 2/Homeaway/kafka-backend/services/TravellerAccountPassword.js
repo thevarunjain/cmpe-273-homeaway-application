@@ -20,10 +20,11 @@ var newpass = msg.newpass;
         traveller.updateOne({email: email, password : oldpass},{$set : {password : newpass, passwordHash : hash}},{multi:true},function(err,log){
             if(log.nModified == 0) {
                 console.log("Error in changing password :( ");
-                callback(null,log)    
+                callback(null,201)    
             }else{
                 console.log("\n Password changed Successfully\n");
-                callback(null,log)
+                console.log(log);
+                callback(null,200)
             }
         });
     })

@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import Navbar from './NavBar';
 import SearchBar from './SearchBar';
-import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 
 

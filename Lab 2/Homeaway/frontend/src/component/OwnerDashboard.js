@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import cookie from 'react-cookies';
 import TravellerProfile from './TravellerProfile';
 import TravellerAccount from './TravellerAccount';
 import TravellerTrip from './TravellerTrip';
 import {Redirect} from 'react-router';
-import Navbar from './NavBar';
 import {Link} from 'react-router-dom';
 import Navbarwhite from './Navbarwhite';
+import OwnerMessage from "./OwnerMessage";
 
 
 class OwnerDashboard extends Component {
@@ -19,15 +18,16 @@ class OwnerDashboard extends Component {
            this.state = {
             prop : [],
             ip : [],
-            booked : ''
+            booked : '',
+            resp : []
           };
            
        }
-
+  
        componentWillMount(){
-        console.log("cookies _ "+cookie.load('cookieOwner'));
-        //var email = cookie.load('cookieOwner')
-        console.log(sessionStorage.getItem("Owneremail"))
+           
+           
+        console.log("In the dasboard of ",sessionStorage.getItem("Owneremail"))
         var email = sessionStorage.getItem("Owneremail")
            axios.defaults.withCredentials = true;
        axios.get('http://localhost:3001/OwnerDashboard',{
@@ -41,11 +41,9 @@ class OwnerDashboard extends Component {
                   prop : this.state.prop.concat(response.data) 
               });
               this.state.prop.map((i)=>{
-                  console.log(i)
               axios.post(`http://localhost:3001/getpropertypicsingle/${i.headline}`)    //get the photo
               .then(response => {
                   let imagePreview = '';
-                  console.log("Imgae Res : ",response);
                        imagePreview = 'data:image/jpg;base64, ' + response.data;
                        this.setState(  
                       { 
@@ -59,15 +57,15 @@ class OwnerDashboard extends Component {
         
        }
        logout = () => {
+        sessionStorage.removeItem("OwnerJWT");
         sessionStorage.removeItem("Owneremail");
         sessionStorage.removeItem("Ownerpassword");
       }
       
       
     render(){ 
-        
         let redirectVar = null;
-        if(!sessionStorage.getItem("Owneremail")){
+        if(!sessionStorage.getItem("OwnerJWT")){
         redirectVar = <Redirect to= "/OwnerLogin"/>
         }  
       var i,j;
@@ -75,7 +73,6 @@ class OwnerDashboard extends Component {
      
    var property = this.state.prop.map((property)=>{   // extracting property 
      i =i+1;
-
      if(property.booking !=undefined) // for showing multiple bookings 
      { property.booking.map((x)=>{
            j = j+1
@@ -112,7 +109,13 @@ class OwnerDashboard extends Component {
             </li>
           );
           })
- 
+                var message;
+                if(property.length == 0){
+                   message = <div> 
+                   <img src = {require("../image/prop.png")} />
+                    </div>
+
+                }
     return(
         <div> 
         <Navbarwhite />
@@ -121,6 +124,7 @@ class OwnerDashboard extends Component {
         <div className="container-fluid">
          <ul className="nav nav-tabs" >
              <li style= {{paddingLeft : "11%" }}><Link to="/OwnerDashboard">OwnerDashboard</Link></li>
+             <li style= {{paddingLeft : "11%" }}><Link to="/OwnerMessage">Owner Message</Link></li>
              <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
          </ul>
          </div>
@@ -132,6 +136,7 @@ class OwnerDashboard extends Component {
                 <div className="container">  
       <ul className="col-md-8 list-group">
                      {property}
+                     {message}
      </ul> 
      </div>
                 </div>

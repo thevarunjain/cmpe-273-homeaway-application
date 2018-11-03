@@ -49,9 +49,7 @@ app.use(session({
     activeDuration      :  5 * 60 * 1000
 }));
 
-// app.use(bodyParser.urlencoded({
-//     extended: true
-//   }));
+
 app.use(bodyParser.json());
 
 //Allow Access Control
@@ -64,42 +62,67 @@ app.use(function(req, res, next) {
     next();
   });
 
-  const router = express.Router()
 
+const router = express.Router()
   
 router.post('/OwnerLogin',function(req,res){
     console.log("Inside Owner Login Post Request\n");
     var email = req.body.email;
     var password = req.body.password; 
 
-    //check first same id exists, if yes, then 
-    console.log(email);
+    var passwordHash;
+    crypt.createHash(password, function (hash){
+            passwordHash = hash;
+    })   
+    //traveller login 
+    owner.find({
+        email : email
+    }).then((docs) => {
+        if(docs.length!=0){                 // if owner is found with that email
+        var user = {                    // for creating JWT token
+            id: docs.id,
+            email: docs.email,
+        };
+        crypt.compareHash(req.body.password, docs[0].passwordHash, function (err, isMatch) {
 
-    owner.findOne({email : email}).then((result)=>{
-        if(result==null){               //no user with email found 
-            new owner({                // ES6 syntax
+            if (isMatch && !err) {                                          // if password is correct
+                console.log("Owner Found", docs)
+                //Create token if the password matched and no error was thrown
+                var token = jwt.sign(user, "Lamborghini", {
+                    expiresIn: 10080 // in seconds
+                });
+                res.value = docs;
+                //res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
+                res.status(200).json({success: true, token: 'JWT' + token });
+            } else {                                                            // if password is wrong
+                res.status(201).json({
+                    success: false,
+                    message: 'Authentication failed. Passwords did not match.'
+                });
+                console.log('Password did not match');
+            console.log(err);
+        }   
+    })// end of create hash 
+}// end of if 
+                else{                
+                new owner({                // ES6 syntax
                 email,
-                password
-           }).save().then((docs)=>{
-               console.log("Owner created : ",docs);
-               res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
-               res.sendStatus(200).end();
-           },(err)=>{
-               console.log("Error in signing up");
-               res.sendStatus(400).end();
-           })
-        }else{                          //user found, then update password
-            owner.findOneAndUpdate({email : email},{$set : {password : password}}).then((data) => {
-                 // console.log(data);
-                  console.log("Owner found with email : ", email);
-                  res.cookie('cookieOwner',email,{maxAge: 900000, httpOnly: false, path : '/'});
-                  res.sendStatus(200).end();
-            
-              })
-        }
+                password,
+                passwordHash
+                }).save().then((docs)=>{
+                console.log("Owner created : ",docs);
+                    res.status(202).json({success: true, message: 'User Created'});
+            },(err)=>{
+                console.log("Error in signing up");
+                callback(err,null)
+            }) 
+        }//end of else                
+        }) // end of docs                                 
  
-    });
 });
+
+
+
 
 router.get('/OwnerDashboard', function(req,res){
     console.log("\nIn owner dashBoard\n" + req.body);
@@ -113,7 +136,7 @@ router.get('/OwnerDashboard', function(req,res){
             console.log("\n><><><><>< INSIDE ERROR ><><><><><");
             res.json({
                 status:"error",
-                msg:"NO Property Found."
+                msg :"NO Property Found."
             })
         }else{
             console.log("\nProperty for user " + email +" sent to client");
@@ -123,27 +146,6 @@ router.get('/OwnerDashboard', function(req,res){
                 res.end(JSON.stringify(results));
             }
     });
-
-    //var arr = [];
-
-    //owner.find({email :email},{properties : 1 ,_id : 0 }).then((result)=>{
-    //     if(result != null){
-    //     result.map((data)=>{
-    //         data.properties.map((prop)=>{
-    //             arr.push(prop)
-    //         })
-    //         });
-    //     console.log("\nProperty Found >>>> \n\n",arr);
-    //     console.log("\nProperty for user " + email +" sent to client");
-    //     res.writeHead(200,{
-    //         'Content-Type' : 'application/json'
-    //         })
-    //         res.end(JSON.stringify(arr));
-            
-    //     }else{
-    //         console.log("No property found");
-    //     }
-    // })
 })
 
 

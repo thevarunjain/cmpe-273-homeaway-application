@@ -15,9 +15,16 @@ export default function(state = {}, action) {
      var holdemail = JSON.parse(action.payload.config.data);
       newState.details = holdemail.email;
       newState.password = holdemail.password;
+      newState.token = action.payload.data.token
 
+      console.log(action.payload.status);
+      if(action.payload.status !== 201 ){
+      console.log(action.payload.status);
+
+      sessionStorage.setItem("OwnerJWT",newState.token);
       sessionStorage.setItem("Owneremail",newState.details);
       sessionStorage.setItem("Ownerpassword",newState.password);
+      }
       console.log(newState);
       return newState;
 
