@@ -155,106 +155,106 @@ app.post('/getpropertypicsingle/:file(*)',(req, res) => {
 app.use(require("../Backend/Routes/Traveller"));
 app.use(require("../Backend/Routes/Owner"));
 app.use(require("../Backend/Routes/Property"));
+app.use(require("../Backend/Routes/Message"))
 
-
-app.post('/PostMessage', function(req,res){
-    console.log("Inside Post Message\n");
-    console.log(req.body); 
+// app.post('/PostMessage', function(req,res){
+//     console.log("Inside Post Message\n");
+//     console.log(req.body); 
     
-    var owneremail = req.body.owneremail 
-    var propid = req.body.propid 
-    var travelleremail = req.body.travelleremail 
-    var question = req.body.question
+//     var owneremail = req.body.owneremail 
+//     var propid = req.body.propid 
+//     var travelleremail = req.body.travelleremail 
+//     var question = req.body.question
     
-        new message({                // ES6 syntax
-            owneremail,
-            propid,
-            travelleremail,
-            question
-            }).save().then((docs)=>{
-            console.log("Message Posted : ",docs);
-        },(err)=>{
-            console.log("Error in posting message");
-    })
-});
+//         new message({                // ES6 syntax
+//             owneremail,
+//             propid,
+//             travelleremail,
+//             question
+//             }).save().then((docs)=>{
+//             console.log("Message Posted : ",docs);
+//         },(err)=>{
+//             console.log("Error in posting message");
+//     })
+// });
 
-app.get('/GetMessage',function(req,res){
-    console.log("Inside get message ");
-    var email = req.query.id;                       // passing id as params in get request 
+// app.get('/GetMessage',function(req,res){
+//     console.log("Inside get message ");
+//     var email = req.query.id;                       // passing id as params in get request 
 
-    console.log(email);
-    message.findOne({
-        owneremail : email
-}).then((data)=>{
-    console.log(data);    
-    if(data.length!=0){
-        res.writeHead(200,{
-            'Content-Type' : 'application/json'
-            })
-            res.end(JSON.stringify(data));
+//     console.log(email);
+//     message.findOne({
+//         owneremail : email
+// }).then((data)=>{
+//     console.log(data);    
+//     if(data.length!=0){
+//         res.writeHead(200,{
+//             'Content-Type' : 'application/json'
+//             })
+//             res.end(JSON.stringify(data));
         
-    }
-})    //end of then    
-});
+//     }
+// })    //end of then    
+// });
 
 
-app.post('/ReplyMessage', function(req,res){
-    console.log("Inside Post Message\n");
-    console.log(req.body); 
+// app.post('/ReplyMessage', function(req,res){
+//     console.log("Inside Post Message\n");
+//     console.log(req.body); 
     
-    var owneremail = req.body.owneremail 
-    var propid = req.body.propid 
-    var travellermail = req.body.travellermail 
-    var question = req.body.question
-    var reply = req.body.reply
+//     var owneremail = req.body.owneremail 
+//     var propid = req.body.propid 
+//     var travellermail = req.body.travellermail 
+//     var question = req.body.question
+//     var reply = req.body.reply
     
-    message.findOne({
-            owneremail,
-            propid,
-            travellermail,
-            question
-    }).then((data)=>{
-        console.log(data);  
-        console.log(data.length);  
-        if(data.length!=0){                 //got message then reply 
-            message.findOneAndUpdate({owneremail,propid,travellermail,question},    //where condition
-                { $set : {reply : reply}}).then((result)=>{
-                if(result!= undefined){
-                    console.log("\n Replied Successfully !!\n\n",result)
-                    res.status(200).json({success: true, message :  "Replied Successfully" });
-                }else{
-                    console.log("Error in replying :( ",result);
-                    res.status(200).json({success: true, message :  "Replied Successfully" });                    
-                }
-            })
-           } // end of if
-           else{
-            console.log("No Message Found")
-            res.status(202).json({success: false, message :  "No Message Found" });
+//     message.findOne({
+//             owneremail,
+//             propid,
+//             travellermail,
+//             question
+//     }).then((data)=>{
+//         console.log(data);  
+//         console.log(data.length);  
+//         if(data.length!=0){                 //got message then reply 
+//             message.findOneAndUpdate({owneremail,propid,travellermail,question},    //where condition
+//                 { $set : {reply : reply}}).then((result)=>{
+//                 if(result!= undefined){
+//                     console.log("\n Replied Successfully !!\n\n",result)
+//                     res.status(200).json({success: true, message :  "Replied Successfully" });
+//                 }else{
+//                     console.log("Error in replying :( ",result);
+//                     res.status(200).json({success: true, message :  "Replied Successfully" });                    
+//                 }
+//             })
+//            } // end of if
+//            else{
+//             console.log("No Message Found")
+//             res.status(202).json({success: false, message :  "No Message Found" });
 
-        }
-    })
-});
+//         }
+//     })
+// });
 
 
-app.get('/GetReply',function(req,res){
-    console.log("Inside get reply ");
-    var email = req.query.id;                       // passing id as params in get request 
+// app.get('/GetReply',function(req,res){
+//     console.log("Inside get reply ");
+//     var email = req.query.id;                       // passing id as params in get request 
 
-    console.log(email);
-    message.findOne({
-        travelleremail : email
-}).then((data)=>{
-    console.log(data);    
-    if(data.length!=0){
-        res.writeHead(200,{
-            'Content-Type' : 'application/json'
-            })
-            res.end(JSON.stringify(data));
+//     console.log(email);
+//     message.findOne({
+//         travelleremail : email
+// }).then((data)=>{
+//     console.log(data);    
+//     if(data.length!=0){
+//         res.writeHead(200,{
+//             'Content-Type' : 'application/json'
+//             })
+//             res.end(JSON.stringify(data));
         
-    }
-})    //end of then    
-})
+//     }
+// })    //end of then    
+// })
 
 app.listen(3001);
 console.log("Server Listening on port 3001");
