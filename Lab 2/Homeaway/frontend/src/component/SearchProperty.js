@@ -10,6 +10,7 @@ import Pagination from "./Pagination";
 import { submitsearch } from "../actions";
 import { connect } from "react-redux";
 import { submitbookproperty } from "../actions";
+import {Link} from 'react-router-dom';
 import {paginate} from "../paginate"
 //import { Field, reduxForm } from "redux-form";
 
@@ -23,7 +24,7 @@ class SearchProperty extends Component {
              searchbedroom : "",
              searchprice : "",
             currentPage : 1,
-            slidervalue : 0,
+            slidervalue : 5000,
              ip :[],
               flag : '',
               p : ''
@@ -117,6 +118,24 @@ class SearchProperty extends Component {
         }
 
     render(){  
+
+      var from,to;
+      from = sessionStorage.getItem('datefrom');
+      to = sessionStorage.getItem('dateto');
+        if(new Date(from)>new Date(to))  {
+          return (
+            <div className ="bg-img-error"  >
+              <h3 style={{color : "white", textAlign : "center"}}>You have entered the wrong Dates :(</h3>
+              <Link to="/">
+              <h3 style={{color : "white", textAlign : "center"}}><u>Click Here To Search Again</u></h3>
+              </Link>
+            </div>
+
+          )
+        }  
+      
+   
+     
         var message ;
         console.log(this.props.pro)
      
@@ -145,7 +164,8 @@ class SearchProperty extends Component {
 
     
               return  proper.headline.indexOf(this.state.searchlocation) !== -1 && 
-                      proper.bedroom.indexOf(this.state.searchbedroom) !== -1 
+                      proper.bedroom.indexOf(this.state.searchbedroom) !== -1 &&
+                      Number(proper.rate) <= this.state.slidervalue 
                      
             }  
           );
@@ -202,7 +222,8 @@ class SearchProperty extends Component {
         
 
     return(       // full page 
-   
+         
+
       <div className ="container-fluid">
         <Navbar />
         <div >
@@ -215,21 +236,12 @@ class SearchProperty extends Component {
         <input className="form-control" placeholder="Location" type = "text" value= {this.state.searchlocation} onChange={this.updateSearch.bind(this)} /> 
         </div>
         <div className="col-md-2">
-        <p className = "priceclass">Price (0 - 5000) : $ {this.state.slidervalue}</p>
+        <p className = "priceclass">Price ($ 0 - $ {this.state.slidervalue})</p>
         <input className="slider" placeholder="Price" type="range" name="points" min="0" max="5000" value= {this.state.slidervalue} onChange={this.updateRange.bind(this)} /> 
         </div> 
         <div className="col-md-2">
         <input className="form-control" placeholder="Bedroom"  type="number" min="1" max="10" value= {this.state.searchbedroom} onChange={this.updateSearchBedroom.bind(this)} /> 
         </div>
-        Arrival
-        <div className="col-md-2">
-         <input className="form-control" placeholder="Arrival" type="date" value= {this.state.searchArrival} onChange={this.updateSearchArrival.bind(this)} /> 
-        </div>
-        Dept
-        <div className="col-md-2">
-        <input className="form-control" placeholder="Departure" type="date" value= {this.state.searchDeparture} onChange={this.updateSearchDeparture.bind(this)} /> 
-        </div>
-
         </div>
 
         <div >

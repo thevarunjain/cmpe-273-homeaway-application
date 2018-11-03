@@ -38,9 +38,10 @@ class TravellerLogin extends Component{
         var errBlock = ""; 
         var red;
         var redirectVar ;
-          // if(sessionStorage.getItem("JWT")!=null || undefined){
-          //   redirectVar = <Redirect to= "/TravellerHomepage"/>
-          // }
+        // console.log(sessionStorage.getItem("JWT"),this.props.traveller.status);   //null when comming from homepage
+          if(sessionStorage.getItem("JWT") != null){
+            redirectVar = <Redirect to= "/TravellerHomepage"/>
+          }
 
         this.props.traveller.status == 201 ?  errBlock =  <div className="login-err">
         <h4 style= {{color : "white", textAlign : "center"}}>Username or password incorrect</h4>
@@ -50,7 +51,7 @@ class TravellerLogin extends Component{
         <h4 style= {{color : "white", textAlign : "center"}}>No user found, sign up</h4>
         </div> : null;
 
-        red = this.props.traveller.status == 200 ? <Redirect to='/TravellerHomepage'/> : null
+        red = this.props.traveller.status == 200 && sessionStorage.getItem("JWT") != null ? <Redirect to='/TravellerHomepage'/> : null
         const { handleSubmit } = this.props;
 
         return(    

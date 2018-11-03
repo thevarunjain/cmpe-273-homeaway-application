@@ -25,7 +25,8 @@ class SearchBar extends Component {
       dateTo : "",
       dateFrom : "",
       guest : "",
-      passon :""
+      passon :"",
+
     }}
     
 
@@ -36,7 +37,7 @@ class SearchBar extends Component {
 
       return (
       <div className="searchbox">
-        <input className="form-control" type={field.type} {...field.input} required placeholder = {field.placeholder} />
+        <input className="form-control" type={field.type} {...field.input} required placeholder = {field.placeholder}/>
         <div className="text-help" >
           {touched ? error : ""}
         </div>

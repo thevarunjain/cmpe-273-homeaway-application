@@ -2478,6 +2478,15 @@ table th[class*="col-"] {
   bottom: 0;
   height : 722px;
 }
+.bg-img-error{
+  background-image: url('../image/date.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  height : 722px;
+}
 .table-responsive {
   min-height: .01%;
   overflow-x: auto;

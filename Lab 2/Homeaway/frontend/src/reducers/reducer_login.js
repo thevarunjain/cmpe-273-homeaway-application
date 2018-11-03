@@ -12,6 +12,7 @@ export default function(state = {}, action) {
 
     case  SUBMIT_LOGIN :
     newState = action.payload;
+    console.log(action.payload);
      var holdemail = JSON.parse(action.payload.config.data);
       newState.details = holdemail.email;
       newState.password = holdemail.password;

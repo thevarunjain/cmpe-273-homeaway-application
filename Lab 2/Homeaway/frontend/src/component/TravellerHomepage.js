@@ -86,10 +86,11 @@ class TravellerHomepage extends Component {
 
     console.log(this.props.traveller);
     let redirectVar = null;
-      console.log((sessionStorage.getItem("JWT") == undefined));
+      console.log((sessionStorage.getItem("JWT") == undefined || null));
       console.log(sessionStorage.getItem("JWT"))
-    if(sessionStorage.getItem("JWT") == undefined || null){
+    if(sessionStorage.getItem("JWT") == null || undefined){
       console.log("in if cond")
+
       redirectVar = <Redirect to= "/TravellerLogin"/>
     }
 

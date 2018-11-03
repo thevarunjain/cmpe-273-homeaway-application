@@ -70,7 +70,7 @@ app.use(function(req, res, next) {
 router.post('/OwnerLogin',function(req,res){
     console.log("Inside Owner Login Post Request\n");
     var email = req.body.email;
-    var password = req.body.password;
+    var password = req.body.password; 
 
     //check first same id exists, if yes, then 
     console.log(email);

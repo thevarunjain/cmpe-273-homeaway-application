@@ -27,6 +27,7 @@ class OwnerDashboard extends Component {
        componentWillMount(){
         console.log("cookies _ "+cookie.load('cookieOwner'));
         //var email = cookie.load('cookieOwner')
+        console.log(sessionStorage.getItem("Owneremail"))
         var email = sessionStorage.getItem("Owneremail")
            axios.defaults.withCredentials = true;
        axios.get('http://localhost:3001/OwnerDashboard',{
