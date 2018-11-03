@@ -15,13 +15,16 @@ class OwnerMessage extends Component{
             propid : "",
             travelleremail : "",
             question : "",
-            reply : "i am fine"
+            reply : "",
+            writereply : ""
           };
 
+
+          this.replymessage = this.replymessage.bind(this)
         }
 
       //Get Messages 
-        componentWillMount(){
+        componentDidMount(){
            
             var email = sessionStorage.getItem("Owneremail");        
             axios.get('http://localhost:3001/GetMessage',{
@@ -31,13 +34,14 @@ class OwnerMessage extends Component{
                     .then((response) => {
                     console.log(response);
                     console.log(response.data);
-                    var {id, owneremail, propid, travelleremail, question} = response.data;
+                    var {id, owneremail, propid, travelleremail, question,reply} = response.data;
                     
                     this.setState({
                         owneremail,
                         propid,
                         travelleremail,
-                        question
+                        question,
+                        reply
                     })
                     console.log(this.state)
                 });
@@ -45,7 +49,7 @@ class OwnerMessage extends Component{
 
    
         replymessage(){
-            console.log(this.state.reply)
+            console.log(this.state)
 
             var {owneremail, propid, travelleremail, question,reply} = this.state;
            
@@ -54,7 +58,7 @@ class OwnerMessage extends Component{
             propid ,
             travelleremail ,
             question ,
-            reply
+            reply : this.state.writereply
            }
 
            console.log(data);
@@ -82,7 +86,7 @@ class OwnerMessage extends Component{
 
     render(){
         var reply;
-        console.log(this.state.reply);
+        console.log(this.state);
         if(this.state.reply != ""){
             console.log("has reply")
          reply = <div class="container darker" style={{width :"394px", marginLeft : "83px"}}>
@@ -134,7 +138,7 @@ class OwnerMessage extends Component{
                     {reply}
                     
                     <div style = {{marginLeft : "158px"}}>
-                    <input style = {{width : "321px"} } className="form-control" />
+                    <input style = {{width : "321px"} } value={this.state.writereply} onChange={(e)=>{ this.setState({writereply : e.target.value}) }} className="form-control" />
                     <br></br>
                     <button style = {{marginLeft : "221px"}} className= "btn btn-primary" onClick={this.replymessage}>Reply </button>
                     </div>
