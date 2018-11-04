@@ -6,6 +6,7 @@ import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import Navbarwhite from "../component/Navbarwhite";
 import SearchBar from "../component/SearchBar"
+import {ROOT_URL} from "../config";
 
 
 
@@ -32,7 +33,7 @@ class BookProperty extends Component {
           var properties = this.props.bookproperty;
           console.log(properties);
     
-  axios.post('http://localhost:3001/getpropertypic/'+`${properties.headline}`)
+  axios.post(`${ROOT_URL}/getpropertypic/${properties.headline}`)
   .then(response => {
     console.log(properties.headline);
 
@@ -58,7 +59,7 @@ class BookProperty extends Component {
           //set the with credentials to true
           axios.defaults.withCredentials = true;
           //make a post request with the user data
-          axios.post('http://localhost:3001/PostMessage',data)
+          axios.post(`${ROOT_URL}/PostMessage`,data)
               .then(response => {
                   console.log("Status Code  is : ",response.status);
                   console.log(response.data);
@@ -86,7 +87,7 @@ class BookProperty extends Component {
  
 
  /// console.log(pro);
-  axios.post('http://localhost:3001/BookProperty',data)
+  axios.post(`${ROOT_URL}/BookProperty`,data)
   .then(response => {
       console.log("Status Code  is : ",response.status);
       console.log(response.data);

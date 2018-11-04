@@ -1,4 +1,5 @@
 import axios from "axios";
+import {ROOT_URL} from "../config";
 
 export const  SUBMIT_LOGIN = "SUBMIT_LOGIN";
 export const  SUBMIT_SIGNUP = "SUBMIT_SIGNUP";
@@ -9,9 +10,10 @@ export const  SUBMIT_SEARCH_PROPERTY = "SUBMIT_SEARCH_PROPERTY";
 export const  SUBMIT_BOOK_PROPERTY = "SUBMIT_BOOK_PROPERTY";
 export const  SUBMIT_TRIP = "SUBMIT_TRIP";
 
+
 axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("JWT") ? sessionStorage.getItem("JWT") : ""; 
 
-const ROOT_URL = "http://localhost:3001";
+//const ROOT_URL = "http://localhost:3001";
 
 export function submitlogin(values) {
   axios.defaults.withCredentials = true;
@@ -70,7 +72,7 @@ export function submitproperty(values) {
   //set the with credentials to true
    axios.defaults.withCredentials = true;
   //make a post request with the user data
-  const request = axios.post('http://localhost:3001/ListProperty',formData);
+  const request = axios.post(`${ROOT_URL}/ListProperty`,formData);
   console.log(request);
 
   return {
@@ -97,11 +99,7 @@ console.log(values);
 
 //after clicking on property
 export function submitbookproperty(values) {
-  // axios.defaults.withCredentials = true;
 
-  // const request = axios.post(`${ROOT_URL}/search`, values);
-  // console.log(request);
-  
   return {
     type: SUBMIT_BOOK_PROPERTY,
     payload: values,
@@ -113,11 +111,11 @@ export function submitbookproperty(values) {
 export function submittrip(values) {
   axios.defaults.withCredentials = true;
 console.log(values)
-  const request = axios.get('http://localhost:3001/TravellerTrip',{               //get the booking details
+  const request = axios.get(`${ROOT_URL}/TravellerTrip`,{               //get the booking details
   params: {
       id : "varunsj18@gmail.com"
     }})
- // const request = axios.post(`${ROOT_URL}/search`, values);
+ 
   console.log(request);
 
   return {

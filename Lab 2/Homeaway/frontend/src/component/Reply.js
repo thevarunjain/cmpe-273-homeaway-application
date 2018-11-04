@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import '../App.css';
 import '../css/bootstrap.css';
 import axios from 'axios';
-import Navbarwhite from './Navbarwhite';
-import {Redirect} from 'react-router';
-import {Link} from 'react-router-dom';
+import {ROOT_URL} from "../config";
+
 
 class Reply extends Component {
     constructor(props){
@@ -35,7 +34,7 @@ class Reply extends Component {
                        //set the with credentials to true
                        axios.defaults.withCredentials = true;
                        //make a post request with the user data
-                       axios.post('http://localhost:3001/ReplyMessage',data)
+                       axios.post(`${ROOT_URL}/ReplyMessage`,data)
                            .then(response => {
                                console.log("Status Code  is : ",response.status);
                                console.log(response.data);

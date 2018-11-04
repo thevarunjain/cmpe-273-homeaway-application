@@ -7,10 +7,7 @@ import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import { connect } from "react-redux";
 import { submitlogin } from "../actions";
-
-
-
-
+import {ROOT_URL} from "../config";
 
 class TravellerHomepage extends Component {
   constructor(props){
@@ -57,7 +54,7 @@ class TravellerHomepage extends Component {
       };
       console.log(data);
 
-      axios.post('http://localhost:3001/search',data)
+      axios.post(`${ROOT_URL}/search`,data)
       .then(response => {
           console.log("Status Code of Search Post: ",response.status);
           console.log(response.data);

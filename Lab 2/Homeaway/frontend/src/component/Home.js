@@ -6,6 +6,7 @@ import SearchBar from './SearchBar';
 import {Link} from 'react-router-dom';
 import {setStatus} from '../actions/index'
 import { connect } from "react-redux";
+import {ROOT_URL} from "../config";
 
 
 class Home extends Component {
@@ -35,7 +36,7 @@ class Home extends Component {
       };
       console.log(data);
 
-      axios.post('http://localhost:3001/search',data)
+      axios.post(`${ROOT_URL}/search`,data)
       .then(response => {
           console.log("Status Code of Search Post: ",response.status);
           console.log(response.data);

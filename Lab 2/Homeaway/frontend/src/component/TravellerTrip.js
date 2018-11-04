@@ -9,6 +9,8 @@ import { submittrip } from "../actions";
 import Navbarwhite from "../component/Navbarwhite";
 import {paginate} from "../paginate";
 import Pagination from "./Pagination";
+import {ROOT_URL} from "../config";
+
 
 
 class TravellerTrip extends Component{
@@ -30,7 +32,7 @@ class TravellerTrip extends Component{
 
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.get('http://localhost:3001/TravellerTrip',{               //get the booking details
+        axios.get(`${ROOT_URL}/TravellerTrip`,{               //get the booking details
             params: {
                 id : this.props.traveller.details != undefined ? this.props.traveller.details : sessionStorage.getItem("email") 
               }})
@@ -42,7 +44,7 @@ class TravellerTrip extends Component{
                 });
                 this.state.prop.map((i)=>{
                     console.log(i)
-                axios.post(`http://localhost:3001/getpropertypicsingle/${i.headline}`)    //get the photo
+                axios.post(`${ROOT_URL}/getpropertypicsingle/${i.headline}`)    //get the photo
                 .then(response => {
                     let imagePreview = '';
                     console.log("Imgae Res : ",response);

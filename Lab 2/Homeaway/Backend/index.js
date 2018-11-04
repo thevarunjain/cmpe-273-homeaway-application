@@ -17,6 +17,13 @@ var jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 var kafka = require('./kafka/client');
 
+//localhost
+var ROOT_URL = 'http://localhost:3000';
+
+//AWS
+//var ROOT_URL = 'http://3.16.5.132:3000';
+
+
 //Passport
 var passport = require('passport');
 var requireAuth = passport.authenticate('jwt', {session: false});
@@ -64,7 +71,7 @@ const storagepic = multer.diskStorage({
 
 const uploadpic = multer({ storage : storagepic });
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: ROOT_URL, credentials: true }));
 
 app.use(session({
     secret              : 'hakuna matata',
@@ -78,7 +85,7 @@ app.use(bodyParser.json());
 
 //Allow Access Control
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', ROOT_URL);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');

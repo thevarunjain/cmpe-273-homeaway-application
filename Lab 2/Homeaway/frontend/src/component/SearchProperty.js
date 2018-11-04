@@ -10,7 +10,9 @@ import { connect } from "react-redux";
 import { submitbookproperty } from "../actions";
 import {Link} from 'react-router-dom';
 import {paginate} from "../paginate";
-import SearchBar from "../component/SearchBar"
+import SearchBar from "../component/SearchBar";
+import {ROOT_URL} from "../config";
+
 
 class SearchProperty extends Component {
        constructor(props){
@@ -79,7 +81,7 @@ class SearchProperty extends Component {
           let imagePreview = '';
           var property1 = this.props.pro.map((property)=>{
               
-            axios.post('http://localhost:3001/getpropertypicsingle/'+`${property.headline}`)
+            axios.post(`${ROOT_URL}/getpropertypicsingle/${property.headline}`)
             .then(response => {
                     imagePreview = 'data:image/jpg;base64, ' + response.data;
                 this.setState(  
@@ -105,7 +107,7 @@ class SearchProperty extends Component {
                 let imagePreview = '';
                 var property1 = this.props.pro.map((property)=>{
                     
-                  axios.post('http://localhost:3001/getpropertypicsingle/'+`${property.headline}`)
+                  axios.post(`${ROOT_URL}/getpropertypicsingle/${property.headline}`)
                   .then(response => {
                           imagePreview = 'data:image/jpg;base64, ' + response.data;
                       this.setState(  

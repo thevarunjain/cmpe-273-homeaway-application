@@ -4,7 +4,9 @@ import '../css/bootstrap.css';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-import Navbarwhite from "./Navbarwhite"
+import Navbarwhite from "./Navbarwhite";
+import {ROOT_URL} from "../config";
+
 
 class TravellerProfile extends Component{
        constructor(props){
@@ -41,7 +43,7 @@ class TravellerProfile extends Component{
         componentDidMount(){
             var email =  sessionStorage.getItem("email");
 
-            axios.get('http://localhost:3001/TravellerProfile',{
+            axios.get(`${ROOT_URL}/TravellerProfile`,{
                 params: {
                   id : email
                 }})
@@ -86,7 +88,7 @@ class TravellerProfile extends Component{
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/TravellerProfile',data)
+        axios.post(`${ROOT_URL}/TravellerProfile`,data)
             .then(response => {
                 console.log("Status Code  is : ",response.status);
                 console.log(response.data);
@@ -108,7 +110,7 @@ class TravellerProfile extends Component{
         console.log("in mount");
       //  let formData = new FormData();
        
-          axios.post('http://localhost:3001/GetProfilePicture/'+`profile_${sessionStorage.getItem("email")}.jpg`)
+          axios.post(`${ROOT_URL}/GetProfilePicture/profile_${sessionStorage.getItem("email")}.jpg`)
 
           .then(response => {
               console.log("Imgae Res : ",response);
@@ -142,9 +144,9 @@ class TravellerProfile extends Component{
       formData.append('selectedFile', selectedFile);
       console.log("form wali email :" + sessionStorage.getItem("email"))
   
-        axios.post('http://localhost:3001/ProfilePicture', formData)
+        axios.post(`${ROOT_URL}/ProfilePicture`, formData)
           .then((result) => {
-            axios.post('http://localhost:3001/GetProfilePicture/'+`profile_${sessionStorage.getItem("email")}.jpg`)
+            axios.post(`${ROOT_URL}/GetProfilePicture/profile_${sessionStorage.getItem("email")}.jpg`)
   
             .then(response => {
                 console.log("Imgae Res : ",response);

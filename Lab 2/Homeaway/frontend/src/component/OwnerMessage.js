@@ -6,6 +6,7 @@ import Navbarwhite from './Navbarwhite';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import Reply from "./Reply";
+import {ROOT_URL} from "../config";
 
 
 class OwnerMessage extends Component{
@@ -29,7 +30,7 @@ class OwnerMessage extends Component{
         componentDidMount(){
            
             var email = sessionStorage.getItem("Owneremail");        
-            axios.get('http://localhost:3001/GetMessage',{
+            axios.get(`${ROOT_URL}/GetMessage`,{
                 params: {
                     id : email
                 }})

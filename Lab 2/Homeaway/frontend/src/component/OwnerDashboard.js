@@ -11,6 +11,7 @@ import Navbarwhite from './Navbarwhite';
 import OwnerMessage from "./OwnerMessage";
 import {paginate} from "../paginate";
 import Pagination from "./Pagination";
+import {ROOT_URL} from "../config";
 
 
 class OwnerDashboard extends Component {
@@ -33,7 +34,7 @@ class OwnerDashboard extends Component {
         console.log("In the dasboard of ",sessionStorage.getItem("Owneremail"))
         var email = sessionStorage.getItem("Owneremail")
            axios.defaults.withCredentials = true;
-       axios.get('http://localhost:3001/OwnerDashboard',{
+       axios.get(`${ROOT_URL}/OwnerDashboard`,{
             params: {
               id : email 
             }})
@@ -44,7 +45,7 @@ class OwnerDashboard extends Component {
                   prop : this.state.prop.concat(response.data) 
               });
               this.state.prop.map((i)=>{
-              axios.post(`http://localhost:3001/getpropertypicsingle/${i.headline}`)    //get the photo
+              axios.post(`${ROOT_URL}/getpropertypicsingle/${i.headline}`)    //get the photo
               .then(response => {
                   let imagePreview = '';
                        imagePreview = 'data:image/jpg;base64, ' + response.data;

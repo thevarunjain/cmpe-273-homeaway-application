@@ -4,7 +4,9 @@ import '../css/bootstrap.css';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-import Navbarwhite from "../component/Navbarwhite"
+import Navbarwhite from "../component/Navbarwhite";
+import {ROOT_URL} from "../config";
+
 
 class TravellerMessage extends Component{
        constructor(props){
@@ -34,7 +36,7 @@ class TravellerMessage extends Component{
        
         var email = sessionStorage.getItem("email"); 
         console.log(email)       
-        axios.get('http://localhost:3001/GetReply',{
+        axios.get(`${ROOT_URL}/GetReply`,{
             params: {
                 id : email
             }})

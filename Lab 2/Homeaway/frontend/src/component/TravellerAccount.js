@@ -4,7 +4,9 @@ import '../css/bootstrap.css';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-import Navbarwhite from "../component/Navbarwhite"
+import Navbarwhite from "../component/Navbarwhite";
+import {ROOT_URL} from "../config";
+
 
 class TravellerAccount extends Component{
        constructor(props){
@@ -33,7 +35,7 @@ class TravellerAccount extends Component{
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/TravellerAccountEmail',data)
+        axios.post(`${ROOT_URL}/TravellerAccountEmail`,data)
             .then(response => {
                 console.log("Status Code  is : ",response.status);
                 console.log(response.data);
@@ -80,7 +82,7 @@ class TravellerAccount extends Component{
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/TravellerAccountPassword',data)
+        axios.post(`${ROOT_URL}/TravellerAccountPassword`,data)
             .then(response => {
                 console.log("Status Code  is : ",response.status);
                 console.log(response.data);
