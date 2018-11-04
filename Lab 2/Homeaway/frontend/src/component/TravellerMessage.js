@@ -11,6 +11,7 @@ class TravellerMessage extends Component{
         super(props);
 
         this.state ={
+            msg : [],
             owneremail :"",
             propid :"",
             travelleremail :"",
@@ -28,55 +29,75 @@ class TravellerMessage extends Component{
           }
           
       //Get Reply
-        componentWillMount(){
-            console.log("in will mount");
-           
-            var email = sessionStorage.getItem("email"); 
-            console.log(email)       
-            axios.get('http://localhost:3001/GetReply',{
-                params: {
-                    id : email
-                }})
-                    .then((response) => {
-                    console.log(response);
-                    console.log(response.data);
-                    var {id, owneremail, propid, travelleremail, question, reply} = response.data;
-                    
-                    this.setState({
-                        owneremail,
-                        propid,
-                        travelleremail,
-                        question,
-                        reply
-                    })
-                    console.log(this.state)
-                });
-        }
+      componentWillMount(){
+        console.log("in will mount");
+       
+        var email = sessionStorage.getItem("email"); 
+        console.log(email)       
+        axios.get('http://localhost:3001/GetReply',{
+            params: {
+                id : email
+            }})
+                .then((response) => {
+                console.log(response);
+                console.log(response.data);
+                
+                this.setState({
+                        msg : response.data
+                })
+                console.log(this.state)
+            });
+    }
+    
 
     render(){
+        var replyerr;
+        
+        var msgbox = this.state.msg.map((msg)=>{
+
+
+            if(msg.question == "" || null){
+                replyerr = <div>
+                <img  style={{maxWidth: "360px"}} src={require("../image/message.png")} />
+                           </div> 
+               }
+    
+
+            return(
+                    <div className="col-md-7">
+
+                    <div className="container" style={{width :"530px"}}>  
+                    <ul className="col-md-8 list-group">
+
+                        <h2> Message for {msg.propid}</h2>
+                    {replyerr}
+                    <div className="container" style= {{width : "366px","marginLeft" : "129px"}}>
+
+                    <h4 >{msg.question}</h4>
+                    </div>
+
+                    {msg.reply != undefined ? <div className="container darker" style={{width :"394px", marginLeft : "1px"}}>
+                    <h5>Owner : {msg.owneremail} </h5>
+                    <h4>{msg.reply}</h4>
+
+                        </div> : null}
+
+                    </ul> 
+                    </div>
+                    </div>
+
+            )
+
+        }) 
+
+
         console.log("in render");
 
         var redirectVar;
         if(sessionStorage.getItem("JWT") == null || undefined){
             redirectVar = <Redirect to= "/TravellerLogin"/>
         }
-        var replyerr,reply;
-        console.log(this.state.question)
-        if(this.state.question == "" || null){
-            replyerr = <div>
-            <img style={{maxWidth: "360px"}} src={require("../image/message.png")} />
-                       </div> 
-           }else{
-               reply = <div> <h4>{this.state.propid}</h4>
-               <div className="container"  style={{width :"394px", marginLeft : "83px"}}>
-               <h4>{this.state.question}</h4>
-               </div>
-               <div className="container darker" style={{width :"480px"}}>
-               <h4>{this.state.reply}</h4>
-               <h5> From : {this.state.owneremail}</h5>
-               </div>
-               </div>
-           }
+        
 
         return(
         
@@ -95,21 +116,9 @@ class TravellerMessage extends Component{
              
          </ul>
          </div>
-            
-
-                    
-        <div className="container" style={{width :"530px"}}>  
-        <ul className="col-md-8 list-group">
-                {/* {message} */}
-
-                <h2> Traveller Messages </h2>
-                {replyerr}
-                {reply}
+ 
+                {msgbox}
        
-       
-         </ul> 
-         </div>
-
         </div>
         </div>
  

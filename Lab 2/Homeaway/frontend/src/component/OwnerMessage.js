@@ -5,22 +5,24 @@ import axios from 'axios';
 import Navbarwhite from './Navbarwhite';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
+import Reply from "./Reply";
 
 
 class OwnerMessage extends Component{
        constructor(props){
         super(props);
         this.state = {
+            msg : [],
             owneremail : "",
             propid : "",
             travelleremail : "",
             question : "",
             reply : "",
-            writereply : ""
+            writereply : "",
+            update : "",
           };
+    this.updateState  = this.updateState.bind(this)
 
-
-          this.replymessage = this.replymessage.bind(this)
         }
 
       //Get Messages 
@@ -34,86 +36,77 @@ class OwnerMessage extends Component{
                     .then((response) => {
                     console.log(response);
                     console.log(response.data);
-                    var {id, owneremail, propid, travelleremail, question,reply} = response.data;
                     
                     this.setState({
-                        owneremail,
-                        propid,
-                        travelleremail,
-                        question,
-                        reply
+                        msg : response.data
                     })
-                    console.log(this.state)
+                   
                 });
         }
 
-   
-        replymessage(){
-            console.log(this.state)
-
-            var {owneremail, propid, travelleremail, question,reply} = this.state;
-           
-            const data = {
-            owneremail,
-            propid ,
-            travelleremail ,
-            question ,
-            reply : this.state.writereply
-           }
-
-           console.log(data);
-           //set the with credentials to true
-           axios.defaults.withCredentials = true;
-           //make a post request with the user data
-           axios.post('http://localhost:3001/ReplyMessage',data)
-               .then(response => {
-                   console.log("Status Code  is : ",response.status);
-                   console.log(response.data);
-                   if(response.status === 200){
-                           console.log('Replied successfully');
-                   }else{
-                       console.log('Replied failed !!! ');
-   
-                   }
-        })
-    }
-    logout = () => {
+       
+    logout = () => {    
         sessionStorage.removeItem("OwnerJWT");
         sessionStorage.removeItem("Owneremail");
         sessionStorage.removeItem("Ownerpassword");
       }
 
+      updateState(){
+          console.log("update")
+          console.log(this.state)
+
+          this.setState({
+              update : true
+          })
+          console.log(this.state)
+      }
+
 
     render(){
-        var reply;
-        console.log(this.state.question)
-        console.log(this.state);
-        if(this.state.reply != ""){
-            console.log("has reply")
-         reply = <div className="container darker" style={{width :"394px", marginLeft : "83px"}}>
-                    <h4>{this.state.reply}</h4>
-                    </div> 
-        }
-        var replyerr;
-        console.log(this.state.question)
-        if(this.state.question == "" || null){
-            replyerr = <div>
-            <img  style={{maxWidth: "360px"}} src={require("../image/message.png")} />
-                       </div> 
-           }
-        console.log(this.state)
+            var replyerr;
+            console.log("+++++++++")
+            var msgbox = this.state.msg.map((msg)=>{
 
-        // //redirect based on successful login
-         let redirectVar = null;
-        // if(sessionStorage.getItem("JWT") == null || undefined){
-        // redirectVar = <Redirect to= "/TravellerLogin"/>
-        // }
-        ///console.log(this.props.email);
+
+            if(msg.question == "" || null){
+                replyerr = <div>
+                <img  style={{maxWidth: "360px"}} src={require("../image/message.png")} />
+                           </div> 
+               }
+    
+
+            return(
+                    <div className="col-md-7">
+
+                    <div className="container" style={{width :"530px"}}>  
+                    <ul className="col-md-8 list-group">
+
+                        <h2> Message for {msg.propid}</h2>
+                    {replyerr}
+                    <div className="container"  style={{width :"380px"}}>
+                    <h5>Traveller : {msg.travelleremail} </h5>
+                    <h4>{msg.question}</h4>
+                    </div>
+
+                    {msg.reply != undefined ? <div className="container darker" style={{width :"394px", marginLeft : "83px"}}>
+                        <h4>{msg.reply}</h4>
+                        </div> : null}
+
+                      <Reply data = {msg} status = {this.state.update} update = {this.updateState}/>   
+
+                    </ul> 
+                    </div>
+                    </div>
+
+            )
+
+        }) 
+
         return(
+            
             <div> 
             <Navbarwhite />
           <div className ="container-fluid">
-          {redirectVar}
             <div className="container-fluid">
              <ul className="nav nav-tabs" >
                  <li style= {{paddingLeft : "11%" }}><Link to="/OwnerDashboard">OwnerDashboard</Link></li>
@@ -121,33 +114,8 @@ class OwnerMessage extends Component{
                  <li style= {{paddingLeft : "11%" }}><Link to='/' onClick={this.logout} >Logout</Link></li> 
              </ul>
              </div>
-            <div className ="container-fluid" style={{ backgroundColor : "#f4f4f4",height : "650px"}}>
-            <div style={{margin : "3%", padding: "15px"}}>
-                    <div className="col-md-1">
-                    </div>
-                    <div className="col-md-7">
 
-                    <div className="container" style={{width :"530px"}}>  
-                    <ul className="col-md-8 list-group">
-
-                         <h2> Messages</h2>
-                    {replyerr}
-                    <div className="container"  style={{width :"480px"}}>
-                    <h4>{this.state.question}</h4>
-                    <h5>From : {this.state.travelleremail} </h5>
-                    </div>
-                    {reply}
-                    
-                    <div style = {{marginLeft : "158px"}}>
-                    <input style = {{width : "321px"} } value={this.state.writereply} onChange={(e)=>{ this.setState({writereply : e.target.value}) }} className="form-control" />
-                    <br></br>
-                    <button style = {{marginLeft : "221px"}} className= "btn btn-primary" onClick={this.replymessage}>Reply </button>
-                    </div>
-         </ul> 
-         </div>
-        </div>
-             </div>
-             </div>
+                    {msgbox}           
             </div>
     
             </div>

@@ -40,7 +40,7 @@ router.get('/GetMessage',function(req,res){
     var email = req.query.id;                       // passing id as params in get request 
 
     console.log(email);
-    message.findOne({
+    message.find({
         owneremail : email
 }).then((data)=>{
     console.log(data);    
@@ -58,22 +58,16 @@ router.post('/ReplyMessage', function(req,res){
     console.log("Inside Post Message\n");
     console.log(req.body); 
     
-    var owneremail = req.body.owneremail 
-    var propid = req.body.propid 
-    var travellermail = req.body.travellermail 
-    var question = req.body.question
+    var id = req.body.id
     var reply = req.body.reply
     
     message.findOne({
-            owneremail,
-            propid,
-            travellermail,
-            question
+            _id : id
     }).then((data)=>{
         console.log(data);  
         console.log(data.length);  
         if(data.length!=0){                 //got message then reply 
-            message.findOneAndUpdate({owneremail,propid,travellermail,question},    //where condition
+            message.findOneAndUpdate({_id : id},    //where condition
                 { $set : {reply : reply}}).then((result)=>{
                 if(result!= undefined){
                     console.log("\n Replied Successfully !!\n\n",result)
@@ -98,7 +92,7 @@ router.get('/GetReply',function(req,res){
     var email = req.query.id;                       // passing id as params in get request 
 
     console.log(email);
-    message.findOne({
+    message.find({
         travelleremail : email
 }).then((data)=>{
     console.log(data);    

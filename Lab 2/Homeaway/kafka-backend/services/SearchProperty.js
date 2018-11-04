@@ -14,7 +14,6 @@ console.log("In Search handle request")
     owner.find({ })
      .then((result,err)=>{
          if(result.length != 0 ){
-            // console.log("........result",result)
  
              result.map((data)=>{
                 data.properties.map((prop)=>{
@@ -35,6 +34,8 @@ console.log("In Search handle request")
        }
      }).catch(e => {
          console.log("In catch error ",e)
+         callback(null,"In catch error")
+
      })
     }
 exports.handle_request = handle_request;

@@ -16,7 +16,7 @@ console.log("\nIn Traveller Account Email handle request\n")
             callback(null,err)
         }else{
             console.log("Changed Successfully !!",log);
-            callback(null,err)
+            callback(null,log)
         }
     });
 }
