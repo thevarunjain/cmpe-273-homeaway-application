@@ -9,6 +9,8 @@ import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import Navbarwhite from './Navbarwhite';
 import OwnerMessage from "./OwnerMessage";
+import {paginate} from "../paginate";
+import Pagination from "./Pagination";
 
 
 class OwnerDashboard extends Component {
@@ -19,7 +21,8 @@ class OwnerDashboard extends Component {
             prop : [],
             ip : [],
             booked : '',
-            resp : []
+            resp : [],
+            currentPage : 1
           };
            
        }
@@ -61,9 +64,14 @@ class OwnerDashboard extends Component {
         sessionStorage.removeItem("Owneremail");
         sessionStorage.removeItem("Ownerpassword");
       }
+      handlePageChange= page =>{
+        this.setState({currentPage : page });
+      }
       
       
     render(){ 
+        const prope = paginate(this.state.prop, this.state.currentPage, 3)
+
         let redirectVar = null;
         if(!sessionStorage.getItem("OwnerJWT")){
         redirectVar = <Redirect to= "/OwnerLogin"/>
@@ -71,7 +79,7 @@ class OwnerDashboard extends Component {
       var i,j;
       i =-1,j =-1;
      
-   var property = this.state.prop.map((property)=>{   // extracting property 
+   var property = prope.map((property)=>{   // extracting property 
      i =i+1;
      if(property.booking !=undefined) // for showing multiple bookings 
      { property.booking.map((x)=>{
@@ -79,9 +87,9 @@ class OwnerDashboard extends Component {
        })}
           return (
             <li className="list-group-item" key={Math.random()}>
-            <div className="ima">
+            <div >
             <div className="media-left">
-            <img className="media-object" style = {{width : "247px"}}src={this.state.ip[i]}/>
+            <img  style = {{width : "547px",borderRadius : "0px"}}src={this.state.ip[i]}/>
             </div>
             <div className="media-body">
             <div className="media-heading">
@@ -91,17 +99,17 @@ class OwnerDashboard extends Component {
             BR : {property.bedroom}<br></br>
             Cost : {property.rate} . 
             Guest : {property.accomodation}<br></br><br></br>
-            Booked by : {property.booking != undefined ? property.booking[0].bookedby : "Property Not Booked" }<br></br>
-            Booked from : {property.booking != undefined ?
+            Booked by : {property.booking != undefined ? (property.booking.length !=0 ? property.booking[0].bookedby : "Property Not Booked" ) : "Property Not Booked"} <br></br>
+            Booked from : {property.booking != undefined ? (property.booking.length !=0 ? (
              (new Date(property.booking[0].bookedfrom)).getMonth() +" / "+ 
              (new Date(property.booking[0].bookedfrom)).getDate() +" / "+
-            (new Date(property.booking[0].bookedfrom)).getFullYear() 
-            : "Property Not Booked" }<br></br>
-            Booked to : {property.booking != undefined ?  
+            (new Date(property.booking[0].bookedfrom)).getFullYear() )
+            : "Property Not Booked" )  : "Property Not Booked" }<br></br>
+            Booked to :{property.booking != undefined ? (property.booking.length !=0 ? (
             (new Date(property.booking[0].bookedto)).getMonth() +" / "+ 
             (new Date(property.booking[0].bookedto)).getDate() +" / "+
-            (new Date(property.booking[0].bookedto)).getFullYear()
-            : "Property Not Booked " }
+            (new Date(property.booking[0].bookedto)).getFullYear() )
+            : "Property Not Booked " ) : "Property Not Booked " }
 
             </div>
             </div>
@@ -135,6 +143,11 @@ class OwnerDashboard extends Component {
                 <div className="col-md-7">
                 <div className="container">  
       <ul className="col-md-8 list-group">
+      <Pagination
+         pageSize={3}
+         itemsCount = {this.state.prop.length}
+         currentPage = {this.state.currentPage}
+        onPageChange = {this.handlePageChange}/>
                      {property}
                      {message}
      </ul> 

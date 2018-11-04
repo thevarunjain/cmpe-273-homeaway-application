@@ -5,6 +5,7 @@ import axios from 'axios';
 import {Redirect} from 'react-router';
 import { connect } from "react-redux";
 import Navbarwhite from "../component/Navbarwhite";
+import SearchBar from "../component/SearchBar"
 
 
 
@@ -74,11 +75,12 @@ class BookProperty extends Component {
   console.log("in book");
 
  const data = {
+
    availfrom : new Date(this.props.datefrom),
    availto : new Date(this.props.dateto),
    id : this.props.bookproperty.propid,
    owneremail : this.props.bookproperty.ownerid,
-   travelleremail : this.props.traveller.details,
+   travelleremail : sessionStorage.getItem("email"),
    headline : this.props.bookproperty.headline
  }
  
@@ -152,46 +154,46 @@ class BookProperty extends Component {
 
         
       <div className="container-fluid" style={{padding:"10px"}}>  
-      <div class="row">
+      <div className="row">
       <div className="col-md-7" >
       
-      <div id="myCarousel" class="carousel slide" data-ride="carousel" style={{    width: "750px"}}>
-    <ol class="carousel-indicators">
-      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <div id="myCarousel" className="carousel slide" data-ride="carousel" style={{    width: "750px"}}>
+    <ol className="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" className="active"></li>
       <li data-target="#myCarousel" data-slide-to="1"></li>
       <li data-target="#myCarousel" data-slide-to="2"></li>
       <li data-target="#myCarousel" data-slide-to="3"></li>
     </ol>
 
-    <div class="carousel-inner" role="listbox">
+    <div className="carousel-inner" role="listbox">
 
-      <div class="item active">
+      <div className="item active">
         <img style={{height:"450px", width:"750px"}}  src={'data:image/jpg;base64, ' + this.state.ip[0]} alt="Chania" width="460" height="345" />
-        <div class="carousel-caption">
+        <div className="carousel-caption">
           <h3 style = {{color : "white"}}>{properties.headline}</h3>
           <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
 
-      <div class="item">
+      <div className="item">
         <img style={{height:"450px", width:"750px"}} src = {'data:image/jpg;base64, ' + this.state.ip[1] } alt="Chania" width="460" height="345"/>
-        <div class="carousel-caption">
+        <div className="carousel-caption">
         <h3 style = {{color : "white"}}>{properties.headline}</h3>
           <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
     
-      <div class="item">
+      <div className="item">
         <img style={{height:"450px", width:"750px"}} src={'data:image/jpg;base64, ' + this.state.ip[2]} alt="Flower" width="460" height="345"/>
-        <div class="carousel-caption">
+        <div className="carousel-caption">
         <h3 style = {{color : "white"}}>{properties.headline}</h3>
           <p style = {{color : "white"}}>{properties.description}</p>
         </div>
       </div>
 
-      <div class="item">
+      <div className="item">
         <img style={{height:"450px", width:"750px"}} src={'data:image/jpg;base64, ' + this.state.ip[3]} alt="Flower" width="460" height="345"/>
-        <div class="carousel-caption">
+        <div className="carousel-caption">
         <h3 style = {{color : "white"}}>{properties.headline}</h3>
           <p style = {{color : "white"}}>{properties.description}</p>
         </div>
@@ -199,13 +201,13 @@ class BookProperty extends Component {
   
     </div>
 
-    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
+    <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+      <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span className="sr-only">Previous</span>
     </a>
-    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
+    <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+      <span className="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span className="sr-only">Next</span>
     </a>
   </div>
 </div>

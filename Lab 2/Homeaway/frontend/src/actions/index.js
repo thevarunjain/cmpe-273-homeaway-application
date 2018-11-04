@@ -125,3 +125,13 @@ console.log(values)
     payload: request,
   };
 }
+
+
+//after clicking on property
+export function setStatus() {
+
+    return {
+    type: "SET_STATUS",
+    payload: "",
+  };
+}

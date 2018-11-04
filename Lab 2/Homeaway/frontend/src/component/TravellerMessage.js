@@ -60,6 +60,23 @@ class TravellerMessage extends Component{
         if(sessionStorage.getItem("JWT") == null || undefined){
             redirectVar = <Redirect to= "/TravellerLogin"/>
         }
+        var replyerr,reply;
+        console.log(this.state.question)
+        if(this.state.question == "" || null){
+            replyerr = <div>
+            <img style={{maxWidth: "360px"}} src={require("../image/message.png")} />
+                       </div> 
+           }else{
+               reply = <div> <h4>{this.state.propid}</h4>
+               <div className="container"  style={{width :"394px", marginLeft : "83px"}}>
+               <h4>{this.state.question}</h4>
+               </div>
+               <div className="container darker" style={{width :"480px"}}>
+               <h4>{this.state.reply}</h4>
+               <h5> From : {this.state.owneremail}</h5>
+               </div>
+               </div>
+           }
 
         return(
         
@@ -68,8 +85,8 @@ class TravellerMessage extends Component{
         <div id="login-container1" className="row" >
         <Navbarwhite />
 
-        <div class="container-fluid">
-         <ul class="nav nav-tabs" >
+        <div className="container-fluid">
+         <ul className="nav nav-tabs" >
              <li style= {{paddingLeft : "11%" }}><Link to="/TravellerTrip">My Trips</Link></li>
              <li style= {{paddingLeft : "11%" }}><Link to="/TravellerProfile">Profile</Link></li>
              <li style= {{paddingLeft : "11%" }}><Link to="/TravellerAccount">Account</Link></li>
@@ -86,18 +103,10 @@ class TravellerMessage extends Component{
                 {/* {message} */}
 
                 <h2> Traveller Messages </h2>
-
-        <div class="container"  style={{width :"394px", marginLeft : "83px"}}>
-        <h4>{this.state.question}</h4>
-        </div>
-        <div class="container darker" style={{width :"480px"}}>
-        <h4>{this.state.reply}</h4>
-        </div>
-        <div style = {{marginLeft : "158px"}}>
-        <input style = {{width : "321px"} } className="form-control" />
-        <br></br>
-        <button style = {{marginLeft : "221px"}} className= "btn btn-primary" onClick={this.replymessage}>Reply </button>
-        </div>
+                {replyerr}
+                {reply}
+       
+       
          </ul> 
          </div>
 

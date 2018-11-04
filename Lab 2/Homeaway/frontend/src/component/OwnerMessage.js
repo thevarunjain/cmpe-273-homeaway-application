@@ -86,18 +86,19 @@ class OwnerMessage extends Component{
 
     render(){
         var reply;
+        console.log(this.state.question)
         console.log(this.state);
         if(this.state.reply != ""){
             console.log("has reply")
-         reply = <div class="container darker" style={{width :"394px", marginLeft : "83px"}}>
+         reply = <div className="container darker" style={{width :"394px", marginLeft : "83px"}}>
                     <h4>{this.state.reply}</h4>
                     </div> 
         }
-        var message;
-
-        if(this.state.question == ""){
-            reply = <div>
-            <img src={require("../image/message.png")} />
+        var replyerr;
+        console.log(this.state.question)
+        if(this.state.question == "" || null){
+            replyerr = <div>
+            <img  style={{maxWidth: "360px"}} src={require("../image/message.png")} />
                        </div> 
            }
         console.log(this.state)
@@ -128,12 +129,12 @@ class OwnerMessage extends Component{
 
                     <div className="container" style={{width :"530px"}}>  
                     <ul className="col-md-8 list-group">
-                         {message}
 
                          <h2> Messages</h2>
-
-                    <div class="container"  style={{width :"480px"}}>
+                    {replyerr}
+                    <div className="container"  style={{width :"480px"}}>
                     <h4>{this.state.question}</h4>
+                    <h5>From : {this.state.travelleremail} </h5>
                     </div>
                     {reply}
                     

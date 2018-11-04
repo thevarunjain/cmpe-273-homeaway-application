@@ -4,13 +4,13 @@ import '../css/bootstrap.css';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import Navbarwhite from "../component/Navbarwhite"
-import SearchBar from "../component/SearchBar";
 import Pagination from "./Pagination";
 import { submitsearch } from "../actions";
 import { connect } from "react-redux";
 import { submitbookproperty } from "../actions";
 import {Link} from 'react-router-dom';
-import {paginate} from "../paginate"
+import {paginate} from "../paginate";
+import SearchBar from "../component/SearchBar"
 
 class SearchProperty extends Component {
        constructor(props){
@@ -95,9 +95,10 @@ class SearchProperty extends Component {
           values.guest = sessionStorage.getItem('accomodation')
           values.place = sessionStorage.getItem('place')
           console.log(values)
-          this.props.submitsearch(values);
+         this.props.submitsearch(values);
         }
         }
+
         componentWillReceiveProps(){
           console.log(this.props.pro)
               if(this.props.pro != null || undefined ){
@@ -224,13 +225,12 @@ class SearchProperty extends Component {
 
       <div className ="container-fluid" className="row">
         <Navbarwhite />
-        <SearchBar />
     
         <div >
 
         </div>
 
-        <div >
+        <div style={{marginLeft : "70px", marginTop : "20pxs"}}>
         <div className="col-md-2">
         <input className="form-control" placeholder="Location" type = "text" value= {this.state.searchlocation} onChange={this.updateSearch.bind(this)} /> 
         </div>

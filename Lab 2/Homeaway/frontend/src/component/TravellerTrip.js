@@ -6,7 +6,10 @@ import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import { connect } from "react-redux";
 import { submittrip } from "../actions";
-import Navbarwhite from "../component/Navbarwhite"
+import Navbarwhite from "../component/Navbarwhite";
+import {paginate} from "../paginate";
+import Pagination from "./Pagination";
+
 
 class TravellerTrip extends Component{
        constructor(props){
@@ -14,7 +17,8 @@ class TravellerTrip extends Component{
 
         this.state={
             prop : [],
-            ip :[]
+            ip :[],
+            currentPage : 1,
         }
         }
     
@@ -22,7 +26,7 @@ class TravellerTrip extends Component{
     //submit Login handler to send a request to the node backend
     componentWillMount() {
 
-       // this.props.submittrip(this.props.traveller.details);    
+    
 
         axios.defaults.withCredentials = true;
         //make a post request with the user data
@@ -53,7 +57,10 @@ class TravellerTrip extends Component{
             })
         }
 
-     
+        handlePageChange= page =>{
+            console.log(page);
+            this.setState({currentPage : page });
+          }
         logout = () => {
             sessionStorage.removeItem("JWT");
             sessionStorage.removeItem("email");
@@ -61,6 +68,11 @@ class TravellerTrip extends Component{
           }
 
     render(){
+
+        const prope = paginate(this.state.prop, this.state.currentPage, 3)
+
+
+        
         //redirect based on successful login
     console.log(this.state.ip);
     console.log(this.state.prop);
@@ -72,7 +84,7 @@ class TravellerTrip extends Component{
         var i;
 //var imagePreview = '';
         i=-1;
-        let property = this.state.prop.map(prop => {
+        let property = prope.map(prop => {
            i = i+1;  
     console.log(i);
                   
@@ -85,6 +97,8 @@ class TravellerTrip extends Component{
       var d4 = dt1.getDate();
       var d5 = dt1.getMonth(); 
       var d6 = dt1.getFullYear();
+
+      console.log(this.state.prop.length);
 
             return(
                 
@@ -121,11 +135,7 @@ class TravellerTrip extends Component{
 
             
         return(
-
-
-
-           
-        
+     
         <div className="container-fluid">
         {redirectVar}
         <div id="login-container" className="row" >
@@ -143,6 +153,11 @@ class TravellerTrip extends Component{
         
          <div style={{margin : "3%", padding: "15px"}}> 
       <ul className="col-md-8 list-group" >
+      <Pagination
+         pageSize={3}
+         itemsCount = {this.state.prop.length}
+         currentPage = {this.state.currentPage}
+        onPageChange = {this.handlePageChange}/>
          {property}
      </ul> 
      </div>

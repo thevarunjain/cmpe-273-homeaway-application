@@ -4,7 +4,7 @@ import '../css/bootstrap.css';
 import axios from 'axios';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-import Navbarwhite from "../component/Navbarwhite"
+import Navbarwhite from "./Navbarwhite"
 
 class TravellerProfile extends Component{
        constructor(props){

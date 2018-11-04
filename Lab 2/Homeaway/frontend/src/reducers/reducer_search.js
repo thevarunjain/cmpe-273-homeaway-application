@@ -24,11 +24,9 @@ export default function(state = {}, action) {
      console.log(newState);
       return newState;
 
+      case "SET_STATUS" : 
+      newState.status = 0;
     default:
       return newState;
   }
-
-
-  
-
 }

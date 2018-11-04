@@ -35,10 +35,10 @@ function handle_request(msg, callback){
         if(result!= undefined){
             console.log("Property booked by  !!", travelleremail)
             console.log("........................",result);
-            res.status(200).json({ success : true, body : "Property booked Successfully"}).end("Booked Sucessfully");
+           callback(null,result)
         }else{
             console.log("Error in Booking property :( ",result);
-           // callback(null,result)
+           callback(null,null)
             
         }
     })
@@ -47,9 +47,11 @@ function handle_request(msg, callback){
         if(result!= undefined){
             console.log("Property Listed !!")
             console.log("........................",result);
-          //  res.status(200).json({ success : true, body : "Property listed Successfully"}).end("Posted Sucessfully");
+           callback(null,result)            
         }else{
             console.log("Error in listing property :( ",result);
+           callback(null,null)
+
         }
     })
 }

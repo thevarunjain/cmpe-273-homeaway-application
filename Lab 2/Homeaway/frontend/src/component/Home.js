@@ -4,6 +4,8 @@ import '../css/bootstrap.css';
 import axios from 'axios';
 import SearchBar from './SearchBar';
 import {Link} from 'react-router-dom';
+import {setStatus} from '../actions/index'
+import { connect } from "react-redux";
 
 
 class Home extends Component {
@@ -17,6 +19,10 @@ class Home extends Component {
       guest : "",
       passon :""
     }}
+
+    componentWillMount(){
+      this.props.setStatus();
+    }
 
     search = (e) => {
       e.preventDefault();
@@ -129,5 +135,11 @@ class Home extends Component {
       )
   }
 }
+const mapDispatchToProps = (dispatch) => {
+  return{
+  setStatus:()=> {dispatch(setStatus)}
+  }
+}
 
-export default Home;
+export default connect(null,{setStatus})(Home);
+

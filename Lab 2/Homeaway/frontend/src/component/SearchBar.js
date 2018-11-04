@@ -18,6 +18,7 @@ class SearchBar extends Component {
       dateFrom : "",
       guest : "",
       passon :"",
+      authFlag : "",
 
     }}
     
@@ -54,12 +55,11 @@ class SearchBar extends Component {
     redirectVar = <Redirect to= "/TravellerLogin"/>
     }
     if(this.props.searchprop.status == 200){
-      console.log(this.props.searchprop);
+      // console.log(this.props.searchpro)
      sessionStorage.setItem("datefrom",this.props.searchprop.datefrom);
      sessionStorage.setItem("dateto",this.props.searchprop.dateto);
      sessionStorage.setItem("accomodation",this.props.searchprop.accomodation);
      sessionStorage.setItem("place", this.props.searchprop.place);
-
       return(
           <Redirect to="/SearchProperty" />
         )

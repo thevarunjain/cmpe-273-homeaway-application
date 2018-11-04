@@ -130,8 +130,8 @@ class TravellerAccount extends Component{
         <div id="login-container1" className="row" >
         <Navbarwhite />
 
-        <div class="container-fluid">
-         <ul class="nav nav-tabs" >
+        <div className="container-fluid">
+         <ul className="nav nav-tabs" >
              <li style= {{paddingLeft : "11%" }}><Link to="/TravellerTrip">My Trips</Link></li>
              <li style= {{paddingLeft : "11%" }}><Link to="/TravellerProfile">Profile</Link></li>
              <li style= {{paddingLeft : "11%" }}><Link to="/TravellerAccount">Account</Link></li>
@@ -143,7 +143,7 @@ class TravellerAccount extends Component{
 
             <div>
             <div className="travellerprofileform">
-                <div class="heading1">
+                <div className="heading1">
                 <p className="heading">Change your email address</p>
                 </div><br></br>
                 
@@ -159,7 +159,7 @@ class TravellerAccount extends Component{
 
              <div>
             <div className="travellerprofileform">
-                <div class="heading1">
+                <div className="heading1">
                 <p className="heading">Change your Password</p>
                 </div><br></br>
                 

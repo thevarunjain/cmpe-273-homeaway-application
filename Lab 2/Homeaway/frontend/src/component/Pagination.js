@@ -16,7 +16,6 @@ function Pagination(props) {
           <li className={page === currentPage ? "page-item active" : "page-item "} key= {page}>
           <a className="page-link" onClick={()=>{onPageChange(page)}}>{page}</a>
           </li>
-
         ))}
         </ul>
       </nav>

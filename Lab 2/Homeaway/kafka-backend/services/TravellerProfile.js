@@ -17,8 +17,6 @@ console.log("\Profile for : ",msg);
                      }
                     console.log("\nProfile Found >>>>>>\n\n",result);
                     callback(null,result)      // data to be sent backwards
-                    //   res.end(JSON.stringify(result));
-                    //   console.log(JSON.stringify(result));
                 });
 
     }

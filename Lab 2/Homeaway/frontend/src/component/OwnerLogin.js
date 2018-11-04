@@ -68,7 +68,7 @@ class OwnerLogin extends Component{
         <div className ="form-container1">
        
             <div className="login-form  traveler">
-                <div class="heading1">
+                <div className="heading1">
                 <p className="heading">Owner login</p>
                 </div><br></br>
                 {errBlock}
@@ -92,7 +92,7 @@ class OwnerLogin extends Component{
     </form>
 
                 <div className="heading1">
-                <div class="checkbox mb-3">
+                <div className="checkbox mb-3">
                     <label>
                     <input type="checkbox" value="remember-me" /> Keep me signed in
                     </label>

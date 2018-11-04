@@ -114,7 +114,7 @@ class TravellerHomepage extends Component {
                         </li>
 
                         <li className="dropdown" >
-                          <a href="#"  className="dropdown-toggle" data-toggle="dropdown" role="button" style={{color :"white"}} aria-haspopup="true" aria-expanded="false">{this.props.traveller.details}
+                          <a href="#"  className="dropdown-toggle" data-toggle="dropdown" role="button" style={{color :"white"}} aria-haspopup="true" aria-expanded="false">{sessionStorage.getItem("email")}
                           <span className="caret" ></span></a>
 
                           <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">

@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom';
             <nav className ="navbar navbar-expand-sm fixed-top navbar-light">
                  <div className="container-fluid">
                    <div className="navbar-header">
-                    <Link to="/">  <img src= {require("../image/homeaway_blue.svg")}></img> </Link>
+                    <Link to="/" >  <img src= {require("../image/homeaway_blue.svg")}></img> </Link>
                     </div>
                     <span className="blankspace">                            
                     </span>
