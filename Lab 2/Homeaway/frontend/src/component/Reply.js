@@ -49,6 +49,8 @@ class Reply extends Component {
                
                                }
                     })
+            console.log(this.state.writereply);        
+     this.state.writereply == "" ? alert("Enter some text to reply") : alert("Replied. Refresh the page to see the changes")
                 }
             
 

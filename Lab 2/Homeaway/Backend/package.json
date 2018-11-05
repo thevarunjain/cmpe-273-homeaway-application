@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "assert": "^1.4.1",
     "asserts": "^4.0.2",
     "bcrypt": "^3.0.2",
     "bcrypt-nodejs": "0.0.3",

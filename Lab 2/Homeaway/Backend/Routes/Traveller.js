@@ -97,7 +97,7 @@ app.use(bodyParser.json());
                 //res.cookie('cookie',email,{maxAge: 900000, httpOnly: false, path : '/'});
                res.status(200).json({success: true, token: 'JWT' + token });
             } else {
-                res.status(201).json({
+                res.status(201).json({ 
                     success: false,
                     message: 'Authentication failed. Passwords did not match.'
                 });

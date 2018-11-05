@@ -120,8 +120,8 @@ class OwnerDashboard extends Component {
           })
                 var message;
                 if(property.length == 0){
-                   message = <div> 
-                   <img src = {require("../image/prop.png")} />
+                   message = <div > 
+                   <img  style={{width : "400px"}} src = {require("../image/prop.png")} />
                     </div>
 
                 }
