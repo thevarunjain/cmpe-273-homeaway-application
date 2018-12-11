@@ -12,6 +12,9 @@ import OwnerMessage from "./OwnerMessage";
 import {paginate} from "../paginate";
 import Pagination from "./Pagination";
 import {ROOT_URL} from "../config";
+import {propertyOwner} from "../queries/queries"
+import { compose, graphql, withApollo } from 'react-apollo';
+
 
 
 class OwnerDashboard extends Component {
@@ -33,6 +36,20 @@ class OwnerDashboard extends Component {
            
         console.log("In the dasboard of ",sessionStorage.getItem("Owneremail"))
         var email = sessionStorage.getItem("Owneremail")
+    
+            var data = this.props.propertyOwner;
+            if(data.loading){
+                return( <div>Loading Props...</div> );
+            } else {
+               this.setState({
+                        prop : data
+               })
+            }
+    
+
+
+
+
            axios.defaults.withCredentials = true;
        axios.get(`${ROOT_URL}/OwnerDashboard`,{
             params: {
@@ -168,4 +185,5 @@ class OwnerDashboard extends Component {
 }
 
 
-export default OwnerDashboard;
+// export default OwnerDashboard;
+export default graphql(propertyOwner)(OwnerDashboard);

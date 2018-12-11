@@ -84,28 +84,44 @@ router.post('/OwnerLogin',function(req,res){
 
 
 
-router.get('/OwnerDashboard', function(req,res){
+router.post('/OwnerDashboard', function(req,res){
     console.log("\nIn owner dashBoard\n" + req.body);
-    var email = req.query.id;
-    console.log(email);
-
-    
-    kafka.make_request('owner_dashboard',email, function(err,results){
-        console.log('Result from Kafka Backend\n', results);
-        if (err){
-            console.log("\n><><><><>< INSIDE ERROR ><><><><><");
-            res.json({
-                status:"error",
-                msg :"NO Property Found."
+    //var msg = req.query.id;
+    var msg = req.body.email 
+    console.log("Data in mutation....",msg);
+var arr = [];
+    owner.find({email :msg},{properties : 1 ,_id : 0 }).then((result)=>{
+        if(result != null){
+        result.map((data)=>{
+            data.properties.map((prop)=>{
+                arr.push(prop)
             })
+            });
+        console.log("\nProperty Found >>>> \n\n",arr);
+        // callback(null,arr)      // data to be sent backwards
+    
         }else{
-            console.log("\nProperty for user " + email +" sent to client");
-            res.writeHead(200,{
-                'Content-Type' : 'application/json'
-                })
-                res.end(JSON.stringify(results));
-            }
-    });
+            callback(null,"No prop found")
+            console.log("No property found");
+        }
+    })
+    
+    // kafka.make_request('owner_dashboard',email, function(err,results){
+    //     console.log('Result from Kafka Backend\n', results);
+    //     if (err){
+    //         console.log("\n><><><><>< INSIDE ERROR ><><><><><");
+    //         res.json({
+    //             status:"error",
+    //             msg :"NO Property Found."
+    //         })
+    //     }else{
+    //         console.log("\nProperty for user " + email +" sent to client");
+    //         res.writeHead(200,{
+    //             'Content-Type' : 'application/json'
+    //             })
+    //             res.end(JSON.stringify(results));
+    //         }
+    // });
 })
 
 

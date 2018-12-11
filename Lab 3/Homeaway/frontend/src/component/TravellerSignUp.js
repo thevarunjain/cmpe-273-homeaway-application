@@ -24,25 +24,11 @@ class TravellerSignUp extends Component{
     }
   }
    
-renderField(field) {
-    const { meta: { touched, error } } = field;
-    const className = `form-group ${touched && error ? "has-danger" : ""}`;
-
-    return (
-      <div className={className}>
-        <label>{field.label}</label>
-        <input className="form-control" type={field.type} {...field.input} required />
-        <div className="text-help" style={{color: "red", textAlign : "center", padding : "5px", fontWeight : "bold" }}>
-          {touched ? error : ""}
-        </div>
-      </div>
-    );
-  }
-    onSubmit(e) {
+     async onSubmit(e) {
       e.preventDefault();
       console.log(this.state);
 
-    var result =  this.props.travellerSignUp({
+    var result =   await this.props.travellerSignUp({
             variables: {
               email : this.state.email,
               password : this.state.password,
@@ -62,24 +48,13 @@ renderField(field) {
       var errBlock ;
         //redirect based on successful login
         var redirectVar ;
-        // if(sessionStorage.getItem("JWT")!= undefined || null ){
-        //   redirectVar = <Redirect to= "/TravellerHomepage"/>
-        // }
-        // if(this.props.signup.status === 201){
-
-        //   errBlock =  <div className="login-err">
-        //   <h4 style= {{color : "white", textAlign : "center"}}>User Already Exist</h4>
-        //   </div>
-        // }else if(this.props.signup.status==200){
-        //   return <Redirect to = "/TravellerLogin" />
-        // }
 
         return(
         
          <div id="login-container" className="row">
          {/* {redirectVar} */}
         <div id="login-container" className="row" >
-     {/* <Navbarwhite /> */}
+     <Navbarwhite />
         
         <div className="panel-heading">
                     <h1>Sign up for HomeAway</h1>
@@ -147,48 +122,7 @@ renderField(field) {
     } // end of render
 }
 
-// function validate(values) {
 
-//     const errors = {};
-  
-//     // Validate the inputs from 'values'
-//     if (!values.firstname) {
-//         errors.firstname = "Enter First Name";
-//       }
-//       if (!values.lastname) {
-//         errors.lastname = "Enter Last Name";
-//       }
-//     if (!values.email) {
-//       errors.email = "Enter an email";
-//     }
-//     if (!values.password) {
-//       errors.password = "Enter a password";
-//     }
-  
-//     // If errors is empty, the form is fine to submit
-//     // If errors has *any* properties, redux form assumes form is invalid
-//     return errors;
-//   }
-
-
-// function mapStateToProps(state){
-//   return{
-//     signup : state.signup
-//   };
-// }
-
-//  export default reduxForm({
-//     validate,
-//     form: "NewLoginForm" 
-//   })(connect(mapStateToProps, { submitsignup })(TravellerSignUp));
-  
-// export default graphql(travellerSignUp, { name: "travellerSignUp" })(
-//   TravellerSignUp
-// );
-
-// export default graphql(travellerSignUp, { name: "travellerSignUp" })(withApollo(
-//   TravellerSignUp)
-// );
 
 export default compose(
   // graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),

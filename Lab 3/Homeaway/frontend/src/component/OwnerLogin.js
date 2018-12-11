@@ -7,27 +7,43 @@ import { connect } from "react-redux";
 import { submitownerlogin } from "../actions";
 import { Field, reduxForm } from "redux-form";
 import Navbarwhite from './Navbarwhite';
-
+import {ownerLogin} from "../mutation/mutations"
+import { compose, graphql, withApollo } from 'react-apollo';
 
 class OwnerLogin extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      email : "",
+      password : ""
+    }
+  }
+
   
-  renderField(field) {
-        const { meta: { touched, error } } = field;
-        const className = `form-group ${touched && error ? "has-danger" : ""}`;
+  // renderField(field) {
+  //       const { meta: { touched, error } } = field;
+  //       const className = `form-group ${touched && error ? "has-danger" : ""}`;
     
-        return (
-          <div className={className}>
-            <label>{field.label}</label>
-            <input className="form-control" type={field.type} {...field.input} required />
-            <div className="text-help" stlye={{color: "red", textalign : "center"}}>
-              {touched ? error : ""}
-            </div>
-          </div>
-        );
-      }
+  //       return (
+  //         <div className={className}>
+  //           <label>{field.label}</label>
+  //           <input className="form-control" type={field.type} {...field.input} required />
+  //           <div className="text-help" stlye={{color: "red", textalign : "center"}}>
+  //             {touched ? error : ""}
+  //           </div>
+  //         </div>
+  //       );
+  //     }
     
         onSubmit(values) {
-            this.props.submitownerlogin(values);
+          var result = this.props.ownerLogin({
+            variables: {
+              email : this.state.email,
+              password : this.state.password
+            }
+          });
+          console.log(result)
+            // this.props.submitownerlogin(values);
           }
 
     render(){
@@ -35,16 +51,16 @@ class OwnerLogin extends Component{
 
         //redirect based on successful login
         let redirectVar = null;
-        console.log(this.props.owner.status)
-        console.log(sessionStorage.getItem("OwnerJWT"))        
-        if((this.props.owner.status === 200 || 202) && (sessionStorage.getItem("OwnerJWT")!=null || undefined)){
-         redirectVar =  <Redirect to='/OwnerDashboard' />
-        }
+        // console.log(this.props.owner.status)
+        // console.log(sessionStorage.getItem("OwnerJWT"))        
+        // if((this.props.owner.status === 200 || 202) && (sessionStorage.getItem("OwnerJWT")!=null || undefined)){
+        //  redirectVar =  <Redirect to='/OwnerDashboard' />
+        // }
 
         var errBlock;
-        this.props.owner.status == 201 ?  errBlock =  <div className="login-err">
-        <h4 style= {{color : "white", textAlign : "center"}}>Username or password incorrect</h4>
-        </div> : null;
+        // this.props.owner.status == 201 ?  errBlock =  <div className="login-err">
+        // <h4 style= {{color : "white", textAlign : "center"}}>Username or password incorrect</h4>
+        // </div> : null;
 
         
 
@@ -72,19 +88,23 @@ class OwnerLogin extends Component{
                 <p className="heading">Owner login</p>
                 </div><br></br>
                 {errBlock}
-    <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+    <form onSubmit={this.onSubmit.bind(this)}>
       
-      <Field
+      <input
         label="Email"
         name="email"
         type="email"
+        onChange={e => this.setState({ email: e.target.value })}
+
         component={this.renderField}            // this funtion will return jsx for the field. 
       />
 
-      <Field
+      <input
         label="Password"
         name="password"
         type="password"
+        onChange={e => this.setState({ email: e.target.value })}
+
         component={this.renderField}
       />
 
@@ -135,9 +155,14 @@ function mapStateToProps(state){
   };
 }
 
- export default reduxForm({
-    validate,
-    form: "NewLoginForm" 
-  })(connect(mapStateToProps, { submitownerlogin })(OwnerLogin));
+//  export default reduxForm({
+//     validate,
+//     form: "NewLoginForm" 
+//   })(connect(mapStateToProps, { submitownerlogin })(OwnerLogin));
   
  
+
+export default compose(
+  // graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+  graphql(ownerLogin, { name: "ownerLogin" })
+)(withApollo(OwnerLogin));

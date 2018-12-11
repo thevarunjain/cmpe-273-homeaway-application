@@ -1,7 +1,9 @@
-var  traveller = require('./single');
-var travellerDashboard =  require("./travellerDashboard")
+var traveller = require('./single');
+var propertyTraveller =  require("./propertyTraveller");
+var propertyOwner =  require("./propertyOwner");
 
 module.exports={
   traveller,
-  travellerDashboard
+  propertyTraveller,
+  propertyOwner
 }

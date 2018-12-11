@@ -12,9 +12,9 @@ const {
 const travellerType = new GraphQLObjectType({				// To send to Client
 	name: 'traveller',
 	fields: () => ({
-		_id: {
-			type: new GraphQLNonNull(GraphQLID)
-		},
+		// _id: {
+		// 	type: new GraphQLNonNull(GraphQLID)
+		// },
 		email   :   {
 			type : GraphQLString
 		},
@@ -54,9 +54,27 @@ const travellerType = new GraphQLObjectType({				// To send to Client
 		phone : {
 			type : GraphQLString
 		 },
-		// properties : {
-		// 	type : GraphQLList
-		// }
+		properties :  {
+			type : GraphQLString
+		},
+		bookedfrom : {
+			type : GraphQLString
+		},
+		bookedto : {
+			type : GraphQLString
+		 },
+		propid : { 
+			type : GraphQLString
+		},
+		owneremail : {
+			type : GraphQLString
+		 },
+		headline :  {
+			type : GraphQLString
+		},
+		travelleremail :  {
+			type : GraphQLString
+		}
 	})
 })
 
@@ -103,9 +121,27 @@ const travellerType = new GraphQLObjectType({				// To send to Client
 		phone : {
 			type : GraphQLString
 		 },
-		// properties : {
-		// 	type : GraphQLList
-		// }
+		properties :  {
+			type : GraphQLString
+		},
+		bookedfrom : {
+			type : GraphQLString
+		},
+		bookedto : {
+			type : GraphQLString
+		 },
+		propid : { 
+			type : GraphQLString
+		},
+		owneremail : {
+			type : GraphQLString
+		 },
+		headline :  {
+			type : GraphQLString
+		},
+		travelleremail :  {
+			type : GraphQLString
+		}
 	})
 })
 

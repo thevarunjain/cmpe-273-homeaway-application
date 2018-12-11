@@ -60,26 +60,6 @@ crypt.createHash(password, function (hash) {
 			}
 			return newUser
 
-    //            new traveller({                // ES6 syntax
-    //                 email,
-    //                 password,
-    //                 firstname,
-    //                 lastname,
-    //                 passwordHash
-    //                 }).save().then((docs)=>{
-    //                 console.log("Traveller created : ",docs);
-    //                 // callback(null,docs)
-    //                 console.log("\n Traveller created with email :- ", req.body.email);
-    //                  res.sendStatus(200).end(JSON.stringify(docs));
-    //             },(err)=>{
-    //                 console.log("Error in signing up");
-    //                 // callback(err,null)
-    //                 res.sendStatus(400).json({
-    //                     status:"error",
-    //                     msg:"System Error, Try Again."
-    //                 }).end(JSON.stringify(docs));
-    // })
-
         }
     })
 })

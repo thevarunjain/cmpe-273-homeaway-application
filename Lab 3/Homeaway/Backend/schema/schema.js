@@ -89,7 +89,7 @@ const RootQuery = new GraphQLObjectType({
         if (!result) {
           throw new Error("Username already exists.");
         }
-        return result;
+                   return result;
       }
     }
 

@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import Navbarwhite from "../component/Navbarwhite";
 import SearchBar from "../component/SearchBar"
 import {ROOT_URL} from "../config";
+import {bookProperty} from "../mutation/mutations"
+import { compose, graphql, withApollo } from 'react-apollo';
 
 
 
@@ -75,32 +77,47 @@ class BookProperty extends Component {
       book(pro){
   console.log("in book");
 
- const data = {
-
-   availfrom : new Date(this.props.datefrom),
+  var result =   this.props.bookProperty({
+    variables: {
+      availfrom : new Date(this.props.datefrom),
    availto : new Date(this.props.dateto),
    id : this.props.bookproperty.propid,
    owneremail : this.props.bookproperty.ownerid,
    travelleremail : sessionStorage.getItem("email"),
    headline : this.props.bookproperty.headline
- }
+    }
+  });
+  console.log(result)
+
+
+
+
+//  const data = {
+
+//   //  availfrom : new Date(this.props.datefrom),
+//   //  availto : new Date(this.props.dateto),
+//   //  id : this.props.bookproperty.propid,
+//   //  owneremail : this.props.bookproperty.ownerid,
+//   //  travelleremail : sessionStorage.getItem("email"),
+//   //  headline : this.props.bookproperty.headline
+//  }
  
 
- /// console.log(pro);
-  axios.post(`${ROOT_URL}/BookProperty`,data)
-  .then(response => {
-      console.log("Status Code  is : ",response.status);
-      console.log(response.data);
-      if(response.status === 200){
-              console.log('Changed saved successfully');
-              this.setState({
-               booked : true
-              })
-      }else{
-          console.log('Changed failed !!! ');
+//  /// console.log(pro);
+//   axios.post(`${ROOT_URL}/BookProperty`,data)
+//   .then(response => {
+//       console.log("Status Code  is : ",response.status);
+//       console.log(response.data);
+//       if(response.status === 200){
+//               console.log('Changed saved successfully');
+//               this.setState({
+//                booked : true
+//               })
+//       }else{
+//           console.log('Changed failed !!! ');
 
-      }
-  });
+//       }
+//   });
   }
 
     render(){  
@@ -315,3 +332,9 @@ function mapStateToProps(state){
 // }
 
 export default connect (mapStateToProps)(BookProperty);
+
+
+// export default compose(
+//   // graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//   graphql(bookProperty, { name: "bookProperty" })
+// )(withApollo(BookProperty));

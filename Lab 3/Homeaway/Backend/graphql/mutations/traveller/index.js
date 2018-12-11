@@ -1,11 +1,15 @@
 var travellerSignUp= require('./travellerSignUp');
+var bookProperty =  require('./bookProperty');
 var travellerProfileUpdate = require('./updatetravellerProfile');
-var ownerSignUp = require("./ownerSignUp");
+var ownerLoginSignUp = require("./ownerLoginSignUp");
+var travellerLogin = require("./travellerLogin")
 
 module.exports={
     travellerSignUp,
     travellerProfileUpdate,
-    ownerSignUp
+    ownerLoginSignUp,
+    bookProperty,
+    travellerLogin
 }
 
-console.log("from traveller HI")
+console.log("from traveller HI");

@@ -80,7 +80,7 @@ const storagepic = multer.diskStorage({
 
 const uploadpic = multer({ storage : storagepic });
 
-// app.use(cors({ origin: ROOT_URL, credentials: true }));
+app.use(cors({ origin: ROOT_URL, credentials: true }));
 
 // app.use(session({
 //     secret              : 'hakuna matata',

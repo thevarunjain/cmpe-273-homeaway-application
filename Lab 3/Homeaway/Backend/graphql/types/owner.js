@@ -27,9 +27,9 @@ const ownerType = new GraphQLObjectType({				// To send to Client
 		propertyid : {
 			type : GraphQLString
 		},
-		// properties :  {
-		// 	type : GraphQLList
-		// }
+		properties :  {
+			type : GraphQLString
+		}
 	})
 })
 
@@ -49,9 +49,9 @@ const ownerType = new GraphQLObjectType({				// To send to Client
 		propertyid : {
 			type : GraphQLString
 		},
-		// properties :  {
-		// 	type : GraphQLList
-		// }
+		properties :  {
+			type : GraphQLString	
+			}
 	})
 })
 

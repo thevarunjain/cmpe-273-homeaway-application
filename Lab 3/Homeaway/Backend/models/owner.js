@@ -20,5 +20,5 @@ var userSchema = new mongoose.Schema({    // Creating Schema with userSchema Nam
 
 var owner = mongoose.model("owner", userSchema)     // creating a model 
 
-module.exports = {owner};
+module.exports = {owner}
   

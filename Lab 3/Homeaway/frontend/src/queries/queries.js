@@ -1,21 +1,20 @@
 import { gql } from 'apollo-boost';
 
-const getAuthorsQuery = gql`
-    {
-        authors {
-            name
-            id
-        }
-    }
+const propertyTraveller = gql`
+query propertytraveller($email: String){
+   propertytraveller(email:$email){
+       firstName
+   }
+ }
+
 `;
 
-const getBooksQuery = gql`
-    {
-        books {
-            name
-            id
-        }
-    }
-`;
+const propertyOwner = gql`
+query propertytraveler($prop_id: String){
+   propertytraveler(email : $email){
+       firstName
+   }
+ }
 
-export { getAuthorsQuery, getBooksQuery };
+`;
+export { propertyTraveller, propertyOwner };

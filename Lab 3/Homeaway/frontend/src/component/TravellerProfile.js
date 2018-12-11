@@ -6,6 +6,8 @@ import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 import Navbarwhite from "./Navbarwhite";
 import {ROOT_URL} from "../config";
+import {updateProfile} from "../mutation/mutations"
+import { compose, graphql, withApollo } from 'react-apollo';
 
 
 class TravellerProfile extends Component{
@@ -40,32 +42,50 @@ class TravellerProfile extends Component{
           }
       
     
-        componentDidMount(){
+        async componentDidMount(){
             var email =  sessionStorage.getItem("email");
+            var result =   await this.props.updateProfile({
+                variables: {
+                    firstname : this.state.firstname,
+                    lastname : this.state.lastname,
+                    about : this.state.about,
+                    country : this.state.country,
+                    company : this.state.company,
+                    school : this.state.school,
+                    hometown : this.state.hometown,
+                    languages : this.state.languages,  
+                    gender : this.state.gender,
+                    phone : this.state.phone,
+                    email : this.state.email
+                                }
+              });
+              console.log(result)
 
-            axios.get(`${ROOT_URL}/TravellerProfile`,{
-                params: {
-                  id : email
-                }})
-                    .then((response) => {
-                    //update the state with the response data
-                    console.log(response);
-                    console.log(response.data[0]);
-                    this.setState({
-                        firstname : response.data[0].firstname,
-                        lastname : response.data[0].lastname,
-                        about : response.data[0].about,
-                        country : response.data[0].country,
-                        company : response.data[0].company,
-                        school : response.data[0].school,
-                        hometown : response.data[0].hometown,
-                        languages : response.data[0].languages,
-                        gender : response.data[0].gender,
-                        phone : response.data[0].phone,
-                    
-                    });
-                    console.log("In Home");
-                });
+
+
+
+            // axios.get(`${ROOT_URL}/TravellerProfile`,{
+            //     params: {
+            //       id : email
+            //     }})
+            //         .then((response) => {
+            //         //update the state with the response data
+            //         console.log(response);
+            //         console.log(response.data[0]);
+            //         this.setState({
+            //             firstname : response.data[0].firstname,
+            //             lastname : response.data[0].lastname,
+            //             about : response.data[0].about,
+            //             country : response.data[0].country,
+            //             company : response.data[0].company,
+            //             school : response.data[0].school,
+            //             hometown : response.data[0].hometown,
+            //             languages : response.data[0].languages,
+            //             gender : response.data[0].gender,
+            //             phone : response.data[0].phone,
+            //         });
+            //         console.log("In Home");
+            //     });
         }
 
     //submit Login handler to send a request to the node backend
@@ -272,14 +292,13 @@ class TravellerProfile extends Component{
 
                     
             </div>
-    </div>
-        
-     
-       
-       
-    
-        
+    </div> 
         );
     }
 }
- export default TravellerProfile;
+//  export default TravellerProfile;
+
+export default compose(
+    // graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+    graphql(updateProfile, { name: "updateProfile" })
+  )(withApollo(TravellerProfile));

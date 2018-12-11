@@ -10,6 +10,9 @@ import Navbarwhite from "../component/Navbarwhite";
 import {paginate} from "../paginate";
 import Pagination from "./Pagination";
 import {ROOT_URL} from "../config";
+import {propertyTraveller} from "../queries/queries"
+import { compose, graphql, withApollo } from 'react-apollo';
+
 
 
 
@@ -28,7 +31,15 @@ class TravellerTrip extends Component{
     //submit Login handler to send a request to the node backend
     componentWillMount() {
 
-    
+        var data = this.props.propertyTraveller;
+        if(data.loading){
+            return( <div>Loading Props...</div> );
+        } else {
+           this.setState({
+                    prop : data
+           })
+        }
+
 
         axios.defaults.withCredentials = true;
         //make a post request with the user data
@@ -181,5 +192,7 @@ function mapStateToProps(state){
   }
 
   
-  export default connect (mapStateToProps, {submittrip})(TravellerTrip);
-//export default TravellerTrip;
+//   export default connect (mapStateToProps, {submittrip})(TravellerTrip);
+export default TravellerTrip;
+
+// export default graphql(propertyTraveller)(TravellerTrip);
